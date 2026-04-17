@@ -20,12 +20,13 @@
 
 import { google } from 'googleapis';
 import fs from 'node:fs';
+import fsp from 'node:fs/promises';
 import path from 'node:path';
 
 const HOST = 'https://aharabr.com.br';
 const KEY_FILE = process.env.GOOGLE_APPLICATION_CREDENTIALS || './secrets/gsc-key.json';
 
-const DEFAULT_ROUTES = [
+const STATIC_ROUTES = [
   '/',
   '/sobre/',
   '/produtos/',
@@ -35,6 +36,18 @@ const DEFAULT_ROUTES = [
   '/para-comercios/',
   '/para-eventos/',
 ];
+
+async function loadBlogRoutes() {
+  try {
+    const raw = await fsp.readFile('./src/content/blog/posts.json', 'utf-8');
+    const posts = JSON.parse(raw);
+    return posts.map((p) => `/blog/${p.slug}/`);
+  } catch {
+    return [];
+  }
+}
+
+const DEFAULT_ROUTES = [...STATIC_ROUTES, ...(await loadBlogRoutes())];
 
 async function getAuth() {
   if (!fs.existsSync(KEY_FILE)) {
