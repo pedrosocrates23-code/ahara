@@ -43,10 +43,10 @@ export const img = {
 
 // Ícones decorativos (batata-estilizados).
 export const icons = {
-  chip1:    '/images/icons/icon-1.png',
-  chip2:    '/images/icons/icon-2.png',
-  chip3:    '/images/icons/icon-3.png',
-  chip4:    '/images/icons/icon-4.png',
-  shine:    '/images/icons/icon-shine.png',
-  delivery: '/images/icons/icon-delivery.png',
+  chip1:    '/images/icons/icon-1.webp',
+  chip2:    '/images/icons/icon-2.webp',
+  chip3:    '/images/icons/icon-3.webp',
+  chip4:    '/images/icons/icon-4.webp',
+  shine:    '/images/icons/icon-shine.webp',
+  delivery: '/images/icons/icon-delivery.webp',
 } as const;

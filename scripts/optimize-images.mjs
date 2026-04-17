@@ -49,6 +49,27 @@ async function heroRecompress() {
   console.log(`✔ hero-chips.webp (${before}) -> (${after})`);
 }
 
+async function iconsToWebp() {
+  const dir = path.join(ROOT, 'images', 'icons');
+  const files = await fs.readdir(dir);
+  const pngs = files.filter((f) => f.toLowerCase().endsWith('.png'));
+
+  for (const f of pngs) {
+    const src = path.join(dir, f);
+    const dst = path.join(dir, f.replace(/\.png$/i, '.webp'));
+
+    const before = await size(src);
+    const buf = await fs.readFile(src);
+    await sharp(buf)
+      .resize({ width: 400, height: 400, fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+      .webp({ quality: 82, effort: 6 })
+      .toFile(dst);
+    await fs.rm(src);
+    const after = await size(dst);
+    console.log(`✔ ${f} (${before}) -> ${path.basename(dst)} (${after})`);
+  }
+}
+
 async function bowlRecompress() {
   const file = path.join(ROOT, 'images', 'chips-bowl-2.webp');
   try {
@@ -71,6 +92,7 @@ async function main() {
   await logoToWebp();
   await heroRecompress();
   await bowlRecompress();
+  await iconsToWebp();
   console.log('Pronto.');
 }
 
