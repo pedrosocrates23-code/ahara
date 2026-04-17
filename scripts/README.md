@@ -1,56 +1,89 @@
 # Scripts de indexação
 
-## IndexNow (Bing, Yandex, Seznam, Naver, Mojeek)
+## Visão geral
 
-Notifica buscadores compatíveis com IndexNow sobre URLs novas/atualizadas.
-**O Google NÃO participa.**
+| Script | API | Motor de busca |
+|---|---|---|
+| `npm run indexnow` | IndexNow | Bing, Yandex, Seznam, Naver, Mojeek |
+| `npm run gsc:submit` | Google Search Console API | Google (caminho oficial) |
+| `npm run google:index` | Google Indexing API | Google (fora de spec - ver aviso) |
 
-### Setup (1x só)
+---
+
+## 1. IndexNow (recomendado para Bing/Yandex)
 
 O arquivo-chave já está em `public/69aabca2f983481c9da75af8c25d2160.txt`.
 Depois do deploy, confira que `https://aharabr.com.br/69aabca2f983481c9da75af8c25d2160.txt`
 responde com o mesmo conteúdo. Se não, o IndexNow rejeita (erro 422).
 
+```bash
+npm run indexnow                       # submete todas as 8 rotas
+node scripts/indexnow.mjs /contato/    # rotas específicas
+```
+
+---
+
+## 2. Google Search Console API (recomendado para Google)
+
+### Setup do service account
+
+O email do service account configurado: `fit-82@fits-493115.iam.gserviceaccount.com`
+
+**Passo a passo:**
+
+1. **Google Cloud Console** → abra o projeto `fits-493115`
+2. **IAM** → confirme que o service account `fit-82` existe
+3. **Service Accounts** → selecione `fit-82` → **Keys** → **Add key** → **Create new key** → **JSON**
+4. Salve o arquivo baixado como `D:/ia/Projeto Ahara/secrets/gsc-key.json`
+   (a pasta `secrets/` já está no `.gitignore`)
+5. **APIs & Services** → habilite:
+   - [Search Console API](https://console.cloud.google.com/apis/library/searchconsole.googleapis.com)
+   - [Indexing API](https://console.cloud.google.com/apis/library/indexing.googleapis.com) (opcional)
+6. **Google Search Console** → https://search.google.com/search-console
+7. Adicione a propriedade `https://aharabr.com.br` (DNS TXT verifica mais rápido com Cloudflare)
+8. Na propriedade → **Configurações** → **Usuarios e permissoes** → **Adicionar usuario**
+9. Email: `fit-82@fits-493115.iam.gserviceaccount.com` — permissao: **Proprietario**
+
 ### Uso
 
 ```bash
-# Submete todas as 8 rotas
-npm run indexnow
-
-# Submete rotas específicas (1 ou mais)
-node scripts/indexnow.mjs /produtos/ /contato/
+npm run gsc:submit                    # submete sitemap
+npm run gsc:list                      # lista sitemaps registrados
+npm run gsc:inspect -- /produtos/     # status de indexação de uma URL
 ```
 
-### Quando disparar
+---
 
-- Depois do primeiro deploy na produção
-- Quando publicar um novo post no blog
-- Quando atualizar um preço ou informação relevante de produto
-- Em CI/CD: pós-deploy hook no Vercel (build command ou webhook)
+## 3. Google Indexing API (fora de spec)
+
+⚠ **Oficialmente aceita só `JobPosting` e `BroadcastEvent`.**
+Usar para batata chips é fora da policy do Google e pode gerar:
+- Quota reduzida (cota diária de ~200 req, mas sujeita a corte)
+- Warning no console
+- Em casos extremos, bloqueio da conta de servico
+
+Se quiser fazer mesmo assim (várias pessoas usam, e muita gente não tem problema):
+
+```bash
+npm run google:index                       # push de todas as rotas (URL_UPDATED)
+node scripts/google-indexing-api.mjs /produtos/
+node scripts/google-indexing-api.mjs --delete /rota-removida/
+```
+
+Pré-requisitos: mesma conta de servico do GSC, mais Indexing API habilitada.
 
 ---
 
-## Google
+## 4. Quando disparar
 
-### Opção 1 (recomendada): submeter sitemap no Search Console
-
-1. Acesse https://search.google.com/search-console
-2. Adicione a propriedade `https://aharabr.com.br`
-3. Verifique (via DNS TXT ou meta tag — o DNS funciona melhor com Cloudflare)
-4. Em "Sitemaps", adicione: `sitemap-index.xml`
-5. Pronto. O Google rastreia e indexa sozinho, respeitando suas prioridades.
-
-### Opção 2: Google Indexing API
-
-⚠ **Oficialmente só é aceito para `JobPosting` e `BroadcastEvent`.**
-Usar para batata chips é fora de spec e pode gerar warning/ban da API.
-Se quiser fazer mesmo assim, crie um service account no Google Cloud com
-o papel "Owner" no Search Console e use `googleapis` com `indexing` API.
-Não está incluído aqui por padrão.
+- **Primeiro deploy**: rode `npm run indexnow` e `npm run gsc:submit` uma vez
+- **Blog novo / atualização importante**: rode `npm run indexnow` com as URLs específicas
+- **Em CI/CD** (Vercel post-deploy hook): idealmente rode `indexnow` automaticamente
+- **Google**: submeta sitemap 1x só; depois o Google recrawleja sozinho seguindo prioridades
 
 ---
 
-## IndexNow em mais endpoints
+## 5. Arquivo de credencial
 
-`api.indexnow.org` já repassa para todos os motores IndexNow-compliant.
-Não é necessário enviar separadamente para Bing/Yandex/etc.
+A pasta `secrets/` e padrões `*.key.json` / `gsc-key.json` estão no `.gitignore`.
+**NUNCA** commite a chave JSON do service account.

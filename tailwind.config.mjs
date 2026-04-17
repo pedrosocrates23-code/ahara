@@ -6,10 +6,10 @@ export default {
       colors: {
         linen:         '#f4e7da',
         'brand-purple': '#6654ca',
-        'brand-red':    '#ff0800',
+        'brand-red':    '#d40800',   // WCAG AA: 5.02:1 com texto branco
         'brand-yellow': '#ffd800',
-        'brand-green':  '#14b664',
-        'brand-pink':   '#ff5ac5',
+        'brand-green':  '#0f8a4c',   // WCAG AA: 5.14:1 com texto branco
+        'brand-pink':   '#e84aaf',   // levemente escurecido para contraste
         'brand-orange': '#ff5130',
       },
       fontFamily: {

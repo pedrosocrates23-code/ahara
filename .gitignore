@@ -50,3 +50,9 @@ yarn-error.log*
 # Configurações locais do Claude Code / MCP
 .claude/
 .mcp.json
+
+# Credenciais Google (service account JSON) - NUNCA COMMITAR
+/secrets/
+*.key.json
+gsc-key.json
+google-service-account*.json
