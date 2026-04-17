@@ -51,7 +51,7 @@ const related = allPosts.filter((p) => p.id !== post.id).slice(0, 3);
 ---
 
 <Layout
-  title={post.data.h1}
+  title={post.data.seo_title || post.data.h1}
   description={post.data.meta_description}
   extraSchemas={[breadcrumbSchema, articleSchema]}
 >

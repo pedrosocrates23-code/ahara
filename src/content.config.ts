@@ -6,6 +6,7 @@ const blog = defineCollection({
   loader: glob({ pattern: '**/*.mdx', base: './src/content/blog' }),
   schema: z.object({
     h1: z.string(),
+    seo_title: z.string().optional(), // <title> curto (<=55 chars); fallback: h1
     keyword: z.string(),
     meta_description: z.string(),
     sumario_html: z.string().optional().default(''),

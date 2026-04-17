@@ -22,8 +22,8 @@ const aboutSchema = {
 ---
 
 <Layout
-  title="Sobre a Ahara - Produção Artesanal Local em Brasília"
-  description="Conheça a história da Ahara, produtora local de batatas chips artesanais no DF. Processo artesanal, matéria-prima selecionada e compromisso com a qualidade."
+  title="Sobre a Ahara - Produção Artesanal no DF"
+  description="Conheça a Ahara, produtora local de batatas chips artesanais em Brasília/DF. Processo artesanal, matéria-prima selecionada, qualidade consistente."
   extraSchemas={[breadcrumbSchema, aboutSchema]}
 >
 
@@ -83,8 +83,7 @@ const aboutSchema = {
         />
         <img
           src={icons.shine}
-          alt=""
-          aria-hidden="true"
+          alt="Ilustração decorativa de batata chips"
           class="absolute -top-8 -right-8 w-24 h-24 md:w-32 md:h-32 object-contain rotate-12 pointer-events-none"
         />
       </div>
@@ -127,7 +126,7 @@ const aboutSchema = {
         ].map(item => (
           <div class="card-brutal bg-white p-6 flex flex-col gap-4 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brutal-lg transition-all">
             <div class={`w-20 h-20 border-2 border-black flex items-center justify-center rounded-full ${item.color} shadow-brutal`}>
-              <img src={item.icon} alt="" aria-hidden="true" class="w-14 h-14 object-contain" style="border-radius: 0;" />
+              <img src={item.icon} alt={`Ícone ilustrativo de ${item.title}`} class="w-14 h-14 object-contain" style="border-radius: 0;" />
             </div>
             <h3 class="font-display font-bold text-xl">{item.title}</h3>
             <p class="font-body text-sm text-black/70 leading-relaxed">{item.desc}</p>
@@ -162,8 +161,7 @@ const aboutSchema = {
         </div>
         <img
           src={icons.delivery}
-          alt=""
-          aria-hidden="true"
+          alt="Ilustração de entrega local de batata chips"
           class="hidden md:block w-28 h-28 object-contain flex-shrink-0"
         />
       </div>
