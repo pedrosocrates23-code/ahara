@@ -14,11 +14,39 @@ const faqs = [
   { q: 'Quais sabores têm?', a: 'Atualmente trabalhamos apenas com o sabor tradicional, em embalagens de 50g, 150g e 500g.' },
   { q: 'Quais tipos de batata usam?', a: 'Utilizamos batatas Marquise e Atlantic, as melhores variedades para fritura, conforme disponibilidade de safra.' },
 ];
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: `${site.url}/` },
+    { '@type': 'ListItem', position: 2, name: 'Contato', item: `${site.url}/contato/` },
+  ],
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+const contactSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: 'Contato - Ahara Batatas Chips',
+  url: `${site.url}/contato/`,
+  about: { '@id': `${site.url}/#organization` },
+};
 ---
 
 <Layout
   title="Contato - Fale com a Ahara"
   description="Entre em contato com a Ahara para pedidos, orçamentos e dúvidas. Atendimento via WhatsApp. Batatas chips artesanais em Brasília/DF."
+  extraSchemas={[breadcrumbSchema, faqSchema, contactSchema]}
 >
 
   <!-- ━━ HERO ━━ -->

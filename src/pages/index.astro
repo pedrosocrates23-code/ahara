@@ -6,12 +6,72 @@ import AudienceCard from '@/components/AudienceCard.astro';
 import { site, img } from '@/data/site';
 
 const waHero = site.whatsapp.link('Olá, gostaria de fazer um pedido de batatas chips Ahara');
+
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': `${site.url}/#brand`,
+  name: site.legalName,
+  alternateName: site.name,
+  url: site.url,
+  logo: `${site.url}/logo.png`,
+  foundingLocation: {
+    '@type': 'Place',
+    name: 'Brasília, DF, Brasil',
+  },
+  knowsAbout: ['Batatas chips artesanais', 'Food service', 'Distribuição B2B'],
+};
+
+const productsListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Embalagens de batatas chips artesanais Ahara',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      item: {
+        '@type': 'Product',
+        name: 'Batatas Chips Artesanais Ahara 50g',
+        description: 'Porção individual. Ideal para revendedores autônomos, cantinas e conveniências.',
+        brand: { '@type': 'Brand', name: site.name },
+        category: 'Snacks / Batatas chips',
+        url: `${site.url}/produtos/`,
+      },
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      item: {
+        '@type': 'Product',
+        name: 'Batatas Chips Artesanais Ahara 150g',
+        description: 'Porção média. Perfeito para mercados, empórios, bares e restaurantes.',
+        brand: { '@type': 'Brand', name: site.name },
+        category: 'Snacks / Batatas chips',
+        url: `${site.url}/produtos/`,
+      },
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      item: {
+        '@type': 'Product',
+        name: 'Batatas Chips Artesanais Ahara 500g',
+        description: 'Food service. Para buffets, eventos e alto volume.',
+        brand: { '@type': 'Brand', name: site.name },
+        category: 'Snacks / Batatas chips',
+        url: `${site.url}/produtos/`,
+      },
+    },
+  ],
+};
 ---
 
 <Layout
   title="Batatas Chips Artesanais - Produção Local em Brasília"
   description="Distribuidora B2B de batatas chips artesanais produzidas em Brasília/DF. Atendemos revendedores, comércios, eventos e food service. Pedido mínimo 5kg."
   preloadImage={img.heroChips}
+  extraSchemas={[organizationSchema, productsListSchema]}
 >
 
   <!-- ━━ HERO ━━ -->

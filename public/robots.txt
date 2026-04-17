@@ -1,0 +1,17 @@
+# Ahara Batatas Chips - aharabr.com.br
+# https://aharabr.com.br/robots.txt
+
+User-agent: *
+Allow: /
+Disallow: /dist/
+Disallow: /node_modules/
+
+# Bots agressivos de AI (descomentar caso decida bloquear)
+# User-agent: GPTBot
+# Disallow: /
+# User-agent: ClaudeBot
+# Disallow: /
+# User-agent: CCBot
+# Disallow: /
+
+Sitemap: https://aharabr.com.br/sitemap-index.xml

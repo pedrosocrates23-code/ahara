@@ -8,7 +8,12 @@ interface Props {
   title: string;
   description?: string;
   ogImage?: string;
-  preloadImage?: string; // caminho da imagem LCP a pré-carregar (ex.: /images/hero-chips.webp)
+  preloadImage?: string;
+  /**
+   * Schemas adicionais para a página (Product, FAQPage, BreadcrumbList, etc).
+   * São injetados como JSON-LD separados.
+   */
+  extraSchemas?: Record<string, unknown>[];
 }
 
 const {
@@ -16,9 +21,74 @@ const {
   description = 'Distribuidora B2B de batatas chips artesanais produzidas localmente em Brasília/DF. Atendemos revendedores, comércios, eventos e food service.',
   ogImage = '/logo.png',
   preloadImage,
+  extraSchemas = [],
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const fullTitle = `${title} | Ahara Batatas Chips`;
+const absoluteOgImage = new URL(ogImage, Astro.site).toString();
+
+// Schema LocalBusiness / FoodEstablishment principal (presente em todas as páginas)
+const localBusinessSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FoodEstablishment',
+  '@id': `${site.url}/#organization`,
+  name: site.legalName,
+  alternateName: site.name,
+  description: 'Distribuidora B2B de batatas chips artesanais em Brasília/DF. Produção local, atendimento para revendedores, comércios, eventos e food service.',
+  url: site.url,
+  logo: new URL('/logo.png', site.url).toString(),
+  image: new URL('/logo.png', site.url).toString(),
+  telephone: `+${site.whatsapp.number}`,
+  priceRange: 'R$ 48 a R$ 55 por kg',
+  servesCuisine: 'Snacks artesanais',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Brasília',
+    addressRegion: 'DF',
+    addressCountry: 'BR',
+  },
+  areaServed: site.regions.map((region) => ({
+    '@type': 'City',
+    name: region,
+  })),
+  openingHoursSpecification: [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      opens: '08:00',
+      closes: '18:00',
+    },
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: 'Saturday',
+      opens: '08:00',
+      closes: '12:00',
+    },
+  ],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    telephone: `+${site.whatsapp.number}`,
+    contactType: 'sales',
+    areaServed: 'BR',
+    availableLanguage: 'Portuguese',
+  },
+  sameAs: [],
+};
+
+// WebSite schema (ajuda o Google a entender a navegação e sitelinks)
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${site.url}/#website`,
+  url: site.url,
+  name: site.name,
+  description: 'Batatas chips artesanais em Brasília/DF',
+  inLanguage: 'pt-BR',
+  publisher: {
+    '@id': `${site.url}/#organization`,
+  },
+};
 ---
 <!doctype html>
 <html lang="pt-BR">
@@ -28,33 +98,36 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <link rel="icon" type="image/png" href="/logo.png" />
     <link rel="canonical" href={canonicalURL} />
 
-    <title>{title} | Ahara Batatas Chips</title>
+    <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="theme-color" content="#6654ca" />
+    <meta name="author" content={site.legalName} />
+    <meta name="geo.region" content="BR-DF" />
+    <meta name="geo.placename" content="Brasília" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalURL} />
-    <meta property="og:title" content={`${title} | Ahara Batatas Chips`} />
+    <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={ogImage} />
+    <meta property="og:image" content={absoluteOgImage} />
+    <meta property="og:image:alt" content={`${site.name} - ${title}`} />
     <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content={site.legalName} />
 
-    <!-- Schema.org LocalBusiness -->
-    <script type="application/ld+json" set:html={JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'FoodEstablishment',
-      name: site.legalName,
-      description: 'Distribuidora B2B de batatas chips artesanais em Brasília/DF',
-      address: {
-        '@type': 'PostalAddress',
-        addressLocality: 'Brasília',
-        addressRegion: 'DF',
-        addressCountry: 'BR',
-      },
-      telephone: `+${site.whatsapp.number}`,
-      url: site.url,
-      areaServed: site.regions,
-    })} />
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={absoluteOgImage} />
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+    {extraSchemas.map((schema) => (
+      <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    ))}
 
     <!-- Preconnect + Preload de recursos críticos -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />

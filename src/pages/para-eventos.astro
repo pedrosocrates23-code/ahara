@@ -5,11 +5,21 @@ import PriceTable from '@/components/PriceTable.astro';
 import { site, img, icons } from '@/data/site';
 
 const waEventos = site.whatsapp.link('Olá, preciso de um orçamento de batatas chips para evento/food service');
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: `${site.url}/` },
+    { '@type': 'ListItem', position: 2, name: 'Para Eventos', item: `${site.url}/para-eventos/` },
+  ],
+};
 ---
 
 <Layout
   title="Para Eventos e Food Service - Batatas Artesanais com Agilidade"
   description="Buffets, casas de festa, bares e restaurantes. Fornecedor local em Brasília/DF para eventos e food service. Crocância garantida, agilidade de produtor local."
+  extraSchemas={[breadcrumbSchema]}
 >
 
   <!-- ━━ HERO ━━ -->

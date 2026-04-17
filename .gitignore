@@ -46,3 +46,7 @@ yarn-error.log*
 
 # Playwright MCP runtime
 .playwright-mcp/
+
+# Configurações locais do Claude Code / MCP
+.claude/
+.mcp.json

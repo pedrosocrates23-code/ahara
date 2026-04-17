@@ -6,11 +6,21 @@ import FeatureCard from '@/components/FeatureCard.astro';
 import { site } from '@/data/site';
 
 const waCom = site.whatsapp.link('Olá, quero oferecer batatas Ahara no meu comércio');
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: `${site.url}/` },
+    { '@type': 'ListItem', position: 2, name: 'Para Comércios', item: `${site.url}/para-comercios/` },
+  ],
+};
 ---
 
 <Layout
   title="Para Comércios - Batatas Artesanais para Mercados e Empórios"
   description="Mercados, empórios, conveniências e quiosques. Ofereça batatas chips artesanais Ahara com produto de qualidade e reposição rápida. Fornecedor local em Brasília/DF."
+  extraSchemas={[breadcrumbSchema]}
 >
 
   <!-- ━━ HERO ━━ -->
