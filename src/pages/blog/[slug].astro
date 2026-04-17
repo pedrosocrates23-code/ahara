@@ -1,32 +1,22 @@
 ---
+import { getCollection, render } from 'astro:content';
 import Layout from '@/layouts/Layout.astro';
 import CTAButton from '@/components/CTAButton.astro';
 import { site } from '@/data/site';
-import posts from '@/content/blog/posts.json';
 
 export async function getStaticPaths() {
-  const data = (await import('@/content/blog/posts.json')).default;
-  return data.map((post: any) => ({
-    params: { slug: post.slug },
-    props: { post },
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post, allPosts: posts },
   }));
 }
 
-interface Post {
-  slug: string;
-  h1: string;
-  keyword: string;
-  meta_description: string;
-  sumario_html: string;
-  texto_html: string;
-  palavras_totais: number;
-  pub_date: string;
-}
+const { post, allPosts } = Astro.props;
+const { Content } = await render(post);
 
-const { post } = Astro.props as { post: Post };
-
-const url = `${site.url}/blog/${post.slug}/`;
-const waPost = site.whatsapp.link(`Olá, vim do artigo "${post.h1}" e gostaria de saber mais`);
+const url = `${site.url}/blog/${post.id}/`;
+const waPost = site.whatsapp.link(`Olá, vim do artigo "${post.data.h1}" e gostaria de saber mais`);
 
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
@@ -34,7 +24,7 @@ const breadcrumbSchema = {
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Início', item: `${site.url}/` },
     { '@type': 'ListItem', position: 2, name: 'Blog', item: `${site.url}/blog/` },
-    { '@type': 'ListItem', position: 3, name: post.h1, item: url },
+    { '@type': 'ListItem', position: 3, name: post.data.h1, item: url },
   ],
 };
 
@@ -42,14 +32,14 @@ const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
   '@id': `${url}#article`,
-  headline: post.h1,
-  description: post.meta_description,
+  headline: post.data.h1,
+  description: post.data.meta_description,
   url,
   inLanguage: 'pt-BR',
-  datePublished: post.pub_date,
-  dateModified: post.pub_date,
-  wordCount: post.palavras_totais,
-  keywords: post.keyword,
+  datePublished: post.data.pub_date.toISOString(),
+  dateModified: post.data.pub_date.toISOString(),
+  wordCount: post.data.palavras_totais,
+  keywords: post.data.keyword,
   articleSection: 'Batatas chips artesanais',
   author: { '@type': 'Organization', name: site.legalName, url: site.url },
   publisher: { '@id': `${site.url}/#organization` },
@@ -57,15 +47,12 @@ const articleSchema = {
   image: `${site.url}/images/hero-chips.webp`,
 };
 
-// Pega os outros 3 posts mais proximos para "leia tambem"
-const related = posts
-  .filter((p: any) => p.slug !== post.slug)
-  .slice(0, 3);
+const related = allPosts.filter((p) => p.id !== post.id).slice(0, 3);
 ---
 
 <Layout
-  title={post.h1}
-  description={post.meta_description}
+  title={post.data.h1}
+  description={post.data.meta_description}
   extraSchemas={[breadcrumbSchema, articleSchema]}
 >
 
@@ -82,21 +69,21 @@ const related = posts
         BLOG AHARA
       </span>
       <h1 class="font-display font-bold text-3xl md:text-5xl text-white leading-tight mb-4">
-        {post.h1}
+        {post.data.h1}
       </h1>
       <p class="font-body text-sm text-white/90">
-        Leitura de cerca de {Math.ceil(post.palavras_totais / 220)} min · {post.palavras_totais} palavras
+        Leitura de cerca de {Math.ceil(post.data.palavras_totais / 220)} min · {post.data.palavras_totais} palavras
       </p>
     </div>
   </section>
 
   <!-- ━━ SUMÁRIO ━━ -->
-  {post.sumario_html && (
+  {post.data.sumario_html && (
     <section class="bg-linen py-8 md:py-10 border-b-[3px] border-black">
       <div class="max-w-3xl mx-auto px-4">
         <div class="card-brutal bg-brand-yellow p-6 md:p-8">
           <div class="text-xs font-impact mb-2 tracking-wider">TL;DR</div>
-          <div class="font-body text-base md:text-lg leading-relaxed prose-content" set:html={post.sumario_html}></div>
+          <div class="font-body text-base md:text-lg leading-relaxed prose-content" set:html={post.data.sumario_html}></div>
         </div>
       </div>
     </section>
@@ -105,7 +92,9 @@ const related = posts
   <!-- ━━ CONTEÚDO ━━ -->
   <article class="bg-linen py-12 md:py-16 border-b-[3px] border-black">
     <div class="max-w-3xl mx-auto px-4">
-      <div class="prose-content font-body text-black leading-relaxed" set:html={post.texto_html}></div>
+      <div class="prose-content font-body text-black leading-relaxed">
+        <Content />
+      </div>
     </div>
   </article>
 
@@ -128,11 +117,11 @@ const related = posts
     <div class="max-w-5xl mx-auto px-4">
       <h2 class="font-display font-bold text-2xl md:text-3xl text-black mb-6">Leia também</h2>
       <div class="grid md:grid-cols-3 gap-5">
-        {related.map((p: any) => (
-          <a href={`/blog/${p.slug}/`} class="card-brutal bg-white p-5 flex flex-col gap-3 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brutal-lg transition-all">
+        {related.map((p) => (
+          <a href={`/blog/${p.id}/`} class="card-brutal bg-white p-5 flex flex-col gap-3 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brutal-lg transition-all">
             <span class="inline-block bg-brand-yellow border-2 border-black px-2 py-0.5 text-xs font-impact w-fit rounded-full">ARTIGO</span>
-            <h3 class="font-display font-bold text-lg leading-tight">{p.h1}</h3>
-            <p class="font-body text-sm text-black/70 leading-snug line-clamp-3">{p.meta_description}</p>
+            <h3 class="font-display font-bold text-lg leading-tight">{p.data.h1}</h3>
+            <p class="font-body text-sm text-black/70 leading-snug line-clamp-3">{p.data.meta_description}</p>
             <span class="text-xs font-body text-brand-purple font-bold mt-auto">Ler artigo →</span>
           </a>
         ))}
@@ -143,7 +132,6 @@ const related = posts
 </Layout>
 
 <style is:global>
-  /* Estilos do conteudo do post */
   .prose-content h2 {
     font-family: 'Best Curry', 'Fredoka', sans-serif;
     font-weight: 700;

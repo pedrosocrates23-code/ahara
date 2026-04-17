@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
+import mdx from '@astrojs/mdx';
 import compress from 'astro-compress';
 
 export default defineConfig({
@@ -10,6 +11,7 @@ export default defineConfig({
   },
   integrations: [
     tailwind({ applyBaseStyles: false }),
+    mdx(),
     compress({
       CSS: false,
       HTML: true,

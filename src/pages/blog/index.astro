@@ -1,8 +1,11 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '@/layouts/Layout.astro';
 import CTAButton from '@/components/CTAButton.astro';
 import { site } from '@/data/site';
-import posts from '@/content/blog/posts.json';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pub_date.getTime() - a.data.pub_date.getTime());
 
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
@@ -20,17 +23,16 @@ const blogSchema = {
   url: `${site.url}/blog/`,
   publisher: { '@id': `${site.url}/#organization` },
   inLanguage: 'pt-BR',
-  blogPost: posts.map((p: any) => ({
+  blogPost: posts.map((p) => ({
     '@type': 'BlogPosting',
-    headline: p.h1,
-    url: `${site.url}/blog/${p.slug}/`,
-    description: p.meta_description,
-    wordCount: p.palavras_totais,
-    datePublished: p.pub_date,
+    headline: p.data.h1,
+    url: `${site.url}/blog/${p.id}/`,
+    description: p.data.meta_description,
+    wordCount: p.data.palavras_totais,
+    datePublished: p.data.pub_date.toISOString(),
   })),
 };
 
-// cores ciclicas para os cards
 const colors = ['bg-brand-red', 'bg-brand-purple', 'bg-brand-green', 'bg-brand-yellow', 'bg-brand-orange', 'bg-brand-pink'];
 ---
 
@@ -65,25 +67,25 @@ const colors = ['bg-brand-red', 'bg-brand-purple', 'bg-brand-green', 'bg-brand-y
       </h2>
 
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {posts.map((p: any, i: number) => {
+        {posts.map((p, i) => {
           const color = colors[i % colors.length];
           const textIsDark = color === 'bg-brand-yellow';
           return (
             <a
-              href={`/blog/${p.slug}/`}
+              href={`/blog/${p.id}/`}
               class={`border-[3px] border-black shadow-brutal rounded-3xl p-6 flex flex-col gap-3 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brutal-lg transition-all ${color}`}
             >
               <span class={`inline-block border-2 border-black px-3 py-0.5 text-xs font-impact w-fit rounded-full ${textIsDark ? 'bg-black text-linen' : 'bg-white text-black'}`}>
                 #{String(i + 1).padStart(2, '0')}
               </span>
               <h3 class={`font-display font-bold text-xl leading-tight ${textIsDark ? 'text-black' : 'text-white'}`}>
-                {p.h1}
+                {p.data.h1}
               </h3>
               <p class={`font-body text-sm leading-snug flex-1 ${textIsDark ? 'text-black/80' : 'text-white/95'}`}>
-                {p.meta_description}
+                {p.data.meta_description}
               </p>
               <span class={`text-xs font-body font-bold mt-2 ${textIsDark ? 'text-black' : 'text-white'}`}>
-                Ler artigo · {Math.ceil(p.palavras_totais / 220)} min →
+                Ler artigo · {Math.ceil(p.data.palavras_totais / 220)} min →
               </span>
             </a>
           );

@@ -17,8 +17,8 @@ const HOST = 'aharabr.com.br';
 const KEY = '69aabca2f983481c9da75af8c25d2160';
 const KEY_LOCATION = `https://${HOST}/${KEY}.txt`;
 
-// Rotas fixas + posts do blog (descoberto via posts.json)
-import { readFile } from 'node:fs/promises';
+// Rotas fixas + posts do blog (scan direto de src/content/blog/*.mdx)
+import { readdir } from 'node:fs/promises';
 
 const STATIC_ROUTES = [
   '/',
@@ -33,9 +33,10 @@ const STATIC_ROUTES = [
 
 async function loadBlogRoutes() {
   try {
-    const raw = await readFile('./src/content/blog/posts.json', 'utf-8');
-    const posts = JSON.parse(raw);
-    return posts.map((p) => `/blog/${p.slug}/`);
+    const files = await readdir('./src/content/blog');
+    return files
+      .filter((f) => f.endsWith('.mdx'))
+      .map((f) => `/blog/${f.replace(/\.mdx$/, '')}/`);
   } catch {
     return [];
   }

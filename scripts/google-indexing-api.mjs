@@ -39,9 +39,10 @@ const STATIC_ROUTES = [
 
 async function loadBlogRoutes() {
   try {
-    const raw = await fsp.readFile('./src/content/blog/posts.json', 'utf-8');
-    const posts = JSON.parse(raw);
-    return posts.map((p) => `/blog/${p.slug}/`);
+    const files = await fsp.readdir('./src/content/blog');
+    return files
+      .filter((f) => f.endsWith('.mdx'))
+      .map((f) => `/blog/${f.replace(/\.mdx$/, '')}/`);
   } catch {
     return [];
   }
