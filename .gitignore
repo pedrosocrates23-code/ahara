@@ -56,3 +56,8 @@ yarn-error.log*
 *.key.json
 gsc-key.json
 google-service-account*.json
+
+# Artefatos temporarios do sharp
+*.webp.tmp
+*.png.tmp
+*.jpg.tmp
