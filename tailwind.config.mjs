@@ -6,9 +6,9 @@ export default {
       colors: {
         linen:         '#f4e7da',
         'brand-purple': '#6654ca',
-        'brand-red':    '#d40800',   // WCAG AA: 5.02:1 com texto branco
+        'brand-red':    '#d40800',   // WCAG AA: 5.45:1 com texto branco
         'brand-yellow': '#ffd800',
-        'brand-green':  '#0f8a4c',   // WCAG AA: 5.14:1 com texto branco
+        'brand-green':  '#0a6e3c',   // WCAG AA: 5.60:1 com texto branco (margem p/ opacity)
         'brand-pink':   '#e84aaf',   // levemente escurecido para contraste
         'brand-orange': '#ff5130',
       },

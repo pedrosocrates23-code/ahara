@@ -6,7 +6,7 @@ export default defineConfig({
   site: 'https://aharabr.com.br',
   compressHTML: true,
   build: {
-    inlineStylesheets: 'auto',
+    inlineStylesheets: 'always',
   },
   integrations: [
     tailwind({ applyBaseStyles: false }),
