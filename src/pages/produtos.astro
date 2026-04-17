@@ -30,11 +30,6 @@ const productSchema = {
     },
   },
   image: new URL('/images/hero-chips.webp', site.url).toString(),
-  hasVariant: [
-    { '@type': 'Product', name: 'Ahara 50g', weight: { '@type': 'QuantitativeValue', value: 50, unitCode: 'GRM' } },
-    { '@type': 'Product', name: 'Ahara 150g', weight: { '@type': 'QuantitativeValue', value: 150, unitCode: 'GRM' } },
-    { '@type': 'Product', name: 'Ahara 500g', weight: { '@type': 'QuantitativeValue', value: 500, unitCode: 'GRM' } },
-  ],
   offers: {
     '@type': 'AggregateOffer',
     priceCurrency: 'BRL',
