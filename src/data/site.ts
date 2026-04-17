@@ -1,0 +1,46 @@
+// Configurações centralizadas do site
+// Troque estes valores quando os definitivos estiverem disponíveis.
+
+export const site = {
+  name: 'Ahara',
+  legalName: 'Ahara Batatas Chips',
+  url: 'https://aharabr.com.br',
+  location: 'Brasília/DF',
+
+  whatsapp: {
+    number: '553198985678',             // +55 31 99898-5678 (provisório)
+    display: '(31) 99898-5678',
+    url: 'https://wa.me/553198985678',
+    link: (message: string) =>
+      `https://wa.me/553198985678?text=${encodeURIComponent(message)}`,
+  },
+
+  hours: {
+    weekdays: 'Seg a Sex: 8h às 18h',
+    saturday: 'Sáb: 8h às 12h',
+  },
+
+  regions: ['Riacho Fundo 1', 'Núcleo Bandeirante', 'Taguatinga', 'Asa Sul', 'Sudoeste'],
+
+  pricing: {
+    minOrder: 5,
+    baseKg: 55,
+    deliveryMin: 15,
+  },
+} as const;
+
+// Fotos reais do produto (batata chips). Só mantemos as 2 fotos aprovadas.
+export const img = {
+  heroChips:    '/images/hero-chips.webp',   // close-up dourado
+  chipsBowl:    '/images/chips-bowl-2.webp', // chips sobre fundo claro
+} as const;
+
+// Ícones decorativos (batata-estilizados).
+export const icons = {
+  chip1:    '/images/icons/icon-1.png',
+  chip2:    '/images/icons/icon-2.png',
+  chip3:    '/images/icons/icon-3.png',
+  chip4:    '/images/icons/icon-4.png',
+  shine:    '/images/icons/icon-shine.png',
+  delivery: '/images/icons/icon-delivery.png',
+} as const;

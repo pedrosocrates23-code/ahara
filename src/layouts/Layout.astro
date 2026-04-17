@@ -1,0 +1,87 @@
+---
+import Nav from '@/components/Nav.astro';
+import Footer from '@/components/Footer.astro';
+import { site } from '@/data/site';
+import '@/styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  preloadImage?: string; // caminho da imagem LCP a pré-carregar (ex.: /images/hero-chips.webp)
+}
+
+const {
+  title,
+  description = 'Distribuidora B2B de batatas chips artesanais produzidas localmente em Brasília/DF. Atendemos revendedores, comércios, eventos e food service.',
+  ogImage = '/logo.png',
+  preloadImage,
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="canonical" href={canonicalURL} />
+
+    <title>{title} | Ahara Batatas Chips</title>
+    <meta name="description" content={description} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={`${title} | Ahara Batatas Chips`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="pt_BR" />
+
+    <!-- Schema.org LocalBusiness -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'FoodEstablishment',
+      name: site.legalName,
+      description: 'Distribuidora B2B de batatas chips artesanais em Brasília/DF',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Brasília',
+        addressRegion: 'DF',
+        addressCountry: 'BR',
+      },
+      telephone: `+${site.whatsapp.number}`,
+      url: site.url,
+      areaServed: site.regions,
+    })} />
+
+    <!-- Preconnect + Preload de recursos críticos -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    {preloadImage && (
+      <link rel="preload" as="image" href={preloadImage} fetchpriority="high" />
+    )}
+
+    <!-- Google Fonts (substitutos até as fontes oficiais chegarem) -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&family=Dancing+Script:wght@700&family=Anton&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&family=Dancing+Script:wght@700&family=Anton&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
+  </head>
+  <body>
+    <Nav />
+    <main id="main-content">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

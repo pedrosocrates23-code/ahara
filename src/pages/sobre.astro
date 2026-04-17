@@ -1,0 +1,189 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import CTAButton from '@/components/CTAButton.astro';
+import { img, icons } from '@/data/site';
+---
+
+<Layout
+  title="Sobre a Ahara - Produção Artesanal Local em Brasília"
+  description="Conheça a história da Ahara, produtora local de batatas chips artesanais no DF. Processo artesanal, matéria-prima selecionada e compromisso com a qualidade."
+>
+
+  <!-- ━━ HERO ━━ -->
+  <section class="relative bg-brand-purple border-b-[3px] border-black overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+      <div class="absolute top-0 right-0 w-96 h-96 bg-brand-pink/20 blob-organic -translate-y-1/2 translate-x-1/3"></div>
+      <div class="absolute bottom-0 left-1/4 w-64 h-64 bg-brand-yellow/15 blob-organic-2 translate-y-1/2"></div>
+    </div>
+    <div class="relative max-w-6xl mx-auto px-4 py-20 md:py-28">
+      <div class="max-w-2xl">
+        <span class="inline-block bg-brand-yellow border-2 border-black px-3 py-1 text-xs font-impact shadow-brutal mb-6 rounded-full">
+          QUEM SOMOS
+        </span>
+        <h1 class="font-display font-bold text-5xl md:text-6xl text-white mb-6 leading-[1.05]">
+          Produção Artesanal<br/>Local em <span class="text-brand-yellow">Brasília</span>
+        </h1>
+        <p class="font-body text-xl text-white/80 leading-relaxed">
+          A Ahara é uma produtora local de batatas chips artesanais no Distrito Federal.
+          Nascemos da vontade de oferecer um produto de qualidade real com preço acessível
+          e atendimento próximo.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ ORIGEM ━━ -->
+  <section class="bg-linen py-20 md:py-24 border-b-[3px] border-black">
+    <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
+      <div>
+        <h2 class="font-display font-bold text-4xl md:text-5xl text-black mb-6">
+          Como surgiu a <span class="text-brand-purple">Ahara?</span>
+        </h2>
+        <div class="space-y-4 font-body text-lg text-black/70 leading-relaxed">
+          <p>
+            A Ahara surgiu da experiência prática no mercado de alimentos e da percepção de
+            uma oportunidade: oferecer batatas artesanais de qualidade para o mercado B2B
+            de Brasília, com produção local que garante frescor e agilidade.
+          </p>
+          <p>
+            Começamos pequenos, testando receitas e aperfeiçoando o processo até encontrar
+            o equilíbrio certo entre sabor, crocância e custo. Hoje atendemos revendedores,
+            comércios, restaurantes e eventos no DF.
+          </p>
+        </div>
+      </div>
+
+      <div class="relative">
+        <img
+          src={img.chipsBowl}
+          alt="Batatas chips artesanais Ahara"
+          width="800"
+          height="600"
+          loading="lazy"
+          decoding="async"
+          class="border-[3px] border-black shadow-brutal-lg w-full aspect-[4/3] object-cover rounded-3xl"
+        />
+        <img
+          src={icons.shine}
+          alt=""
+          aria-hidden="true"
+          class="absolute -top-8 -right-8 w-24 h-24 md:w-32 md:h-32 object-contain rotate-12 pointer-events-none"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ PROCESSO ━━ -->
+  <section class="bg-black border-b-[3px] border-black py-20 md:py-24 relative overflow-hidden">
+    <div class="absolute top-1/4 left-0 w-72 h-72 bg-brand-purple/20 blob-organic-3 -translate-x-1/3 pointer-events-none" aria-hidden="true"></div>
+    <div class="relative max-w-6xl mx-auto px-4">
+      <div class="mb-12">
+        <h2 class="font-display font-bold text-4xl md:text-5xl text-linen mb-3">
+          Como produzimos nossas<br/><span class="text-brand-yellow">batatas artesanais?</span>
+        </h2>
+        <p class="font-body text-lg text-linen/60 max-w-xl">
+          Nosso diferencial começa na escolha da matéria-prima e se estende por todo o processo.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-5">
+        {[
+          {
+            icon: icons.chip1,
+            title: 'Batatas Selecionadas',
+            desc: 'Trabalhamos exclusivamente com batatas Marquise e Atlantic. As melhores variedades para fritura: textura ideal, baixo teor de açúcar e crocância superior.',
+            color: 'bg-brand-green',
+          },
+          {
+            icon: icons.chip2,
+            title: 'Processo Artesanal',
+            desc: 'Diferente da produção industrial, nosso processo mantém características artesanais. Corte, fritura e temperagem são controlados para garantir consistência em cada lote.',
+            color: 'bg-brand-purple',
+          },
+          {
+            icon: icons.chip3,
+            title: 'Controle de Qualidade',
+            desc: 'Cada lote passa por verificação antes de embalar. Checamos crocância, sabor, aparência e peso. O que não atende nosso padrão não sai da produção.',
+            color: 'bg-brand-red',
+          },
+        ].map(item => (
+          <div class="card-brutal bg-white p-6 flex flex-col gap-4 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brutal-lg transition-all">
+            <div class={`w-20 h-20 border-2 border-black flex items-center justify-center rounded-full ${item.color} shadow-brutal`}>
+              <img src={item.icon} alt="" aria-hidden="true" class="w-14 h-14 object-contain" style="border-radius: 0;" />
+            </div>
+            <h3 class="font-display font-bold text-xl">{item.title}</h3>
+            <p class="font-body text-sm text-black/70 leading-relaxed">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <img
+        src={img.heroChips}
+        alt="Batatas chips artesanais Ahara"
+        width="1200"
+        height="400"
+        loading="lazy"
+        decoding="async"
+        class="mt-10 border-[3px] border-linen/20 w-full h-48 md:h-56 object-cover rounded-3xl"
+      />
+    </div>
+  </section>
+
+  <!-- ━━ PRODUÇÃO LOCAL ━━ -->
+  <section class="bg-brand-yellow border-b-[3px] border-black py-20 md:py-24 relative overflow-hidden">
+    <div class="absolute bottom-0 right-0 w-80 h-80 bg-brand-red/15 blob-organic translate-y-1/3 translate-x-1/4 pointer-events-none" aria-hidden="true"></div>
+    <div class="relative max-w-6xl mx-auto px-4">
+      <div class="mb-10 flex items-end gap-6">
+        <div class="flex-1">
+          <h2 class="font-display font-bold text-4xl md:text-5xl text-black mb-3">
+            Por que produção local faz diferença?
+          </h2>
+          <p class="font-body text-lg text-black/70 max-w-xl">
+            Produzir em Brasília nos dá vantagens que repassamos diretamente para nossos clientes.
+          </p>
+        </div>
+        <img
+          src={icons.delivery}
+          alt=""
+          aria-hidden="true"
+          class="hidden md:block w-28 h-28 object-contain flex-shrink-0"
+        />
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          { icon: '🚀', title: 'Produto mais fresco', desc: 'Menos tempo entre produção e entrega. Qualidade preservada do início ao fim.' },
+          { icon: '⚡', title: 'Agilidade', desc: 'Conseguimos atender demandas urgentes que fornecedores de outros estados não podem.' },
+          { icon: '🤝', title: 'Atendimento próximo', desc: 'Conhecemos nossos clientes pelo nome. Suporte real, não um 0800.' },
+          { icon: '🔄', title: 'Reposição rápida', desc: 'Estoque local disponível. Acabou o produto? Reposição ágil, sem burocracia.' },
+        ].map(item => (
+          <div class="card-brutal bg-white p-5 flex flex-col gap-3">
+            <div class="text-3xl">{item.icon}</div>
+            <h3 class="font-display font-bold text-base">{item.title}</h3>
+            <p class="font-body text-sm text-black/70 leading-relaxed">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ MISSÃO ━━ -->
+  <section class="bg-linen py-16 md:py-20">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="border-[3px] border-black bg-white shadow-brutal-lg p-8 md:p-12 flex flex-col md:flex-row items-start md:items-center gap-8 rounded-3xl">
+        <div class="flex-1">
+          <span class="font-script text-brand-purple text-2xl block mb-3">Nossa missão</span>
+          <blockquote class="font-display font-bold text-2xl md:text-3xl text-black leading-tight">
+            "Ser o fornecedor de referência em batatas chips artesanais para o mercado B2B
+            do Distrito Federal, com produto de qualidade, preço justo e atendimento
+            que entende a realidade do seu negócio."
+          </blockquote>
+        </div>
+        <div class="flex-shrink-0">
+          <CTAButton href="/produtos/" label="Conheça nossos produtos" variant="purple" size="lg" icon="arrow" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+</Layout>

@@ -1,0 +1,225 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import CTAButton from '@/components/CTAButton.astro';
+import PriceTable from '@/components/PriceTable.astro';
+import { site, img, icons } from '@/data/site';
+
+const waEventos = site.whatsapp.link('Olá, preciso de um orçamento de batatas chips para evento/food service');
+---
+
+<Layout
+  title="Para Eventos e Food Service - Batatas Artesanais com Agilidade"
+  description="Buffets, casas de festa, bares e restaurantes. Fornecedor local em Brasília/DF para eventos e food service. Crocância garantida, agilidade de produtor local."
+>
+
+  <!-- ━━ HERO ━━ -->
+  <section class="bg-brand-pink border-b-[3px] border-black py-20 md:py-24 overflow-hidden relative">
+    <div class="absolute right-0 bottom-0 w-72 h-72 bg-brand-purple/20 blob-organic translate-y-1/3 translate-x-1/4 pointer-events-none" aria-hidden="true"></div>
+    <div class="relative max-w-6xl mx-auto px-4">
+      <span class="inline-block bg-brand-yellow border-2 border-black px-3 py-1 text-xs font-impact shadow-brutal mb-6 rounded-full">
+        EVENTOS & FOOD SERVICE
+      </span>
+      <h1 class="font-display font-bold text-5xl md:text-6xl text-white mb-5 leading-[1.05]">
+        Batatas Artesanais para<br/><span class="text-brand-yellow">Eventos</span> e<br/>Food Service
+      </h1>
+      <p class="font-body text-xl text-white/80 max-w-2xl leading-relaxed">
+        Buffets, casas de festa, bares e restaurantes. A agilidade de um produtor local
+        garante que você nunca ficará sem produto. Crocância do início ao fim do serviço.
+      </p>
+    </div>
+  </section>
+
+  <!-- ━━ POR QUE FORNECEDOR LOCAL ━━ -->
+  <section class="bg-linen border-b-[3px] border-black py-16 md:py-20">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="font-display font-bold text-3xl md:text-4xl text-black mb-10">
+        Por que escolher um fornecedor local?
+      </h2>
+
+      <div class="grid md:grid-cols-3 gap-5 mb-8">
+        {[
+          {
+            icon: '⚡',
+            title: 'Agilidade de produtor local',
+            desc: 'Precisou para amanhã? Conseguimos atender. Sem depender de transporte de outros estados, sem atrasos de logística.',
+            color: 'bg-brand-red',
+            badge: 'Produção local = Agilidade',
+          },
+          {
+            icon: '💥',
+            title: 'Crocância que dura',
+            desc: 'Nosso processo garante crocância mais duradoura. As batatas mantêm a textura por mais tempo no buffet ou como petisco.',
+            color: 'bg-brand-purple',
+            badge: null,
+          },
+          {
+            icon: '🌿',
+            title: 'Produto fresco',
+            desc: 'Produção local significa menos tempo entre fabricação e seu estabelecimento. Produto mais fresco, qualidade superior.',
+            color: 'bg-brand-green',
+            badge: null,
+          },
+        ].map(item => (
+          <div class="card-brutal bg-white p-6 flex flex-col gap-3">
+            <div class={`w-14 h-14 border-2 border-black flex items-center justify-center text-2xl rounded-full ${item.color} text-white shadow-brutal`}>
+              {item.icon}
+            </div>
+            <h3 class="font-display font-bold text-xl">{item.title}</h3>
+            {item.badge && (
+              <span class="bg-brand-yellow border-2 border-black px-3 py-0.5 text-xs font-impact w-fit shadow-brutal rounded-full">{item.badge}</span>
+            )}
+            <p class="font-body text-sm text-black/70 leading-relaxed">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ PARA EVENTOS ━━ -->
+  <section class="bg-brand-purple border-b-[3px] border-black py-16 md:py-20">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="font-display font-bold text-3xl md:text-4xl text-white mb-8">Para Eventos</h2>
+
+      <div class="grid md:grid-cols-3 gap-5 mb-6">
+        {[
+          { icon: '🧀', title: 'Mesas de frio e finger food', desc: 'Batatas artesanais combinam com queijos, frios e patês. Textura crocante que complementa qualquer mesa.' },
+          { icon: '🥂', title: 'Coquetéis e recepções', desc: 'Sirva em bowls elegantes. Snack prático e saboroso que os convidados apreciam durante o evento.' },
+          { icon: '🎁', title: 'Lembrancinhas', desc: 'Pacotes de 50g funcionam como lembrancinha diferente e memorável para eventos e celebrações especiais.' },
+        ].map(item => (
+          <div class="card-brutal bg-linen p-5">
+            <div class="text-3xl mb-3">{item.icon}</div>
+            <h3 class="font-display font-bold text-base mb-2">{item.title}</h3>
+            <p class="font-body text-sm text-black/70 leading-relaxed">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="relative">
+        <img
+          src={img.heroChips}
+          alt="Batatas chips artesanais Ahara para eventos"
+          width="1200"
+          height="400"
+          loading="lazy"
+          decoding="async"
+          class="border-[3px] border-linen/30 w-full h-40 md:h-48 object-cover rounded-3xl"
+        />
+        <img
+          src={icons.chip3}
+          alt=""
+          aria-hidden="true"
+          class="hidden md:block absolute -top-10 right-8 w-24 h-24 object-contain rotate-12 pointer-events-none"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ PARA FOOD SERVICE ━━ -->
+  <section class="bg-linen border-b-[3px] border-black py-16 md:py-20">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="font-display font-bold text-3xl md:text-4xl text-black mb-8">Para Food Service</h2>
+      <p class="font-body text-lg text-black/60 mb-8">
+        Bares e restaurantes que servem petiscos de qualidade.
+      </p>
+
+      <div class="grid md:grid-cols-3 gap-5">
+        {[
+          { icon: '⭐', title: 'Petisco diferenciado', desc: 'Sirva batatas artesanais como entrada ou acompanhamento. Produto que agrega valor ao cardápio.', color: 'bg-brand-orange' },
+          { icon: '📏', title: 'Porções padronizadas', desc: 'Com embalagens de 150g e 500g fica fácil padronizar porções e controlar custos na operação.', color: 'bg-brand-red' },
+          { icon: '🔄', title: 'Reposição rápida', desc: 'Acabou o estoque? Fornecedor local repõe rápido. Seu estabelecimento não fica sem produto.', color: 'bg-brand-green' },
+        ].map(item => (
+          <div class="card-brutal bg-white p-6 flex flex-col gap-3">
+            <div class={`w-14 h-14 border-2 border-black flex items-center justify-center text-2xl rounded-full ${item.color} text-white shadow-brutal`}>
+              {item.icon}
+            </div>
+            <h3 class="font-display font-bold text-lg">{item.title}</h3>
+            <p class="font-body text-sm text-black/70 leading-relaxed">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ EMBALAGENS RECOMENDADAS ━━ -->
+  <section class="bg-black border-b-[3px] border-black py-12">
+    <div class="max-w-6xl mx-auto px-4">
+      <h3 class="font-display font-bold text-xl text-linen mb-5">Embalagens recomendadas</h3>
+      <div class="grid sm:grid-cols-3 gap-3">
+        {[
+          { size: '150g', use: 'Porções individuais em bares e restaurantes', color: 'bg-brand-purple' },
+          { size: '500g', use: 'Eventos e estabelecimentos com alto volume', color: 'bg-brand-green' },
+          { size: '50g',  use: 'Lembrancinhas e vendas individuais em eventos', color: 'bg-brand-red' },
+        ].map(pkg => (
+          <div class={`border-2 border-linen/20 ${pkg.color} p-4 flex items-center gap-3 rounded-2xl`}>
+            <span class="font-impact font-bold text-2xl text-white border border-white/30 px-3 py-1 flex-shrink-0 rounded-full">
+              {pkg.size}
+            </span>
+            <p class="font-body text-white/80 text-sm">{pkg.use}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ PREÇOS ━━ -->
+  <section class="bg-linen border-b-[3px] border-black py-16 md:py-20">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="font-display font-bold text-3xl md:text-4xl text-black mb-8">Preços e condições</h2>
+      <div class="max-w-2xl">
+        <PriceTable />
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ LOGÍSTICA ━━ -->
+  <section class="bg-brand-yellow border-b-[3px] border-black py-12 md:py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="font-display font-bold text-2xl md:text-3xl text-black mb-6">Logística flexível</h2>
+      <div class="grid md:grid-cols-2 gap-5">
+        <div class="card-brutal bg-white p-5">
+          <h3 class="font-display font-bold text-base mb-2">⚡ Pedidos urgentes</h3>
+          <p class="font-body text-sm text-black/70">
+            Precisa para amanhã ou hoje? Entre em contato pelo WhatsApp.
+            Produção local permite atender urgências, sujeito a disponibilidade.
+          </p>
+        </div>
+        <div class="card-brutal bg-white p-5">
+          <h3 class="font-display font-bold text-base mb-2">📅 Entrega agendada</h3>
+          <p class="font-body text-sm text-black/70">
+            Para eventos planejados ou reposição programada, agendamos entrega
+            no dia e horário ideal para sua operação.
+          </p>
+        </div>
+      </div>
+      <div class="mt-4 border-[2px] border-black bg-brand-red text-white p-4 rounded-2xl">
+        <p class="font-display font-bold">⚠ Entrega disponível para pedidos a partir de 15kg.</p>
+        <p class="font-body text-sm text-white/80 mt-1">
+          Regiões: Riacho Fundo 1, Núcleo Bandeirante, Taguatinga, Asa Sul e Sudoeste.
+          Outras regiões ou volumes menores: retirada disponível.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ CTA ━━ -->
+  <section class="bg-brand-pink py-16 md:py-20">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-8">
+      <div>
+        <h2 class="font-display font-bold text-3xl text-white mb-2">Solicite um orçamento</h2>
+        <p class="font-body text-white/80">Conte sobre sua necessidade: eventos, food service ou urgência.</p>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <CTAButton
+          href={waEventos}
+          label="WhatsApp"
+          variant="green"
+          size="lg"
+          external={true}
+          icon="whatsapp"
+        />
+        <CTAButton href="/contato/" label="Formulário de orçamento" variant="yellow" size="lg" />
+      </div>
+    </div>
+  </section>
+
+</Layout>

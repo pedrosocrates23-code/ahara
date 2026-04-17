@@ -1,0 +1,152 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import CTAButton from '@/components/CTAButton.astro';
+import PriceTable from '@/components/PriceTable.astro';
+import FeatureCard from '@/components/FeatureCard.astro';
+import { site } from '@/data/site';
+
+const waCom = site.whatsapp.link('Olá, quero oferecer batatas Ahara no meu comércio');
+---
+
+<Layout
+  title="Para Comércios - Batatas Artesanais para Mercados e Empórios"
+  description="Mercados, empórios, conveniências e quiosques. Ofereça batatas chips artesanais Ahara com produto de qualidade e reposição rápida. Fornecedor local em Brasília/DF."
+>
+
+  <!-- ━━ HERO ━━ -->
+  <section class="bg-brand-green border-b-[3px] border-black py-20 md:py-24 overflow-hidden relative">
+    <div class="absolute -left-20 bottom-0 w-64 h-64 bg-brand-yellow/20 blob-organic translate-y-1/2 pointer-events-none" aria-hidden="true"></div>
+    <div class="relative max-w-6xl mx-auto px-4">
+      <span class="inline-block bg-brand-yellow border-2 border-black px-3 py-1 text-xs font-impact shadow-brutal mb-6 rounded-full">
+        PARA COMÉRCIOS
+      </span>
+      <h1 class="font-display font-bold text-5xl md:text-6xl text-white mb-5 leading-[1.05]">
+        Batatas Artesanais<br/>para seu <span class="text-brand-yellow">Comércio</span>
+      </h1>
+      <p class="font-body text-xl text-white/80 max-w-2xl leading-relaxed">
+        Mercados de bairro, empórios, conveniências e quiosques.
+        Ofereça produto artesanal que se destaca na prateleira
+        com reposição rápida de um fornecedor local.
+      </p>
+    </div>
+  </section>
+
+  <!-- ━━ DIFERENCIAIS ━━ -->
+  <section class="bg-linen border-b-[3px] border-black py-16 md:py-20">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="font-display font-bold text-3xl md:text-4xl text-black mb-10">
+        Por que oferecer batatas artesanais no seu comércio?
+      </h2>
+      <div class="grid sm:grid-cols-3 gap-5">
+        <FeatureCard
+          icon="🏆"
+          title="Diferencial na prateleira"
+          description="Batatas artesanais se destacam entre salgadinhos industriais. Embalagem atrativa, produto de qualidade visível. Chama atenção do cliente que busca algo melhor."
+          accentColor="bg-brand-yellow"
+        />
+        <FeatureCard
+          icon="🔄"
+          title="Fornecedor local"
+          description="Produção em Brasília significa que você não fica sem estoque. Reposição rápida, atendimento próximo, sem depender de distribuidoras de outros estados."
+          accentColor="bg-brand-green"
+        />
+        <FeatureCard
+          icon="📈"
+          title="Produto que gira"
+          description="Qualidade gera recompra. Cliente que experimenta volta para comprar mais. Produto artesanal fideliza e aumenta o ticket médio do seu comércio."
+          accentColor="bg-brand-purple"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ PREÇOS ━━ -->
+  <section class="bg-brand-yellow border-b-[3px] border-black py-16 md:py-20">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="mb-8">
+        <h2 class="font-display font-bold text-3xl md:text-4xl text-black mb-3">
+          Preços e condições
+        </h2>
+        <p class="font-body text-black/70">
+          Mesmas condições para todos os clientes B2B. Transparência total.
+        </p>
+      </div>
+      <div class="max-w-2xl">
+        <PriceTable />
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ EMBALAGENS PARA COMÉRCIO ━━ -->
+  <section class="bg-linen border-b-[3px] border-black py-16 md:py-20">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="font-display font-bold text-3xl md:text-4xl text-black mb-8">
+        Embalagens ideais para comércio
+      </h2>
+      <div class="grid md:grid-cols-2 gap-5">
+        {[
+          { size: '50g', title: 'Venda unitária: impulso no caixa', desc: 'Embalagem individual estratégica próxima ao caixa. Compra por impulso, rotação rápida.', tip: '20 unidades/kg' },
+          { size: '150g', title: 'Tamanho médio: boa saída em prateleira', desc: 'Tamanho que equilibra valor percebido e preço. Cabe bem na gôndola e tem boa saída.', tip: 'aprox. 6,6 unidades/kg' },
+        ].map(pkg => (
+          <div class="card-brutal bg-white p-6">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="bg-brand-green text-white border-2 border-black px-4 py-2 font-impact font-bold text-xl shadow-brutal rounded-2xl">
+                {pkg.size}
+              </div>
+              <h3 class="font-display font-bold text-lg leading-tight">{pkg.title}</h3>
+            </div>
+            <p class="font-body text-sm text-black/70 mb-3">{pkg.desc}</p>
+            <span class="text-xs font-body text-black/40 border border-black/20 px-2 py-0.5 rounded-full">{pkg.tip}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ ENTREGA ━━ -->
+  <section class="bg-black border-b-[3px] border-black py-16 md:py-20">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="font-display font-bold text-3xl md:text-4xl text-linen mb-8">
+        Entrega e retirada
+      </h2>
+      <div class="grid md:grid-cols-2 gap-5 mb-6">
+        <div class="border-[3px] border-brand-red bg-brand-red/10 border-l-8 border-l-brand-red p-5 rounded-2xl">
+          <p class="font-display font-bold text-brand-yellow text-sm mb-1">⚠ ATENÇÃO</p>
+          <p class="font-body text-linen font-medium">Entrega disponível apenas para pedidos a partir de <strong>15kg</strong>.</p>
+          <p class="font-body text-linen/60 text-sm mt-1">Pedidos menores: retirada em nosso endereço.</p>
+        </div>
+        <div class="card-brutal bg-linen p-5">
+          <h3 class="font-display font-bold text-base mb-3">Regiões com entrega disponível</h3>
+          <div class="flex flex-wrap gap-2">
+            {['Riacho Fundo 1', 'Núcleo Bandeirante', 'Taguatinga', 'Asa Sul', 'Sudoeste'].map(r => (
+              <span class="bg-brand-green text-white border-2 border-black px-3 py-0.5 text-xs font-body rounded-full">{r}</span>
+            ))}
+          </div>
+          <p class="mt-3 text-xs text-black/50 font-body">Outras regiões: consulte disponibilidade.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ CTA ━━ -->
+  <section class="bg-brand-purple py-16 md:py-20">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-8">
+      <div>
+        <h2 class="font-display font-bold text-3xl text-white mb-2">Quero oferecer no meu comércio</h2>
+        <p class="font-body text-white/80">Entre em contato para fazer seu primeiro pedido.</p>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <CTAButton
+          href={waCom}
+          label="WhatsApp"
+          variant="green"
+          size="lg"
+          external={true}
+          icon="whatsapp"
+        />
+        <CTAButton href="/contato/" label="Formulário de contato" variant="yellow" size="lg" />
+      </div>
+    </div>
+  </section>
+
+</Layout>

@@ -1,0 +1,40 @@
+---
+interface Props {
+  note?: string;
+}
+const { note = 'Desconto por pedido. Não acumulativo. Pagamento à vista.' } = Astro.props;
+
+const rows = [
+  { volume: '5kg a 24kg (mínimo)',  discount: '-',   price: 'R$ 55,00' },
+  { volume: 'A partir de 25kg',     discount: '5%',  price: 'R$ 52,25' },
+  { volume: 'A partir de 50kg',     discount: '8%',  price: 'R$ 50,60' },
+  { volume: 'A partir de 75kg',     discount: '10%', price: 'R$ 49,50' },
+  { volume: 'A partir de 100kg',    discount: '12%', price: 'R$ 48,40' },
+];
+---
+<div class="overflow-x-auto">
+  <table class="price-table">
+    <thead>
+      <tr>
+        <th>Volume</th>
+        <th>Desconto</th>
+        <th>Preço/kg</th>
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map(row => (
+        <tr>
+          <td class="font-medium">{row.volume}</td>
+          <td>
+            {row.discount === '-'
+              ? <span class="text-black/40">-</span>
+              : <span class="inline-block bg-brand-green text-white font-bold text-xs px-2 py-0.5 rounded-full">{row.discount}</span>
+            }
+          </td>
+          <td class="font-bold font-display text-brand-purple">{row.price}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  <p class="mt-3 text-sm text-black/60 font-body">{note}</p>
+</div>

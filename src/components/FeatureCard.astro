@@ -1,0 +1,16 @@
+---
+interface Props {
+  icon: string;
+  title: string;
+  description: string;
+  accentColor?: string;
+}
+const { icon, title, description, accentColor = 'bg-brand-purple' } = Astro.props;
+---
+<div class="card-brutal bg-white p-6 flex flex-col gap-3 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brutal-lg transition-all">
+  <div class={`w-14 h-14 flex items-center justify-center text-2xl border-2 border-black rounded-full ${accentColor} text-white shadow-brutal`} aria-hidden="true">
+    {icon}
+  </div>
+  <h3 class="font-display font-bold text-lg leading-tight">{title}</h3>
+  <p class="font-body text-sm text-black/70 leading-relaxed">{description}</p>
+</div>

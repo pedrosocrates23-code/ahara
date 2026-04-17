@@ -1,0 +1,165 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import CTAButton from '@/components/CTAButton.astro';
+import PriceTable from '@/components/PriceTable.astro';
+import FeatureCard from '@/components/FeatureCard.astro';
+import { site } from '@/data/site';
+
+const waRev = site.whatsapp.link('Olá, quero me tornar revendedor das batatas Ahara');
+---
+
+<Layout
+  title="Para Revendedores - Revenda Batatas Chips Artesanais Ahara"
+  description="Revenda batatas chips artesanais Ahara com boa margem. Pedido mínimo 5kg, desconto progressivo até 12%, produto local em Brasília/DF."
+>
+
+  <!-- ━━ HERO ━━ -->
+  <section class="bg-brand-yellow border-b-[3px] border-black py-20 md:py-24 overflow-hidden relative">
+    <div class="absolute right-0 top-0 w-72 h-72 bg-brand-red/10 blob-organic -translate-y-1/3 translate-x-1/4 pointer-events-none" aria-hidden="true"></div>
+    <div class="relative max-w-6xl mx-auto px-4">
+      <span class="inline-block bg-black text-linen border-2 border-black px-3 py-1 text-xs font-impact shadow-brutal-yellow mb-6 rounded-full">
+        PARA REVENDEDORES
+      </span>
+      <h1 class="font-display font-bold text-5xl md:text-6xl text-black mb-5 leading-[1.05]">
+        Revenda Batatas Chips<br/>Artesanais com<br/><span class="text-brand-red">Boa Margem</span>
+      </h1>
+      <p class="font-body text-xl text-black/70 max-w-2xl leading-relaxed">
+        Produto de qualidade, fornecedor local e preço que permite margem real.
+        Atendemos revendedores autônomos em Brasília/DF.
+      </p>
+    </div>
+  </section>
+
+  <!-- ━━ POR QUE REVENDER ━━ -->
+  <section class="bg-linen border-b-[3px] border-black py-16 md:py-20">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="font-display font-bold text-3xl md:text-4xl text-black mb-10">
+        Por que revender batatas Ahara?
+      </h2>
+      <div class="grid sm:grid-cols-3 gap-5">
+        <FeatureCard
+          icon="🛒"
+          title="Produto que vende"
+          description="Batatas artesanais com crocância e sabor que se destacam. Clientes percebem a diferença e voltam a comprar. Embalagem atrativa que chama atenção."
+          accentColor="bg-brand-red"
+        />
+        <FeatureCard
+          icon="🏭"
+          title="Fornecedor local"
+          description="Produção em Brasília significa reposição rápida quando seu estoque acabar. Sem depender de transporte de outros estados, sem atrasos."
+          accentColor="bg-brand-green"
+        />
+        <FeatureCard
+          icon="💰"
+          title="Margem para lucrar"
+          description="Preço de custo competitivo com desconto progressivo de 5% a 12%. Quanto mais você compra, melhor o preço."
+          accentColor="bg-brand-yellow"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ PREÇOS ━━ -->
+  <section class="bg-black border-b-[3px] border-black py-16 md:py-20">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="mb-8">
+        <h2 class="font-display font-bold text-3xl md:text-4xl text-linen mb-3">
+          Quanto custa?
+        </h2>
+        <p class="font-body text-linen/60">
+          Preços transparentes, sem surpresas. Desconto progressivo por volume.
+        </p>
+      </div>
+      <div class="max-w-2xl">
+        <PriceTable />
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ PEDIDO E ENTREGA ━━ -->
+  <section class="bg-linen border-b-[3px] border-black py-16 md:py-20">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="font-display font-bold text-3xl md:text-4xl text-black mb-8">
+        Pedido mínimo e entrega
+      </h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="card-brutal bg-white p-6">
+          <h3 class="font-display font-bold text-xl mb-3">Pedido mínimo: 5kg</h3>
+          <p class="font-body text-black/70">
+            Começamos a atender a partir de 5kg -
+            aproximadamente <strong>R$275,00</strong> no preço base.
+            Acessível para testar o produto.
+          </p>
+        </div>
+
+        <div class="border-[3px] border-black bg-brand-red text-white p-6 shadow-brutal rounded-2xl">
+          <h3 class="font-display font-bold text-xl mb-3">⚠ Entrega a partir de 15kg</h3>
+          <p class="text-white/90 font-body text-sm leading-relaxed">
+            <strong>Pedidos de 5kg a 14kg:</strong> retirada em nosso endereço.<br/>
+            <strong>A partir de 15kg:</strong> entrega disponível.
+          </p>
+        </div>
+      </div>
+
+      <div class="card-brutal bg-white p-6 mt-5">
+        <h3 class="font-display font-bold text-lg mb-4">Regiões atendidas para entrega</h3>
+        <div class="flex flex-wrap gap-2">
+          {['Riacho Fundo 1', 'Núcleo Bandeirante', 'Taguatinga', 'Asa Sul', 'Sudoeste'].map(region => (
+            <span class="bg-brand-purple text-white border-2 border-black px-3 py-1 text-sm font-body font-medium shadow-brutal rounded-full">
+              {region}
+            </span>
+          ))}
+        </div>
+        <p class="mt-4 text-sm font-body text-black/50">Outras regiões: consulte disponibilidade.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ EMBALAGENS ━━ -->
+  <section class="bg-brand-purple border-b-[3px] border-black py-16 md:py-20">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="font-display font-bold text-3xl md:text-4xl text-white mb-8">
+        Embalagens para revenda
+      </h2>
+      <div class="grid md:grid-cols-2 gap-5">
+        {[
+          { size: '50g', desc: 'Porção individual · 20 unidades por kg · Ideal para venda unitária rápida', badge: 'MAIS POPULAR' },
+          { size: '150g', desc: 'Porção média · aprox. 6,6 unidades por kg · Ideal para pontos fixos', badge: null },
+        ].map(pkg => (
+          <div class="card-brutal bg-white p-6 flex items-start gap-4">
+            <div class="bg-brand-yellow border-2 border-black shadow-brutal px-4 py-3 font-impact font-bold text-2xl flex-shrink-0 rounded-2xl">
+              {pkg.size}
+            </div>
+            <div>
+              {pkg.badge && (
+                <span class="bg-brand-red text-white text-xs font-impact px-3 py-0.5 mb-1 inline-block rounded-full">{pkg.badge}</span>
+              )}
+              <p class="font-body text-black/70 text-sm leading-relaxed">{pkg.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ QUERO REVENDER ━━ -->
+  <section class="bg-brand-green py-16 md:py-20">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-8">
+      <div>
+        <h2 class="font-display font-bold text-3xl md:text-4xl text-white mb-2">Quero revender!</h2>
+        <p class="font-body text-white/80 text-lg">
+          Entre em contato pelo WhatsApp. Informe a quantidade e sua região.
+        </p>
+      </div>
+      <CTAButton
+        href={waRev}
+        label="Chamar no WhatsApp"
+        variant="yellow"
+        size="lg"
+        external={true}
+        icon="whatsapp"
+      />
+    </div>
+  </section>
+
+</Layout>

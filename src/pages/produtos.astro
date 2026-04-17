@@ -1,0 +1,241 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import CTAButton from '@/components/CTAButton.astro';
+import { img, icons } from '@/data/site';
+---
+
+<Layout
+  title="Produtos - Batatas Chips Artesanais Sabor Tradicional"
+  description="Batatas chips artesanais sabor tradicional em embalagens de 50g, 150g e 500g. Produzidas com batatas Marquise e Atlantic. Informações nutricionais e como comprar."
+>
+
+  <!-- ━━ HERO ━━ -->
+  <section class="bg-brand-red border-b-[3px] border-black py-20 md:py-24 overflow-hidden relative">
+    <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+      <div class="absolute -right-16 top-0 w-80 h-80 bg-brand-yellow/20 rounded-full"></div>
+    </div>
+    <div class="relative max-w-6xl mx-auto px-4">
+      <span class="inline-block bg-brand-yellow border-2 border-black px-3 py-1 text-xs font-impact shadow-brutal mb-6 rounded-full">
+        NOSSO PRODUTO
+      </span>
+      <h1 class="font-display font-bold text-5xl md:text-6xl text-white mb-5 leading-[1.05]">
+        Batatas Chips Artesanais<br/><span class="text-brand-yellow">Sabor Tradicional</span>
+      </h1>
+      <p class="font-body text-xl text-white/80 max-w-2xl leading-relaxed">
+        Trabalhamos com um único sabor - o tradicional - feito da forma certa.
+        Batata de qualidade, sal na medida e crocância que dura.
+        Sem complicação, sem excesso de temperos. O clássico que funciona.
+      </p>
+    </div>
+  </section>
+
+  <!-- ━━ MATÉRIA-PRIMA ━━ -->
+  <section class="bg-linen border-b-[3px] border-black py-16 md:py-20 relative overflow-hidden">
+    <div class="absolute top-10 -left-20 w-64 h-64 bg-brand-purple/10 blob-organic pointer-events-none" aria-hidden="true"></div>
+    <div class="relative max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
+      <div class="relative order-2 md:order-1">
+        <img
+          src={img.chipsBowl}
+          alt="Batatas chips artesanais Ahara - matéria-prima selecionada"
+          width="800"
+          height="600"
+          loading="lazy"
+          decoding="async"
+          class="border-[3px] border-black shadow-brutal-lg w-full aspect-[4/3] object-cover rounded-3xl"
+        />
+        <img
+          src={icons.chip4}
+          alt=""
+          aria-hidden="true"
+          class="absolute -bottom-6 -right-6 w-24 h-24 md:w-32 md:h-32 object-contain -rotate-12 pointer-events-none"
+        />
+      </div>
+      <div class="order-1 md:order-2">
+        <h2 class="font-display font-bold text-3xl md:text-4xl mb-5">
+          Matéria-prima: Batatas <span class="text-brand-purple">Marquise e Atlantic</span>
+        </h2>
+        <div class="space-y-4 font-body text-black/70 leading-relaxed">
+          <p>
+            Utilizamos exclusivamente batatas das variedades Marquise e Atlantic,
+            conforme disponibilidade de safra. São reconhecidas como as melhores
+            para fritura:
+          </p>
+          <ul class="space-y-2">
+            {[
+              'Textura firme: resistente ao processo de fritura',
+              'Baixo teor de açúcar: evita escurecimento indesejado',
+              'Sabor neutro: realça o tempero e o sal',
+              'Crocância superior: mantém a textura por mais tempo',
+            ].map(item => (
+              <li class="flex items-start gap-2">
+                <span class="text-brand-green font-bold mt-0.5 flex-shrink-0">✓</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ EMBALAGENS ━━ -->
+  <section class="bg-black border-b-[3px] border-black py-20 md:py-24">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="mb-12">
+        <h2 class="font-display font-bold text-4xl md:text-5xl text-linen mb-3">
+          Embalagens <span class="text-brand-yellow">disponíveis</span>
+        </h2>
+        <p class="font-body text-lg text-linen/60">
+          Três tamanhos para atender diferentes necessidades de negócio.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-5">
+        {[
+          {
+            size: '50g',
+            label: 'Porção Individual',
+            color: 'bg-brand-red',
+            units: '20 unidades por kg',
+            ideal: ['Revendedores autônomos', 'Cantinas e lanchonetes', 'Conveniências'],
+            desc: 'Embalagem individual perfeita para revenda direta ou venda unitária. Tamanho ideal para consumo imediato.',
+          },
+          {
+            size: '150g',
+            label: 'Porção Média',
+            color: 'bg-brand-purple',
+            units: 'Cerca de 6,6 unidades por kg',
+            ideal: ['Mercados e empórios', 'Bares e restaurantes', 'Pontos fixos'],
+            desc: 'Tamanho intermediário para quem quer mais produto. Funciona bem para compartilhar ou para consumidores que preferem quantidade maior.',
+          },
+          {
+            size: '500g',
+            label: 'Food Service',
+            color: 'bg-brand-green',
+            units: '2 unidades por kg',
+            ideal: ['Buffets e eventos', 'Restaurantes alto volume', 'Casas de festa'],
+            desc: 'Embalagem para quem serve em quantidade. Facilita porcionamento e controle de custos no seu estabelecimento.',
+          },
+        ].map(pkg => (
+          <article class={`border-[3px] border-black shadow-brutal flex flex-col rounded-3xl p-6 ${pkg.color}`}>
+            <div class="bg-black text-white border-2 border-black w-fit px-4 py-1 font-impact font-bold text-3xl shadow-brutal-yellow mb-4 rounded-full">
+              {pkg.size}
+            </div>
+            <h3 class="font-display font-bold text-2xl text-white mb-2">{pkg.label}</h3>
+            <p class="font-body text-sm text-white/80 mb-4 leading-relaxed">{pkg.desc}</p>
+            <div class="border border-white/30 p-3 mb-4 rounded-2xl">
+              <p class="text-xs font-body text-white/60 mb-2 font-bold uppercase tracking-wide">Ideal para:</p>
+              <ul class="space-y-1">
+                {pkg.ideal.map(use => (
+                  <li class="text-sm text-white/90 flex items-center gap-1.5">
+                    <span class="w-1 h-1 bg-white rounded-full flex-shrink-0"></span>
+                    {use}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <p class="text-xs font-body text-white/50">{pkg.units}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ INFORMAÇÕES NUTRICIONAIS ━━ -->
+  <section class="bg-linen border-b-[3px] border-black py-16 md:py-20">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="font-display font-bold text-3xl md:text-4xl text-black mb-10">
+        Informações <span class="text-brand-purple">Nutricionais</span>
+      </h2>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Tabela nutricional -->
+        <div class="card-brutal bg-white p-6">
+          <h3 class="font-display font-bold text-xl mb-1">Tabela Nutricional</h3>
+          <p class="font-body text-sm text-black/50 mb-5">Porção de 25g (½ pacote de 50g)</p>
+
+          <div class="border-[2px] border-black overflow-hidden rounded-xl">
+            <div class="bg-black text-linen px-3 py-2 font-display font-bold text-sm">
+              Informação Nutricional
+            </div>
+            {[
+              ['Valor Energético', '-', '-'],
+              ['Carboidratos', '-', '-'],
+              ['Proteínas', '-', '-'],
+              ['Gorduras Totais', '-', '-'],
+              ['Gorduras Saturadas', '-', '-'],
+              ['Gorduras Trans', '0g', '-'],
+              ['Fibra Alimentar', '-', '-'],
+              ['Sódio', '-', '-'],
+            ].map(([name, value, dv], i) => (
+              <div class={`flex items-center justify-between px-3 py-2 text-sm font-body border-b border-black/20 last:border-b-0 ${i % 2 === 0 ? '' : 'bg-brand-purple/5'}`}>
+                <span class="font-medium">{name}</span>
+                <div class="flex gap-4 text-right">
+                  <span class="text-brand-purple font-bold">{value}</span>
+                  <span class="text-black/40 text-xs">{dv}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p class="mt-3 text-xs text-black/40 font-body italic">
+            * Tabela nutricional oficial a ser inserida conforme registro do produto.
+          </p>
+        </div>
+
+        <!-- Demais informações -->
+        <div class="flex flex-col gap-4">
+          <div class="card-brutal bg-white p-6">
+            <h3 class="font-display font-bold text-lg mb-3">Ingredientes</h3>
+            <p class="font-body text-black/70">Batata, óleo vegetal e sal.</p>
+            <p class="text-xs text-black/40 mt-1 italic">* Ajustar conforme lista real de ingredientes</p>
+          </div>
+
+          <div class="card-brutal bg-white p-6">
+            <h3 class="font-display font-bold text-lg mb-3">Informações para Alérgicos</h3>
+            <div class="space-y-2">
+              {[
+                { icon: '✅', text: 'Não contém glúten' },
+                { icon: '✅', text: 'Não contém lactose' },
+              ].map(item => (
+                <div class="flex items-center gap-2 font-body text-sm">
+                  <span class="text-brand-green">{item.icon}</span>
+                  <span>{item.text}</span>
+                </div>
+              ))}
+            </div>
+            <p class="text-xs text-black/40 mt-3 italic">* Inserir informações sobre possíveis traços de alérgenos</p>
+          </div>
+
+          <div class="card-brutal bg-white p-6">
+            <h3 class="font-display font-bold text-lg mb-3">Conservação</h3>
+            <p class="font-body text-sm text-black/70">
+              Conservar em local fresco e seco, ao abrigo da luz.
+              Após aberto, consumir em até [X] dias.
+            </p>
+            <p class="text-xs text-black/40 mt-1 italic">* Inserir informações reais de conservação e validade</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ COMO ADQUIRIR ━━ -->
+  <section class="bg-brand-purple py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="font-display font-bold text-3xl md:text-4xl text-white mb-8">Como adquirir?</h2>
+      <div class="grid sm:grid-cols-3 gap-4 mb-8">
+        {[
+          { label: 'Revendedores Autônomos', href: '/para-revendedores/', color: 'bg-brand-red' },
+          { label: 'Comércios', href: '/para-comercios/', color: 'bg-brand-yellow' },
+          { label: 'Eventos & Food Service', href: '/para-eventos/', color: 'bg-brand-green' },
+        ].map(item => (
+          <a href={item.href} class={`btn-base hover:btn-hover ${item.color} ${item.color === 'bg-brand-yellow' ? 'text-black' : 'text-white'} justify-center`}>
+            {item.label} →
+          </a>
+        ))}
+      </div>
+      <CTAButton href="/contato/" label="Falar com o Comercial" variant="yellow" size="lg" icon="arrow" />
+    </div>
+  </section>
+
+</Layout>

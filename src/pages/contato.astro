@@ -1,0 +1,195 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import CTAButton from '@/components/CTAButton.astro';
+import { site } from '@/data/site';
+
+const waGeral = site.whatsapp.link('Olá, gostaria de saber mais sobre as batatas chips Ahara');
+
+const faqs = [
+  { q: 'Qual o pedido mínimo?', a: '5kg, aproximadamente R$275,00 no preço base. Quantidade acessível para testar o produto ou para negócios menores.' },
+  { q: 'Vocês entregam?', a: 'Sim, para pedidos a partir de 15kg nas regiões: Riacho Fundo 1, Núcleo Bandeirante, Taguatinga, Asa Sul e Sudoeste. Pedidos menores ou outras regiões: retirada em nosso endereço.' },
+  { q: 'Quais formas de pagamento?', a: 'Pagamento à vista. Descontos progressivos aplicados conforme volume do pedido (5% a 12%).' },
+  { q: 'Qual a validade do produto?', a: 'Informação a ser inserida conforme registro oficial do produto.' },
+  { q: 'Atendem pedidos urgentes?', a: 'Sim, produção local permite agilidade. Entre em contato pelo WhatsApp para verificar disponibilidade na data desejada.' },
+  { q: 'Quais sabores têm?', a: 'Atualmente trabalhamos apenas com o sabor tradicional, em embalagens de 50g, 150g e 500g.' },
+  { q: 'Quais tipos de batata usam?', a: 'Utilizamos batatas Marquise e Atlantic, as melhores variedades para fritura, conforme disponibilidade de safra.' },
+];
+---
+
+<Layout
+  title="Contato - Fale com a Ahara"
+  description="Entre em contato com a Ahara para pedidos, orçamentos e dúvidas. Atendimento via WhatsApp. Batatas chips artesanais em Brasília/DF."
+>
+
+  <!-- ━━ HERO ━━ -->
+  <section class="bg-brand-purple border-b-[3px] border-black py-20 md:py-24">
+    <div class="max-w-6xl mx-auto px-4">
+      <span class="inline-block bg-brand-yellow border-2 border-black px-3 py-1 text-xs font-impact shadow-brutal mb-6 rounded-full">
+        FALE COM A GENTE
+      </span>
+      <h1 class="font-display font-bold text-5xl md:text-6xl text-white mb-5 leading-[1.05]">
+        Fale com a <span class="text-brand-yellow">Ahara</span>
+      </h1>
+      <p class="font-body text-xl text-white/80 max-w-xl">
+        Tire dúvidas, faça pedidos ou solicite orçamentos.
+        Atendimento rápido e direto pelo WhatsApp.
+      </p>
+    </div>
+  </section>
+
+  <!-- ━━ CONTATO + FORMULÁRIO ━━ -->
+  <section class="bg-linen border-b-[3px] border-black py-16 md:py-20">
+    <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-10">
+
+      <!-- Dados de contato -->
+      <div class="flex flex-col gap-5">
+        <div class="card-brutal bg-brand-green text-white p-6">
+          <h2 class="font-display font-bold text-xl mb-3">WhatsApp: canal mais rápido</h2>
+          <p class="font-body text-white/80 text-sm mb-4">Canal mais rápido para pedidos e dúvidas. Atendimento humanizado.</p>
+          <a
+            href={waGeral}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="font-display font-bold text-3xl text-brand-yellow block mb-4 hover:underline"
+          >
+            {site.whatsapp.display}
+          </a>
+          <CTAButton
+            href={site.whatsapp.url}
+            label="Abrir WhatsApp"
+            variant="yellow"
+            external={true}
+            icon="whatsapp"
+          />
+        </div>
+
+        <div class="card-brutal bg-white p-6">
+          <h3 class="font-display font-bold text-lg mb-3">Horário de atendimento</h3>
+          <div class="space-y-2 font-body text-sm text-black/70">
+            <div class="flex justify-between border-b border-black/10 pb-2">
+              <span class="font-medium">Segunda a Sexta</span>
+              <span class="font-bold text-brand-purple">8h às 18h</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-medium">Sábado</span>
+              <span class="font-bold text-brand-purple">8h às 12h</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-brutal bg-white p-6">
+          <h3 class="font-display font-bold text-lg mb-3">Localização</h3>
+          <p class="font-body text-sm text-black/70">
+            Brasília/DF - endereço para retirada de pedidos:
+          </p>
+          <p class="font-body text-sm text-black/40 mt-1 italic">
+            [Endereço completo a inserir]
+          </p>
+          <div class="mt-4 border-[2px] border-black/20 bg-black/5 h-32 flex items-center justify-center rounded-2xl">
+            <span class="text-black/30 text-xs">📍 Mapa ou foto da fachada</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulário -->
+      <div class="card-brutal bg-white p-6 md:p-8">
+        <h2 class="font-display font-bold text-2xl mb-6">Envie uma mensagem</h2>
+        <form
+          name="contato-ahara"
+          method="POST"
+          data-netlify="true"
+          netlify-honeypot="bot-field"
+          class="flex flex-col gap-4"
+        >
+          <input type="hidden" name="form-name" value="contato-ahara" />
+          <p class="hidden" aria-hidden="true">
+            <label>Não preencha isso: <input name="bot-field" /></label>
+          </p>
+
+          <div class="flex flex-col gap-1.5">
+            <label for="nome" class="font-display font-bold text-sm">Nome <span class="text-brand-red">*</span></label>
+            <input
+              type="text"
+              id="nome"
+              name="nome"
+              required
+              placeholder="Seu nome ou empresa"
+              class="border-2 border-black px-4 py-2.5 font-body text-sm bg-linen focus:outline-none focus:border-brand-purple shadow-brutal rounded-xl"
+            />
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label for="whatsapp" class="font-display font-bold text-sm">WhatsApp <span class="text-brand-red">*</span></label>
+            <input
+              type="tel"
+              id="whatsapp"
+              name="whatsapp"
+              required
+              placeholder="(61) 99999-9999"
+              class="border-2 border-black px-4 py-2.5 font-body text-sm bg-linen focus:outline-none focus:border-brand-purple shadow-brutal rounded-xl"
+            />
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label for="tipo" class="font-display font-bold text-sm">Tipo de negócio</label>
+            <select
+              id="tipo"
+              name="tipo"
+              class="border-2 border-black px-4 py-2.5 font-body text-sm bg-linen focus:outline-none focus:border-brand-purple shadow-brutal appearance-none rounded-xl"
+            >
+              <option value="">Selecione...</option>
+              <option value="revendedor">Revendedor autônomo</option>
+              <option value="mercado">Mercado / Empório</option>
+              <option value="conveniencia">Conveniência / Quiosque</option>
+              <option value="bar-restaurante">Bar / Restaurante</option>
+              <option value="evento">Empresa de eventos / Buffet</option>
+              <option value="outro">Outro</option>
+            </select>
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label for="mensagem" class="font-display font-bold text-sm">Mensagem</label>
+            <textarea
+              id="mensagem"
+              name="mensagem"
+              rows="4"
+              placeholder="Quantidade desejada, região, dúvidas..."
+              class="border-2 border-black px-4 py-2.5 font-body text-sm bg-linen focus:outline-none focus:border-brand-purple shadow-brutal resize-none rounded-xl"
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            class="btn-base bg-brand-purple text-white hover:btn-hover justify-center mt-2"
+          >
+            Enviar mensagem →
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ FAQ ━━ -->
+  <section class="bg-brand-yellow border-b-[3px] border-black py-16 md:py-20">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="font-display font-bold text-3xl md:text-4xl text-black mb-8">
+        Perguntas frequentes
+      </h2>
+
+      <div class="flex flex-col gap-3 max-w-3xl">
+        {faqs.map((faq, i) => (
+          <details class="border-[2px] border-black bg-white shadow-brutal group rounded-2xl overflow-hidden">
+            <summary class="flex items-center justify-between p-5 cursor-pointer hover:bg-brand-purple hover:text-white transition-colors">
+              <span class="font-display font-bold text-base pr-4">{faq.q}</span>
+              <span class="faq-icon flex-shrink-0 w-7 h-7 border-2 border-current flex items-center justify-center font-bold text-lg rounded-full">+</span>
+            </summary>
+            <div class="px-5 pb-5 pt-2 border-t border-black/20">
+              <p class="font-body text-black/70 leading-relaxed">{faq.a}</p>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+</Layout>
