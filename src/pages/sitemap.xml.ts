@@ -1,7 +1,8 @@
 import type { APIRoute } from 'astro';
+import posts from '@/content/blog/posts.json';
 
 // Sitemap custom em /sitemap.xml (sem shards, sem index).
-// Mantenha as rotas em sincronia com src/pages/*.astro.
+// Rotas fixas + posts do blog dinamicos via posts.json.
 
 const SITE = 'https://aharabr.com.br';
 
@@ -11,7 +12,7 @@ interface Route {
   changefreq: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
 }
 
-const routes: Route[] = [
+const staticRoutes: Route[] = [
   { path: '/',                    priority: 1.0,  changefreq: 'weekly'  },
   { path: '/produtos/',           priority: 0.9,  changefreq: 'monthly' },
   { path: '/para-revendedores/',  priority: 0.85, changefreq: 'monthly' },
@@ -19,8 +20,16 @@ const routes: Route[] = [
   { path: '/para-eventos/',       priority: 0.85, changefreq: 'monthly' },
   { path: '/contato/',            priority: 0.8,  changefreq: 'monthly' },
   { path: '/sobre/',              priority: 0.7,  changefreq: 'monthly' },
-  { path: '/blog/',               priority: 0.6,  changefreq: 'weekly'  },
+  { path: '/blog/',               priority: 0.75, changefreq: 'weekly'  },
 ];
+
+const blogRoutes: Route[] = posts.map((p: any) => ({
+  path: `/blog/${p.slug}/`,
+  priority: 0.7,
+  changefreq: 'monthly' as const,
+}));
+
+const routes = [...staticRoutes, ...blogRoutes];
 
 export const GET: APIRoute = () => {
   const lastmod = new Date().toISOString();

@@ -17,8 +17,10 @@ const HOST = 'aharabr.com.br';
 const KEY = '69aabca2f983481c9da75af8c25d2160';
 const KEY_LOCATION = `https://${HOST}/${KEY}.txt`;
 
-// Todas as rotas canônicas do site (mantenha em sincronia com sitemap/pages)
-const DEFAULT_ROUTES = [
+// Rotas fixas + posts do blog (descoberto via posts.json)
+import { readFile } from 'node:fs/promises';
+
+const STATIC_ROUTES = [
   '/',
   '/sobre/',
   '/produtos/',
@@ -28,6 +30,18 @@ const DEFAULT_ROUTES = [
   '/para-comercios/',
   '/para-eventos/',
 ];
+
+async function loadBlogRoutes() {
+  try {
+    const raw = await readFile('./src/content/blog/posts.json', 'utf-8');
+    const posts = JSON.parse(raw);
+    return posts.map((p) => `/blog/${p.slug}/`);
+  } catch {
+    return [];
+  }
+}
+
+const DEFAULT_ROUTES = [...STATIC_ROUTES, ...(await loadBlogRoutes())];
 
 // Endpoint preferencial (repassa para Bing, Yandex e demais)
 const ENDPOINT = 'https://api.indexnow.org/IndexNow';

@@ -1,0 +1,252 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import CTAButton from '@/components/CTAButton.astro';
+import { site } from '@/data/site';
+import posts from '@/content/blog/posts.json';
+
+export async function getStaticPaths() {
+  const data = (await import('@/content/blog/posts.json')).default;
+  return data.map((post: any) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+interface Post {
+  slug: string;
+  h1: string;
+  keyword: string;
+  meta_description: string;
+  sumario_html: string;
+  texto_html: string;
+  palavras_totais: number;
+  pub_date: string;
+}
+
+const { post } = Astro.props as { post: Post };
+
+const url = `${site.url}/blog/${post.slug}/`;
+const waPost = site.whatsapp.link(`Olá, vim do artigo "${post.h1}" e gostaria de saber mais`);
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: `${site.url}/` },
+    { '@type': 'ListItem', position: 2, name: 'Blog', item: `${site.url}/blog/` },
+    { '@type': 'ListItem', position: 3, name: post.h1, item: url },
+  ],
+};
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  '@id': `${url}#article`,
+  headline: post.h1,
+  description: post.meta_description,
+  url,
+  inLanguage: 'pt-BR',
+  datePublished: post.pub_date,
+  dateModified: post.pub_date,
+  wordCount: post.palavras_totais,
+  keywords: post.keyword,
+  articleSection: 'Batatas chips artesanais',
+  author: { '@type': 'Organization', name: site.legalName, url: site.url },
+  publisher: { '@id': `${site.url}/#organization` },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+  image: `${site.url}/images/hero-chips.webp`,
+};
+
+// Pega os outros 3 posts mais proximos para "leia tambem"
+const related = posts
+  .filter((p: any) => p.slug !== post.slug)
+  .slice(0, 3);
+---
+
+<Layout
+  title={post.h1}
+  description={post.meta_description}
+  extraSchemas={[breadcrumbSchema, articleSchema]}
+>
+
+  <!-- ━━ HERO ━━ -->
+  <section class="bg-brand-orange border-b-[3px] border-black py-16 md:py-20 overflow-hidden relative">
+    <div class="absolute -right-10 top-0 w-72 h-72 bg-brand-yellow/20 blob-organic pointer-events-none" aria-hidden="true"></div>
+    <div class="relative max-w-3xl mx-auto px-4">
+      <nav class="mb-6 text-sm text-white/90" aria-label="Breadcrumb">
+        <a href="/" class="hover:underline">Início</a>
+        <span class="mx-2">/</span>
+        <a href="/blog/" class="hover:underline">Blog</a>
+      </nav>
+      <span class="inline-block bg-brand-yellow border-2 border-black px-3 py-1 text-xs font-impact shadow-brutal mb-4 rounded-full">
+        BLOG AHARA
+      </span>
+      <h1 class="font-display font-bold text-3xl md:text-5xl text-white leading-tight mb-4">
+        {post.h1}
+      </h1>
+      <p class="font-body text-sm text-white/90">
+        Leitura de cerca de {Math.ceil(post.palavras_totais / 220)} min · {post.palavras_totais} palavras
+      </p>
+    </div>
+  </section>
+
+  <!-- ━━ SUMÁRIO ━━ -->
+  {post.sumario_html && (
+    <section class="bg-linen py-8 md:py-10 border-b-[3px] border-black">
+      <div class="max-w-3xl mx-auto px-4">
+        <div class="card-brutal bg-brand-yellow p-6 md:p-8">
+          <div class="text-xs font-impact mb-2 tracking-wider">TL;DR</div>
+          <div class="font-body text-base md:text-lg leading-relaxed prose-content" set:html={post.sumario_html}></div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- ━━ CONTEÚDO ━━ -->
+  <article class="bg-linen py-12 md:py-16 border-b-[3px] border-black">
+    <div class="max-w-3xl mx-auto px-4">
+      <div class="prose-content font-body text-black leading-relaxed" set:html={post.texto_html}></div>
+    </div>
+  </article>
+
+  <!-- ━━ CTA FINAL ━━ -->
+  <section class="bg-brand-purple border-b-[3px] border-black py-12 md:py-16">
+    <div class="max-w-3xl mx-auto px-4 flex flex-col md:flex-row items-start md:items-center gap-6 justify-between">
+      <div>
+        <h2 class="font-display font-bold text-2xl md:text-3xl text-white mb-2">Pronto para começar?</h2>
+        <p class="font-body text-white/95">Pedido mínimo 5kg · desconto progressivo até 12% · entrega no DF.</p>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <CTAButton href={waPost} label="WhatsApp" variant="green" icon="whatsapp" external={true} />
+        <CTAButton href="/contato/" label="Contato" variant="yellow" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ LEIA TAMBÉM ━━ -->
+  <section class="bg-linen py-12 md:py-16">
+    <div class="max-w-5xl mx-auto px-4">
+      <h2 class="font-display font-bold text-2xl md:text-3xl text-black mb-6">Leia também</h2>
+      <div class="grid md:grid-cols-3 gap-5">
+        {related.map((p: any) => (
+          <a href={`/blog/${p.slug}/`} class="card-brutal bg-white p-5 flex flex-col gap-3 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brutal-lg transition-all">
+            <span class="inline-block bg-brand-yellow border-2 border-black px-2 py-0.5 text-xs font-impact w-fit rounded-full">ARTIGO</span>
+            <h3 class="font-display font-bold text-lg leading-tight">{p.h1}</h3>
+            <p class="font-body text-sm text-black/70 leading-snug line-clamp-3">{p.meta_description}</p>
+            <span class="text-xs font-body text-brand-purple font-bold mt-auto">Ler artigo →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+</Layout>
+
+<style is:global>
+  /* Estilos do conteudo do post */
+  .prose-content h2 {
+    font-family: 'Best Curry', 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 1.75rem;
+    line-height: 1.2;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: #000;
+  }
+  @media (min-width: 768px) {
+    .prose-content h2 { font-size: 2rem; }
+  }
+  .prose-content h3 {
+    font-family: 'Best Curry', 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    line-height: 1.25;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    color: #000;
+  }
+  .prose-content p {
+    margin: 0 0 1.15rem 0;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+  .prose-content strong { font-weight: 700; color: #000; }
+  .prose-content a {
+    color: #6654ca;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+  .prose-content a:hover { background: #ffd800; }
+  .prose-content ul, .prose-content ol {
+    margin: 1rem 0 1.5rem 1.5rem;
+    padding-left: 0.5rem;
+  }
+  .prose-content ul { list-style: none; }
+  .prose-content ul li {
+    position: relative;
+    padding-left: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+  .prose-content ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.7rem;
+    width: 6px;
+    height: 6px;
+    background: #6654ca;
+    border-radius: 50%;
+  }
+  .prose-content ol { list-style: decimal; }
+  .prose-content ol li {
+    padding-left: 0.25rem;
+    margin-bottom: 0.6rem;
+  }
+  .prose-content ol li::marker {
+    font-weight: 700;
+    color: #6654ca;
+  }
+  .prose-content table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 2px solid #000;
+    box-shadow: 4px 4px 0 0 #000;
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 1.75rem 0;
+    font-size: 0.95rem;
+  }
+  .prose-content thead th {
+    background: #000;
+    color: #f4e7da;
+    font-family: 'Best Curry', 'Fredoka', sans-serif;
+    text-align: left;
+    padding: 0.75rem 1rem;
+  }
+  .prose-content tbody td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(0,0,0,0.15);
+    background: #fff;
+  }
+  .prose-content tbody tr:nth-child(even) td { background: #f4e7da; }
+  .prose-content tbody tr:last-child td { border-bottom: none; }
+  .prose-content blockquote {
+    border-left: 4px solid #6654ca;
+    margin: 1.5rem 0;
+    padding: 0.5rem 0 0.5rem 1rem;
+    font-style: italic;
+    color: rgba(0,0,0,0.75);
+  }
+  .prose-content .summarization {
+    margin: 0;
+    font-size: 1.1rem;
+    line-height: 1.55;
+  }
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

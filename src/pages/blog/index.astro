@@ -2,6 +2,7 @@
 import Layout from '@/layouts/Layout.astro';
 import CTAButton from '@/components/CTAButton.astro';
 import { site } from '@/data/site';
+import posts from '@/content/blog/posts.json';
 
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
@@ -19,100 +20,94 @@ const blogSchema = {
   url: `${site.url}/blog/`,
   publisher: { '@id': `${site.url}/#organization` },
   inLanguage: 'pt-BR',
+  blogPost: posts.map((p: any) => ({
+    '@type': 'BlogPosting',
+    headline: p.h1,
+    url: `${site.url}/blog/${p.slug}/`,
+    description: p.meta_description,
+    wordCount: p.palavras_totais,
+    datePublished: p.pub_date,
+  })),
 };
+
+// cores ciclicas para os cards
+const colors = ['bg-brand-red', 'bg-brand-purple', 'bg-brand-green', 'bg-brand-yellow', 'bg-brand-orange', 'bg-brand-pink'];
 ---
 
 <Layout
-  title="Blog - Conteúdo sobre Batatas Artesanais e Negócios"
-  description="Dicas para revendedores, tendências de mercado, bastidores da produção e mais. Conteúdo Ahara que agrega valor ao seu negócio."
+  title="Blog - Batatas Chips Artesanais, Revenda e Atacado no DF"
+  description="Guias práticos para revendedores, comércios e eventos. Onde comprar batata chips no DF, tabelas de margem, logística e muito mais. Blog da Ahara."
   extraSchemas={[breadcrumbSchema, blogSchema]}
 >
 
   <!-- ━━ HERO ━━ -->
   <section class="bg-brand-orange border-b-[3px] border-black py-20 md:py-24 overflow-hidden relative">
-    <div class="absolute -right-10 top-10 w-64 h-64 bg-brand-yellow/20 rounded-full pointer-events-none" aria-hidden="true"></div>
+    <div class="absolute -right-10 top-10 w-64 h-64 bg-brand-yellow/20 blob-organic pointer-events-none" aria-hidden="true"></div>
     <div class="relative max-w-6xl mx-auto px-4">
       <span class="inline-block bg-brand-yellow border-2 border-black px-3 py-1 text-xs font-impact shadow-brutal mb-6 rounded-full">
-        BLOG
+        BLOG AHARA
       </span>
       <h1 class="font-display font-bold text-5xl md:text-6xl text-white mb-5 leading-[1.05]">
-        Conteúdo sobre<br/><span class="text-brand-yellow">Batatas Artesanais</span><br/>e Negócios
+        Guias para <span class="text-brand-yellow">Revenda</span><br/>e Atacado no DF
       </h1>
       <p class="font-body text-xl text-white/95 max-w-2xl leading-relaxed">
-        Dicas para revendedores, tendências de mercado, bastidores da produção e mais.
-        Conteúdo que agrega valor ao seu negócio.
+        Tabelas de margem, logística local, critérios de fornecedor e dicas práticas
+        para revendedores, comércios e eventos. Conteúdo objetivo, sem enrolação.
       </p>
     </div>
   </section>
 
-  <!-- ━━ CATEGORIAS ━━ -->
-  <section class="bg-linen border-b-[3px] border-black py-16 md:py-24">
+  <!-- ━━ LISTA DE POSTS ━━ -->
+  <section class="bg-linen border-b-[3px] border-black py-16 md:py-20">
     <div class="max-w-6xl mx-auto px-4">
-      <div class="mb-12">
-        <h2 class="font-display font-bold text-3xl md:text-4xl text-black mb-3">Explore por categoria</h2>
-        <p class="font-body text-lg text-black/60">Em breve, novos artigos para te ajudar a crescer.</p>
-      </div>
+      <h2 class="font-display font-bold text-3xl md:text-4xl text-black mb-8">
+        {posts.length} artigos publicados
+      </h2>
 
-      <div class="grid md:grid-cols-3 gap-5 mb-12">
-        {[
-          {
-            icon: '🏭',
-            title: 'Produção Artesanal',
-            desc: 'Bastidores da produção, curiosidades sobre batatas, processo artesanal. Como fazemos nossas chips do jeito certo.',
-            href: '/blog/producao-artesanal/',
-            color: 'bg-brand-yellow',
-            posts: 'Em breve',
-          },
-          {
-            icon: '📊',
-            title: 'Dicas para Negócios',
-            desc: 'Conteúdo para revendedores e comerciantes: margem de lucro, estratégias de vendas, gestão de estoque.',
-            href: '/blog/negocios/',
-            color: 'bg-brand-purple',
-            posts: 'Em breve',
-          },
-          {
-            icon: '🎉',
-            title: 'Eventos & Food Service',
-            desc: 'Tendências, dicas de apresentação, cases de sucesso. Como usar batatas artesanais para elevar seu serviço.',
-            href: '/blog/eventos/',
-            color: 'bg-brand-green',
-            posts: 'Em breve',
-          },
-        ].map(cat => (
-          <article class={`border-[3px] border-black shadow-brutal flex flex-col rounded-3xl overflow-hidden ${cat.color}`}>
-            <div class="p-6 flex-1">
-              <div class="text-4xl mb-4">{cat.icon}</div>
-              <h3 class="font-display font-bold text-2xl text-white mb-3 leading-tight">{cat.title}</h3>
-              <p class="font-body text-sm text-white/95 mb-4 leading-relaxed">{cat.desc}</p>
-              <span class="inline-block border border-white/40 text-white/85 text-xs font-body px-3 py-1 rounded-full">
-                {cat.posts}
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {posts.map((p: any, i: number) => {
+          const color = colors[i % colors.length];
+          const textIsDark = color === 'bg-brand-yellow';
+          return (
+            <a
+              href={`/blog/${p.slug}/`}
+              class={`border-[3px] border-black shadow-brutal rounded-3xl p-6 flex flex-col gap-3 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brutal-lg transition-all ${color}`}
+            >
+              <span class={`inline-block border-2 border-black px-3 py-0.5 text-xs font-impact w-fit rounded-full ${textIsDark ? 'bg-black text-linen' : 'bg-white text-black'}`}>
+                #{String(i + 1).padStart(2, '0')}
               </span>
-            </div>
-            <div class="px-6 pb-6">
-              <span class="btn-base bg-black/40 text-linen text-sm w-full justify-center cursor-not-allowed">
-                Em breve
+              <h3 class={`font-display font-bold text-xl leading-tight ${textIsDark ? 'text-black' : 'text-white'}`}>
+                {p.h1}
+              </h3>
+              <p class={`font-body text-sm leading-snug flex-1 ${textIsDark ? 'text-black/80' : 'text-white/95'}`}>
+                {p.meta_description}
+              </p>
+              <span class={`text-xs font-body font-bold mt-2 ${textIsDark ? 'text-black' : 'text-white'}`}>
+                Ler artigo · {Math.ceil(p.palavras_totais / 220)} min →
               </span>
-            </div>
-          </article>
-        ))}
+            </a>
+          );
+        })}
       </div>
+    </div>
+  </section>
 
-      <!-- Aviso -->
-      <div class="card-brutal bg-white p-8 text-center max-w-xl mx-auto">
-        <div class="text-5xl mb-4">📬</div>
-        <h3 class="font-display font-bold text-2xl mb-3">Blog em construção</h3>
-        <p class="font-body text-black/60 mb-6">
-          Estamos preparando conteúdo de qualidade para você.
-          Enquanto isso, fale com a Ahara pelo WhatsApp para novidades.
-        </p>
+  <!-- ━━ CTA FINAL ━━ -->
+  <section class="bg-brand-purple py-16 md:py-20">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-8">
+      <div>
+        <h2 class="font-display font-bold text-3xl text-white mb-2">Quer revender ou comprar em atacado?</h2>
+        <p class="font-body text-white/95">Pedido mínimo 5kg. Atendimento direto pelo WhatsApp.</p>
+      </div>
+      <div class="flex flex-wrap gap-3">
         <CTAButton
           href={site.whatsapp.url}
           label="Falar com a Ahara"
-          variant="purple"
+          variant="green"
           icon="whatsapp"
           external={true}
         />
+        <CTAButton href="/contato/" label="Formulário" variant="yellow" />
       </div>
     </div>
   </section>
