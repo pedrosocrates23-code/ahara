@@ -14,4 +14,4 @@ Disallow: /node_modules/
 # User-agent: CCBot
 # Disallow: /
 
-Sitemap: https://aharabr.com.br/sitemap-index.xml
+Sitemap: https://aharabr.com.br/sitemap.xml

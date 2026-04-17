@@ -18,7 +18,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const SITE = 'https://aharabr.com.br/';
-const SITEMAP = 'https://aharabr.com.br/sitemap-index.xml';
+const SITEMAP = 'https://aharabr.com.br/sitemap.xml';
 const KEY_FILE = process.env.GOOGLE_APPLICATION_CREDENTIALS || './secrets/gsc-key.json';
 
 async function getAuth() {
