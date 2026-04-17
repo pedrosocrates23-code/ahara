@@ -27,6 +27,12 @@ export const site = {
     baseKg: 55,
     deliveryMin: 15,
   },
+
+  // URL do Apps Script Web App que recebe o formulario de contato
+  // e anexa linhas em uma Google Sheet (ver scripts/apps-script-contato.gs).
+  // Troque este valor pelo URL "...script.google.com/macros/s/AKfycb.../exec"
+  // depois do deploy do Apps Script.
+  formEndpoint: 'REPLACE_ME_APPS_SCRIPT_URL',
 } as const;
 
 // Fotos reais do produto (batata chips). Só mantemos as 2 fotos aprovadas.

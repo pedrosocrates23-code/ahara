@@ -123,15 +123,13 @@ const contactSchema = {
       <div class="card-brutal bg-white p-6 md:p-8">
         <h2 class="font-display font-bold text-2xl mb-6">Envie uma mensagem</h2>
         <form
+          id="form-contato"
           name="contato-ahara"
-          method="POST"
-          data-netlify="true"
-          netlify-honeypot="bot-field"
           class="flex flex-col gap-4"
+          data-endpoint={site.formEndpoint}
         >
-          <input type="hidden" name="form-name" value="contato-ahara" />
           <p class="hidden" aria-hidden="true">
-            <label>Não preencha isso: <input name="bot-field" /></label>
+            <label>Não preencha isso: <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
           </p>
 
           <div class="flex flex-col gap-1.5">
@@ -186,14 +184,96 @@ const contactSchema = {
             ></textarea>
           </div>
 
+          <input type="hidden" name="source" value="contato" />
+
           <button
+            id="form-submit"
             type="submit"
             class="btn-base bg-brand-purple text-white hover:btn-hover justify-center mt-2"
           >
-            Enviar mensagem →
+            <span id="btn-label">Enviar mensagem →</span>
+            <span id="btn-spinner" class="hidden">Enviando...</span>
           </button>
+
+          <div id="form-feedback" class="hidden" role="status" aria-live="polite"></div>
         </form>
       </div>
+
+      <script is:inline>
+        (function () {
+          const form = document.getElementById('form-contato');
+          if (!form) return;
+          const endpoint = form.dataset.endpoint;
+          const btn = document.getElementById('form-submit');
+          const label = document.getElementById('btn-label');
+          const spinner = document.getElementById('btn-spinner');
+          const feedback = document.getElementById('form-feedback');
+          const waNumber = '553198985678';
+
+          function setFeedback(type, msg) {
+            feedback.className =
+              'block rounded-xl border-2 border-black p-4 font-body text-sm shadow-brutal mt-2 ' +
+              (type === 'ok' ? 'bg-brand-green text-white' : 'bg-brand-red text-white');
+            feedback.innerHTML = msg;
+          }
+
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!endpoint || endpoint.startsWith('REPLACE_ME')) {
+              // Fallback: se o endpoint nao estiver configurado, manda pro WhatsApp
+              const nome = form.nome.value.trim();
+              const whatsapp = form.whatsapp.value.trim();
+              const tipo = form.tipo.value;
+              const mensagem = form.mensagem.value.trim();
+              const msg = encodeURIComponent(
+                `Ola, vim pelo site.\nNome: ${nome}\nWhatsApp: ${whatsapp}\nTipo: ${tipo}\nMensagem: ${mensagem}`
+              );
+              window.location.href = `https://wa.me/${waNumber}?text=${msg}`;
+              return;
+            }
+
+            btn.disabled = true;
+            label.classList.add('hidden');
+            spinner.classList.remove('hidden');
+            feedback.className = 'hidden';
+
+            try {
+              const fd = new FormData(form);
+              // Content-Type padrao do FormData vira multipart; Apps Script le via e.parameter
+              // so se for form-urlencoded. Convertemos.
+              const body = new URLSearchParams();
+              fd.forEach((v, k) => body.append(k, String(v)));
+
+              const res = await fetch(endpoint, {
+                method: 'POST',
+                body,
+                // sem headers custom para evitar preflight CORS
+              });
+
+              const data = await res.json().catch(() => ({ ok: res.ok }));
+
+              if (data.ok) {
+                setFeedback(
+                  'ok',
+                  '<strong>Mensagem enviada!</strong> Em breve responderemos pelo WhatsApp. Se preferir, fale direto: <a class="underline font-bold" href="https://wa.me/' + waNumber + '" target="_blank">clique aqui</a>.'
+                );
+                form.reset();
+              } else {
+                throw new Error(data.error || 'Falha no envio');
+              }
+            } catch (err) {
+              setFeedback(
+                'err',
+                '<strong>Nao conseguimos enviar agora.</strong> Tente de novo ou fale direto: <a class="underline font-bold" href="https://wa.me/' + waNumber + '" target="_blank">WhatsApp</a>.'
+              );
+            } finally {
+              btn.disabled = false;
+              label.classList.remove('hidden');
+              spinner.classList.add('hidden');
+            }
+          });
+        })();
+      </script>
     </div>
   </section>
 
