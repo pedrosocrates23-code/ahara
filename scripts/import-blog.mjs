@@ -19,13 +19,22 @@ const wb = XLSX.readFile(XLSX_PATH);
 const sheet = wb.Sheets[wb.SheetNames[0]];
 const rows = XLSX.utils.sheet_to_json(sheet);
 
+// Remove travessoes (— em-dash, – en-dash) por hifen simples.
+// Tambem normaliza reticencias (…) e aspas tipograficas mais agressivas.
+const sanitize = (s) =>
+  String(s || '')
+    .replace(/—/g, '-')
+    .replace(/–/g, '-')
+    .replace(/…/g, '...')
+    .trim();
+
 const posts = rows.map((r) => ({
   slug: String(r.slug).trim(),
-  h1: String(r.h1).trim(),
+  h1: sanitize(r.h1),
   keyword: String(r.keyword).trim(),
-  meta_description: String(r.meta_description).trim(),
-  sumario_html: String(r.sumario_html || '').trim(),
-  texto_html: String(r.texto_html || '').trim(),
+  meta_description: sanitize(r.meta_description),
+  sumario_html: sanitize(r.sumario_html),
+  texto_html: sanitize(r.texto_html),
   palavras_totais: Number(r.palavras_totais) || 0,
   ctas_internos: Number(r.ctas_internos) || 0,
   pub_date: new Date().toISOString(),
