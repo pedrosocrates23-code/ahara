@@ -294,30 +294,60 @@ const localBusinessSchema = isLocalPost ? {
     font-weight: 700;
     color: #6654ca;
   }
-  .prose-content table {
-    width: 100%;
-    border-collapse: collapse;
+  /* ── Tabelas responsivas ── */
+  .prose-content .table-outer {
+    margin: 1.75rem 0;
+    border-radius: 12px;
     border: 2px solid #000;
     box-shadow: 4px 4px 0 0 #000;
-    border-radius: 12px;
     overflow: hidden;
-    margin: 1.75rem 0;
+  }
+  .prose-content .table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    /* Shadow de scroll: indica conteúdo à direita/esquerda */
+    background:
+      linear-gradient(to right, #fff 20%, transparent) left,
+      linear-gradient(to left,  #fff 20%, transparent) right,
+      radial-gradient(ellipse at left,  rgba(0,0,0,.10) 0%, transparent 70%) left,
+      radial-gradient(ellipse at right, rgba(0,0,0,.10) 0%, transparent 70%) right;
+    background-color: #fff;
+    background-size: 40px 100%, 40px 100%, 14px 100%, 14px 100%;
+    background-repeat: no-repeat;
+    background-attachment: local, local, scroll, scroll;
+  }
+  .prose-content .table-outer table {
+    width: 100%;
+    min-width: 480px;
+    border-collapse: collapse;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    margin: 0;
     font-size: 0.95rem;
   }
-  .prose-content thead th {
+  .prose-content .table-outer thead th {
     background: #000;
     color: #f4e7da;
     font-family: 'Best Curry', 'Fredoka', sans-serif;
     text-align: left;
     padding: 0.75rem 1rem;
+    white-space: nowrap;
   }
-  .prose-content tbody td {
+  .prose-content .table-outer tbody td {
     padding: 0.75rem 1rem;
     border-bottom: 1px solid rgba(0,0,0,0.15);
     background: #fff;
   }
-  .prose-content tbody tr:nth-child(even) td { background: #f4e7da; }
-  .prose-content tbody tr:last-child td { border-bottom: none; }
+  .prose-content .table-outer tbody tr:nth-child(even) td { background: #f4e7da; }
+  .prose-content .table-outer tbody tr:last-child td { border-bottom: none; }
+  @media (max-width: 640px) {
+    .prose-content .table-outer thead th,
+    .prose-content .table-outer tbody td {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.82rem;
+    }
+  }
   .prose-content blockquote {
     border-left: 4px solid #6654ca;
     margin: 1.5rem 0;
