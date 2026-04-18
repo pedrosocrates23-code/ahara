@@ -5,7 +5,7 @@ import FeatureCard from '@/components/FeatureCard.astro';
 import AudienceCard from '@/components/AudienceCard.astro';
 import { Picture } from 'astro:assets';
 import heroChipsImg from '@/assets/images/hero-chips.webp';
-import { site, img } from '@/data/site';
+import { site } from '@/data/site';
 
 const waHero = site.whatsapp.link('Olá, gostaria de fazer um pedido de batatas chips Ahara');
 
@@ -28,7 +28,6 @@ const organizationSchema = {
 <Layout
   title="Batatas Chips Artesanais em Brasília/DF"
   description="Distribuidora B2B de batatas chips artesanais em Brasília/DF. Revendedores, comércios, eventos e food service. Pedido mínimo 5kg."
-  preloadImage={img.heroChips}
   extraSchemas={[organizationSchema]}
 >
 

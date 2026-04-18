@@ -2,7 +2,6 @@
 import Nav from '@/components/Nav.astro';
 import Footer from '@/components/Footer.astro';
 import WhatsAppFloat from '@/components/WhatsAppFloat.astro';
-import { ClientRouter } from 'astro:transitions';
 import { site } from '@/data/site';
 import '@/styles/global.css';
 
@@ -167,9 +166,8 @@ const websiteSchema = {
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-P7MVJ8Q12H', { send_page_view: false });
+      gtag('config', 'G-P7MVJ8Q12H');
     </script>
-    <ClientRouter />
   </head>
   <body>
     <Nav />
@@ -178,16 +176,5 @@ const websiteSchema = {
     </main>
     <Footer />
     <WhatsAppFloat />
-    <!-- Dispara page_view no carregamento inicial e em cada navegação via View Transitions -->
-    <script>
-      document.addEventListener('astro:page-load', () => {
-        if (typeof window.gtag === 'function') {
-          window.gtag('event', 'page_view', {
-            page_title: document.title,
-            page_location: window.location.href,
-          });
-        }
-      });
-    </script>
   </body>
 </html>
