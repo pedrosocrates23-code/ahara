@@ -1,0 +1,85 @@
+---
+import { site } from '@/data/site';
+
+const waUrl = site.whatsapp.link('Olá, vim pelo site e gostaria de saber mais sobre as batatas chips Ahara');
+---
+
+<a
+  href={waUrl}
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="Abrir conversa no WhatsApp"
+  class="wa-float"
+>
+  <svg class="wa-float__icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+    <path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.12 1.535 5.856L0 24l6.336-1.511A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.822 9.822 0 01-5.003-1.366l-.36-.213-3.757.984 1.003-3.655-.234-.376A9.825 9.825 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182c5.429 0 9.818 4.388 9.818 9.818 0 5.429-4.389 9.818-9.818 9.818z"/>
+  </svg>
+</a>
+
+<style>
+  .wa-float {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    z-index: 60;
+    width: 56px;
+    height: 56px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #0a6e3c; /* brand-green */
+    color: #fff;
+    border: 2px solid #000;
+    border-radius: 9999px;
+    box-shadow: 4px 4px 0 0 #000;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    animation: wa-bounce 3s ease-in-out infinite;
+  }
+
+  .wa-float:hover,
+  .wa-float:focus-visible {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 #000;
+    animation-play-state: paused;
+  }
+
+  .wa-float:focus-visible {
+    outline: 3px solid #ffd800;
+    outline-offset: 3px;
+  }
+
+  .wa-float__icon {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+  }
+
+  /* Um leve bounce a cada 3s para chamar atencao sem ser irritante */
+  @keyframes wa-bounce {
+    0%, 92%, 100% { transform: translate(0, 0); }
+    94%           { transform: translate(0, -4px); }
+    96%           { transform: translate(0, 0); }
+    98%           { transform: translate(0, -2px); }
+  }
+
+  /* Respeita preferencia do usuario de reduzir movimento */
+  @media (prefers-reduced-motion: reduce) {
+    .wa-float { animation: none; }
+  }
+
+  /* Ajusta posicao em telas muito pequenas para nao cobrir contudo */
+  @media (max-width: 480px) {
+    .wa-float {
+      right: 1rem;
+      bottom: 1rem;
+      width: 52px;
+      height: 52px;
+    }
+  }
+
+  /* Oculta em print */
+  @media print {
+    .wa-float { display: none; }
+  }
+</style>
