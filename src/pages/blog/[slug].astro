@@ -127,9 +127,19 @@ const localBusinessSchema = isLocalPost ? {
       <h1 class="font-display font-bold text-3xl md:text-5xl text-white leading-tight mb-4">
         {post.data.h1}
       </h1>
-      <p class="font-body text-sm text-white/90">
-        Leitura de cerca de {Math.ceil(post.data.palavras_totais / 220)} min · {post.data.palavras_totais} palavras
-      </p>
+      <div class="flex flex-wrap items-center gap-3 text-sm text-white/90">
+        <a
+          href="/autor/joao-amaro/"
+          class="inline-flex items-center gap-2 hover:text-brand-yellow transition-colors"
+        >
+          <span class="w-7 h-7 rounded-full bg-brand-yellow border-2 border-black flex items-center justify-center font-display font-bold text-black text-xs flex-shrink-0">J</span>
+          <span class="font-medium">João Amaro</span>
+        </a>
+        <span class="text-white/40">·</span>
+        <span>Leitura de ~{Math.ceil(post.data.palavras_totais / 220)} min</span>
+        <span class="text-white/40">·</span>
+        <span>{post.data.palavras_totais} palavras</span>
+      </div>
     </div>
   </section>
 
