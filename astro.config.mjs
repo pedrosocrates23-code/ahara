@@ -34,6 +34,9 @@ function rehypeResponsiveTables() {
 export default defineConfig({
   site: 'https://aharabr.com.br',
   compressHTML: true,
+  image: {
+    quality: 80,
+  },
   build: {
     inlineStylesheets: 'always',
   },
