@@ -48,6 +48,13 @@ const articleSchema = {
 };
 
 const related = allPosts.filter((p) => p.id !== post.id).slice(0, 3);
+
+const localPattern = /brasília|brasilia|\bdf\b|taguatinga|distrito federal/i;
+const isLocalPost =
+  localPattern.test(post.data.h1) ||
+  localPattern.test(post.data.keyword) ||
+  localPattern.test(post.data.meta_description) ||
+  localPattern.test(post.id);
 ---
 
 <Layout
@@ -98,6 +105,55 @@ const related = allPosts.filter((p) => p.id !== post.id).slice(0, 3);
       </div>
     </div>
   </article>
+
+  <!-- ━━ MAPA LOCAL + NIKO CTA ━━ -->
+  {isLocalPost && (
+    <section class="bg-brand-yellow border-b-[3px] border-black py-12 md:py-16">
+      <div class="max-w-5xl mx-auto px-4 grid md:grid-cols-2 gap-8 items-center">
+
+        <!-- Mapa -->
+        <div>
+          <h2 class="font-display font-bold text-2xl md:text-3xl text-black mb-2">
+            Fábrica aqui no DF
+          </h2>
+          <p class="font-body text-sm text-black/70 mb-4">{site.address.full}</p>
+          <div class="overflow-hidden rounded-2xl border-[3px] border-black shadow-brutal">
+            <iframe
+              title="Localização Ahara – ADE Águas Claras, Brasília/DF"
+              src={`https://maps.google.com/maps?q=${site.address.mapsQuery}&output=embed&hl=pt-BR`}
+              width="100%"
+              height="240"
+              style="border:0;"
+              loading="lazy"
+              allowfullscreen
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
+        </div>
+
+        <!-- Niko CTA -->
+        <div class="card-brutal bg-white p-6 md:p-8 flex flex-col gap-4">
+          <span class="inline-block bg-brand-red border-2 border-black px-3 py-1 text-xs font-impact shadow-brutal rounded-full text-white w-fit">
+            PRODUTO NIKO
+          </span>
+          <h3 class="font-display font-bold text-2xl md:text-3xl leading-tight">
+            Niko Batata Chips:<br/>
+            <span class="text-brand-purple">o simples bem feito.</span>
+          </h3>
+          <p class="font-body text-sm text-black/70 leading-relaxed">
+            Produzido por Ahara em Brasília/DF. Batata frita tipo chips sabor tradicional
+            (sal), em embalagens de 50g, 150g e 500g. Pedido mínimo 5kg com desconto
+            progressivo de até 12%.
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <CTAButton href="/produtos/" label="Ver Niko Chips" variant="purple" icon="arrow" />
+            <CTAButton href={waPost} label="Pedir agora" variant="green" icon="whatsapp" external={true} />
+          </div>
+        </div>
+
+      </div>
+    </section>
+  )}
 
   <!-- ━━ CTA FINAL ━━ -->
   <section class="bg-brand-purple border-b-[3px] border-black py-12 md:py-16">
