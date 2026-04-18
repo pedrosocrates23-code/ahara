@@ -30,9 +30,12 @@ const staticRoutes: Route[] = [
   { path: '/para-revendedores/',  priority: 0.85, changefreq: 'monthly' },
   { path: '/para-comercios/',     priority: 0.85, changefreq: 'monthly' },
   { path: '/para-eventos/',       priority: 0.85, changefreq: 'monthly' },
-  { path: '/contato/',            priority: 0.8,  changefreq: 'monthly' },
-  { path: '/sobre/',              priority: 0.7,  changefreq: 'monthly' },
-  { path: '/blog/',               priority: 0.75, changefreq: 'weekly'  },
+  { path: '/contato/',                    priority: 0.8,  changefreq: 'monthly' },
+  { path: '/sobre/',                      priority: 0.7,  changefreq: 'monthly' },
+  { path: '/blog/',                       priority: 0.75, changefreq: 'weekly'  },
+  { path: '/autor/joao-amaro/',           priority: 0.6,  changefreq: 'monthly' },
+  { path: '/politica-de-privacidade/',    priority: 0.3,  changefreq: 'yearly'  },
+  { path: '/politica-de-qualidade/',      priority: 0.5,  changefreq: 'yearly'  },
 ];
 
 export const GET: APIRoute = async () => {

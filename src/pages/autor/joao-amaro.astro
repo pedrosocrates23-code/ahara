@@ -1,0 +1,165 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import CTAButton from '@/components/CTAButton.astro';
+import { getCollection } from 'astro:content';
+import { site } from '@/data/site';
+
+const posts = await getCollection('blog', ({ data }) => !data.draft);
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: `${site.url}/` },
+    { '@type': 'ListItem', position: 2, name: 'Blog', item: `${site.url}/blog/` },
+    { '@type': 'ListItem', position: 3, name: 'João Amaro', item: `${site.url}/autor/joao-amaro/` },
+  ],
+};
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': `${site.url}/autor/joao-amaro/#person`,
+  name: 'João Amaro',
+  givenName: 'João',
+  familyName: 'Amaro',
+  jobTitle: 'Fundador',
+  description: 'Fundador da Ahara e idealizador das Niko Batata Chips. Especialista em produção artesanal de snacks no Distrito Federal.',
+  url: `${site.url}/autor/joao-amaro/`,
+  worksFor: {
+    '@type': 'Organization',
+    '@id': `${site.url}/#organization`,
+    name: site.legalName,
+  },
+  knowsAbout: [
+    'Batatas chips artesanais',
+    'Boas Práticas de Fabricação',
+    'Variedades Marquise e Atlantic',
+    'Distribuição B2B no DF',
+    'Food service',
+  ],
+};
+---
+
+<Layout
+  title="João Amaro — Fundador da Ahara"
+  description="João Amaro é o fundador da Ahara e idealizador das Niko Batata Chips. Especialista em produção artesanal de snacks no Distrito Federal."
+  extraSchemas={[breadcrumbSchema, personSchema]}
+>
+  <!-- HERO -->
+  <section class="bg-brand-purple border-b-[3px] border-black py-16 md:py-20">
+    <div class="max-w-4xl mx-auto px-4">
+      <nav class="mb-6 text-sm text-white/80" aria-label="Breadcrumb">
+        <a href="/" class="hover:underline">Início</a>
+        <span class="mx-2">/</span>
+        <a href="/blog/" class="hover:underline">Blog</a>
+        <span class="mx-2">/</span>
+        <span>João Amaro</span>
+      </nav>
+      <div class="flex flex-col md:flex-row gap-8 items-start md:items-center">
+        <!-- Avatar placeholder -->
+        <div class="w-24 h-24 md:w-32 md:h-32 flex-shrink-0 bg-brand-yellow border-[3px] border-black shadow-brutal rounded-full flex items-center justify-center">
+          <span class="font-display font-bold text-4xl md:text-5xl text-black select-none">J</span>
+        </div>
+        <div>
+          <span class="inline-block bg-brand-yellow border-2 border-black px-3 py-1 text-xs font-impact shadow-brutal mb-3 rounded-full">
+            FUNDADOR · AHARA
+          </span>
+          <h1 class="font-display font-bold text-4xl md:text-5xl text-white leading-tight mb-2">
+            João Amaro
+          </h1>
+          <p class="font-body text-white/90 text-lg">
+            Fundador da Ahara &amp; idealizador das Niko Batata Chips
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BIO -->
+  <section class="bg-linen border-b-[3px] border-black py-12 md:py-16">
+    <div class="max-w-4xl mx-auto px-4 grid md:grid-cols-3 gap-8">
+      <div class="md:col-span-2 flex flex-col gap-5 font-body text-black/80 leading-relaxed">
+        <h2 class="font-display font-bold text-2xl text-black">Sobre João Amaro</h2>
+        <p>
+          João Amaro é o fundador da <strong>AHARA INDÚSTRIA E COMÉRCIO DE BATATAS SNACKS LTDA</strong>
+          e o criador das <strong>Niko Batata Chips</strong> — o snack artesanal produzido em
+          Brasília/DF com o simples objetivo de fazer bem feito.
+        </p>
+        <p>
+          Ao longo do desenvolvimento da Ahara, João aprofundou o conhecimento técnico sobre
+          as variedades de batata mais adequadas à fritura artesanal — as cultivares
+          <strong>Marquise</strong> e <strong>Atlantic</strong> —, sobre controle de temperatura
+          nos processos de produção e sobre as exigências das Boas Práticas de Fabricação
+          reguladas pela ANVISA.
+        </p>
+        <p>
+          Com operação sediada em Águas Claras, DF, a Ahara atende revendedores autônomos,
+          comércios, restaurantes e eventos no Distrito Federal, com pedido mínimo de 5 kg
+          e desconto progressivo de até 12%.
+        </p>
+        <p>
+          Os artigos publicados no blog da Ahara refletem o aprendizado prático de quem
+          constrói uma marca de snacks artesanais no mercado B2B local — com foco em
+          margens reais, logística de entrega e qualidade de produto.
+        </p>
+        <div class="flex gap-3 flex-wrap">
+          <CTAButton href="/produtos/" label="Conhecer o Niko Chips" variant="purple" icon="arrow" />
+          <CTAButton href="/contato/" label="Falar com João" variant="yellow" />
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="flex flex-col gap-4">
+        <div class="card-brutal bg-white p-5">
+          <h3 class="font-display font-bold text-base mb-3">Especialidades</h3>
+          <ul class="space-y-2 text-sm text-black/70">
+            {[
+              'Produção artesanal de chips',
+              'Variedades Marquise e Atlantic',
+              'BPF e segurança alimentar',
+              'Distribuição B2B no DF',
+              'Food service e eventos',
+              'Embalagem e rotulagem ANVISA',
+            ].map(item => (
+              <li class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 bg-brand-purple rounded-full flex-shrink-0"></span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div class="card-brutal bg-brand-yellow p-5">
+          <h3 class="font-display font-bold text-base mb-2">Empresa</h3>
+          <p class="text-sm font-body">{site.legalName}</p>
+          <p class="text-xs text-black/60 mt-1">CNPJ {site.cnpj}</p>
+          <p class="text-xs text-black/60">{site.address.street}, Brasília/DF</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ARTIGOS -->
+  <section class="bg-white border-b-[3px] border-black py-12 md:py-16">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="font-display font-bold text-2xl md:text-3xl text-black mb-6">
+        Artigos de João Amaro ({posts.length})
+      </h2>
+      <div class="grid md:grid-cols-2 gap-5">
+        {posts.map(p => (
+          <a
+            href={`/blog/${p.id}/`}
+            class="card-brutal bg-linen p-5 flex flex-col gap-3 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brutal-lg transition-all"
+          >
+            <span class="inline-block bg-brand-yellow border-2 border-black px-2 py-0.5 text-xs font-impact w-fit rounded-full">
+              ARTIGO
+            </span>
+            <h3 class="font-display font-bold text-base leading-snug">{p.data.h1}</h3>
+            <p class="font-body text-sm text-black/60 leading-snug line-clamp-2">{p.data.meta_description}</p>
+            <span class="text-xs font-body text-brand-purple font-bold mt-auto">Ler artigo →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>

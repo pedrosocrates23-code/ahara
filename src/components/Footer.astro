@@ -83,9 +83,16 @@ const whatsUrl = site.whatsapp.url;
 
   <!-- Bottom bar -->
   <div class="border-t border-linen/10 py-5 px-4">
-    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-linen/75">
-      <p>© {year} {site.legalName}</p>
-      <p class="text-center">CNPJ {site.cnpj} · {site.address.full}</p>
+    <div class="max-w-6xl mx-auto flex flex-col gap-3 text-xs text-linen/75">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-2">
+        <p>© {year} {site.legalName}</p>
+        <p class="text-center">CNPJ {site.cnpj} · {site.address.full}</p>
+      </div>
+      <div class="flex flex-wrap justify-center md:justify-start gap-4 border-t border-linen/10 pt-3">
+        <a href="/politica-de-privacidade/" class="hover:text-linen transition-colors">Política de Privacidade</a>
+        <a href="/politica-de-qualidade/" class="hover:text-linen transition-colors">Política de Qualidade</a>
+        <a href="/autor/joao-amaro/" class="hover:text-linen transition-colors">Autor: João Amaro</a>
+      </div>
     </div>
   </div>
 </footer>

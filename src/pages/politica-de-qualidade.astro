@@ -1,0 +1,245 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { site } from '@/data/site';
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: `${site.url}/` },
+    { '@type': 'ListItem', position: 2, name: 'Política de Qualidade', item: `${site.url}/politica-de-qualidade/` },
+  ],
+};
+
+const orgaos = [
+  {
+    nome: 'ANVISA',
+    descricao: 'Agência Nacional de Vigilância Sanitária',
+    url: 'https://www.gov.br/anvisa/pt-br',
+    cor: 'bg-brand-purple',
+  },
+  {
+    nome: 'VISA/DF',
+    descricao: 'Vigilância Sanitária do Distrito Federal',
+    url: 'https://www.saude.df.gov.br/vigilancia-sanitaria',
+    cor: 'bg-brand-green',
+  },
+  {
+    nome: 'INMETRO',
+    descricao: 'Instituto Nacional de Metrologia, Qualidade e Tecnologia',
+    url: 'https://www.gov.br/inmetro/pt-br',
+    cor: 'bg-brand-red',
+  },
+  {
+    nome: 'MAPA',
+    descricao: 'Ministério da Agricultura, Pecuária e Abastecimento',
+    url: 'https://www.gov.br/agricultura/pt-br',
+    cor: 'bg-brand-orange',
+  },
+  {
+    nome: 'Ministério da Saúde',
+    descricao: 'Regulamentação sanitária federal de alimentos',
+    url: 'https://www.gov.br/saude/pt-br',
+    cor: 'bg-brand-yellow',
+  },
+  {
+    nome: 'ANPD',
+    descricao: 'Autoridade Nacional de Proteção de Dados',
+    url: 'https://www.gov.br/anpd/pt-br',
+    cor: 'bg-black',
+  },
+];
+
+const normas = [
+  {
+    codigo: 'RDC 275/2002',
+    orgao: 'ANVISA',
+    descricao: 'Regulamento Técnico de Procedimentos Operacionais Padronizados (POPs) e lista de verificação de Boas Práticas de Fabricação.',
+    url: 'https://www.gov.br/anvisa/pt-br/assuntos/legislacao/consultas-publicas-arquivos/rdc-275-21-outubro-2002.pdf',
+  },
+  {
+    codigo: 'Portaria MS 326/1997',
+    orgao: 'Ministério da Saúde',
+    descricao: 'Regulamento Técnico sobre as condições higiênico-sanitárias e de Boas Práticas de Fabricação para estabelecimentos produtores de alimentos.',
+    url: 'https://bvsms.saude.gov.br/bvs/saudelegis/svs/1997/prt0326_30_07_1997.html',
+  },
+  {
+    codigo: 'RDC 429/2020',
+    orgao: 'ANVISA',
+    descricao: 'Rotulagem nutricional frontal de alimentos — exige advertências "Alto em Sódio" e "Alto em Gordura Saturada" quando os limites são superados.',
+    url: 'https://www.in.gov.br/en/web/dou/-/resolucao-rdc-n-429-de-8-de-outubro-de-2020-282070599',
+  },
+  {
+    codigo: 'IN 75/2020',
+    orgao: 'ANVISA',
+    descricao: 'Estabelece os requisitos técnicos para declaração da rotulagem nutricional nos alimentos embalados.',
+    url: 'https://www.in.gov.br/en/web/dou/-/instrucao-normativa-in-n-75-de-8-de-outubro-de-2020-282071143',
+  },
+  {
+    codigo: 'RDC 259/2002',
+    orgao: 'ANVISA',
+    descricao: 'Regulamento técnico sobre rotulagem de alimentos embalados — lista de ingredientes, alérgenos, prazo de validade e informações do fabricante.',
+    url: 'https://www.gov.br/anvisa/pt-br/assuntos/legislacao/consultas-publicas-arquivos/rdc-259-de-20-de-setembro-de-2002.pdf',
+  },
+];
+---
+
+<Layout
+  title="Política de Qualidade"
+  description="Conheça os padrões sanitários e de qualidade que a Ahara segue na produção das Niko Batata Chips em Brasília/DF. Conformidade com ANVISA, VISA/DF e INMETRO."
+  extraSchemas={[breadcrumbSchema]}
+>
+  <section class="bg-brand-green border-b-[3px] border-black py-16 md:py-20">
+    <div class="max-w-3xl mx-auto px-4">
+      <span class="inline-block bg-brand-yellow border-2 border-black px-3 py-1 text-xs font-impact shadow-brutal mb-6 rounded-full">
+        BPF · ANVISA · VISA/DF
+      </span>
+      <h1 class="font-display font-bold text-4xl md:text-5xl text-white mb-4 leading-tight">
+        Política de Qualidade
+      </h1>
+      <p class="font-body text-white/90 max-w-xl">
+        Nosso compromisso com a segurança alimentar e a conformidade regulatória é parte central do que fazemos — não um diferencial, mas um requisito inegociável.
+      </p>
+    </div>
+  </section>
+
+  <section class="bg-linen py-12 md:py-16">
+    <div class="max-w-3xl mx-auto px-4 flex flex-col gap-8 font-body text-black/80 leading-relaxed">
+
+      <div class="card-brutal bg-white p-6 md:p-8">
+        <h2 class="font-display font-bold text-xl mb-3">Nosso compromisso</h2>
+        <p class="mb-3">
+          A <strong>{site.legalName}</strong> (CNPJ {site.cnpj}) produz as
+          <strong>Niko Batata Chips</strong> em Brasília/DF seguindo rigorosamente
+          as normas sanitárias federais e distritais que regem a fabricação e
+          comercialização de alimentos no Brasil.
+        </p>
+        <p>
+          Cada lote passa por controle de qualidade antes de ser embalado e
+          distribuído. Crocância, sabor, aparência e peso são verificados
+          sistematicamente — o que não atende nosso padrão não sai da produção.
+        </p>
+      </div>
+
+      <div class="card-brutal bg-white p-6 md:p-8">
+        <h2 class="font-display font-bold text-xl mb-4">Boas Práticas de Fabricação (BPF)</h2>
+        <p class="mb-4 text-sm">
+          Seguimos as diretrizes de Boas Práticas de Fabricação conforme a
+          <strong>Portaria MS 326/1997</strong> e a <strong>RDC ANVISA 275/2002</strong>,
+          que estabelecem procedimentos operacionais padronizados (POPs) para garantir
+          a segurança e a qualidade dos alimentos produzidos.
+        </p>
+        <div class="grid sm:grid-cols-2 gap-3 text-sm">
+          {[
+            'Higienização de instalações e equipamentos',
+            'Controle de pragas e vetores',
+            'Higiene pessoal dos manipuladores',
+            'Seleção e controle de fornecedores de matéria-prima',
+            'Controle de temperatura nos processos de fritura',
+            'Armazenamento e rastreabilidade por lote',
+            'Descarte adequado de resíduos',
+            'Registro de não-conformidades',
+          ].map(item => (
+            <div class="flex items-start gap-2">
+              <span class="text-brand-green font-bold flex-shrink-0 mt-0.5">✓</span>
+              <span>{item}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="card-brutal bg-white p-6 md:p-8">
+        <h2 class="font-display font-bold text-xl mb-4">Rotulagem e informação ao consumidor</h2>
+        <p class="mb-4 text-sm">
+          A rotulagem das Niko Batata Chips cumpre integralmente a
+          <strong>RDC ANVISA 429/2020</strong> (rotulagem nutricional frontal) e a
+          <strong>IN ANVISA 75/2020</strong> (declaração de informação nutricional),
+          incluindo as advertências obrigatórias de nutrientes críticos e a tabela
+          nutricional completa com valores por porção de 25 g.
+        </p>
+        <div class="bg-linen border-2 border-black rounded-xl p-4 text-sm space-y-2">
+          <p><strong>Advertências presentes no rótulo (RDC 429/2020):</strong></p>
+          <div class="flex gap-2 flex-wrap">
+            <span class="bg-black text-white px-3 py-1 rounded-full text-xs font-bold">⚠ ALTO EM SÓDIO</span>
+            <span class="bg-black text-white px-3 py-1 rounded-full text-xs font-bold">⚠ GORDURA SATURADA</span>
+          </div>
+          <p class="text-xs text-black/50 mt-2">
+            A presença dessas advertências é uma exigência legal para transparência com o consumidor,
+            não uma indicação de fabricação inadequada.
+          </p>
+        </div>
+      </div>
+
+      <div class="card-brutal bg-white p-6 md:p-8">
+        <h2 class="font-display font-bold text-xl mb-4">Registro e isenção regulatória</h2>
+        <p class="text-sm">
+          O produto <strong>Niko Batata Chips</strong> é dispensado de registro sanitário
+          junto à ANVISA, conforme a legislação vigente que isenta determinados alimentos
+          de baixo risco do processo de registro prévio, sem prejuízo do cumprimento
+          das demais exigências sanitárias aplicáveis à fabricação e rotulagem.
+        </p>
+      </div>
+
+      <div class="card-brutal bg-white p-6 md:p-8">
+        <h2 class="font-display font-bold text-xl mb-4">Normas e legislação aplicável</h2>
+        <div class="flex flex-col gap-4">
+          {normas.map(norma => (
+            <div class="border-l-4 border-brand-purple pl-4">
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <a
+                  href={norma.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-display font-bold text-brand-purple hover:underline"
+                >
+                  {norma.codigo}
+                </a>
+                <span class="text-xs bg-linen border border-black/20 px-2 py-0.5 rounded-full">
+                  {norma.orgao}
+                </span>
+              </div>
+              <p class="text-sm text-black/70">{norma.descricao}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Órgãos reguladores -->
+  <section class="bg-black border-b-[3px] border-black py-12 md:py-16">
+    <div class="max-w-3xl mx-auto px-4">
+      <h2 class="font-display font-bold text-2xl md:text-3xl text-linen mb-2">
+        Órgãos reguladores
+      </h2>
+      <p class="font-body text-linen/80 text-sm mb-8">
+        Nossa operação está sujeita à fiscalização dos seguintes órgãos.
+        Consulte-os para informações oficiais sobre segurança alimentar.
+      </p>
+      <div class="grid sm:grid-cols-2 gap-4">
+        {orgaos.map(orgao => (
+          <a
+            href={orgao.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class={`card-brutal ${orgao.cor} ${orgao.cor === 'bg-brand-yellow' ? 'text-black' : 'text-white'} p-5 flex flex-col gap-2 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brutal-lg transition-all`}
+          >
+            <span class="font-display font-bold text-xl">{orgao.nome}</span>
+            <span class="font-body text-sm opacity-90">{orgao.descricao}</span>
+            <span class="font-body text-xs opacity-75 mt-auto">→ Site oficial</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-linen py-10">
+    <div class="max-w-3xl mx-auto px-4">
+      <p class="font-body text-sm text-black/60 text-center">
+        Dúvidas sobre nossa política de qualidade?
+        <a href={`mailto:${site.email}`} class="text-brand-purple font-bold underline ml-1">{site.email}</a>
+      </p>
+    </div>
+  </section>
+</Layout>
