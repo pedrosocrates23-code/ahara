@@ -51,11 +51,17 @@ const localBusinessSchema = {
     addressRegion: 'DF',
     addressCountry: 'BR',
   },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: -15.837,
+    longitude: -48.024,
+  },
+  hasMap: `https://maps.google.com/maps?q=${site.address.mapsQuery}`,
   email: site.email,
-  areaServed: site.regions.map((region) => ({
-    '@type': 'City',
-    name: region,
-  })),
+  areaServed: [
+    ...site.regions.map((region) => ({ '@type': 'City', name: region })),
+    { '@type': 'AdministrativeArea', name: 'Distrito Federal' },
+  ],
   openingHoursSpecification: [
     {
       '@type': 'OpeningHoursSpecification',

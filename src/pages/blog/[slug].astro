@@ -55,13 +55,55 @@ const isLocalPost =
   localPattern.test(post.data.keyword) ||
   localPattern.test(post.data.meta_description) ||
   localPattern.test(post.id);
+
+const localBusinessSchema = isLocalPost ? {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  '@id': `${site.url}/#localbusiness`,
+  name: site.legalName,
+  alternateName: site.name,
+  url: site.url,
+  email: site.email,
+  legalName: site.legalName,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: site.address.street,
+    addressLocality: 'Brasília',
+    addressRegion: 'DF',
+    addressCountry: 'BR',
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: -15.837,
+    longitude: -48.024,
+  },
+  hasMap: `https://maps.google.com/maps?q=${site.address.mapsQuery}`,
+  areaServed: [
+    { '@type': 'AdministrativeArea', name: 'Distrito Federal' },
+    ...site.regions.map((r) => ({ '@type': 'City', name: r })),
+  ],
+  openingHoursSpecification: [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      opens: '08:00',
+      closes: '18:00',
+    },
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: 'Saturday',
+      opens: '08:00',
+      closes: '12:00',
+    },
+  ],
+} : null;
 ---
 
 <Layout
   title={post.data.seo_title || post.data.h1}
   description={post.data.meta_description}
   ogImage="/images/hero-chips.webp"
-  extraSchemas={[breadcrumbSchema, articleSchema]}
+  extraSchemas={[breadcrumbSchema, articleSchema, ...(localBusinessSchema ? [localBusinessSchema] : [])]}
 >
 
   <!-- ━━ HERO ━━ -->
