@@ -66,6 +66,11 @@ const whatsUrl = site.whatsapp.url;
             {site.whatsapp.display}
           </a>
         </li>
+        <li>
+          <a href={`mailto:${site.email}`} class="hover:text-linen transition-colors">
+            {site.email}
+          </a>
+        </li>
         <li>{site.hours.weekdays}</li>
         <li>{site.hours.saturday}</li>
         <li class="pt-2 text-linen/75 text-xs leading-snug">
@@ -78,9 +83,9 @@ const whatsUrl = site.whatsapp.url;
 
   <!-- Bottom bar -->
   <div class="border-t border-linen/10 py-5 px-4">
-    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2 text-xs text-linen/75">
-      <p>© {year} Ahara Batatas Chips. Todos os direitos reservados.</p>
-      <p>Produção local · Brasília/DF · AHARABR.COM.BR</p>
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-linen/75">
+      <p>© {year} {site.legalName}</p>
+      <p class="text-center">CNPJ {site.cnpj} · {site.address.full}</p>
     </div>
   </div>
 </footer>
