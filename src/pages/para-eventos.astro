@@ -2,6 +2,8 @@
 import Layout from '@/layouts/Layout.astro';
 import CTAButton from '@/components/CTAButton.astro';
 import PriceTable from '@/components/PriceTable.astro';
+import { Image } from 'astro:assets';
+import heroChipsImg from '@/assets/images/hero-chips.webp';
 import { site, img, icons } from '@/data/site';
 
 const waEventos = site.whatsapp.link('Olá, preciso de um orçamento de batatas chips para evento/food service');
@@ -105,13 +107,12 @@ const breadcrumbSchema = {
       </div>
 
       <div class="relative">
-        <img
-          src={img.heroChips}
+        <Image
+          src={heroChipsImg}
           alt="Batatas chips artesanais Ahara para eventos"
-          width="1200"
-          height="400"
+          width={1200}
+          height={400}
           loading="lazy"
-          decoding="async"
           class="border-[3px] border-linen/30 w-full h-40 md:h-48 object-cover rounded-3xl"
         />
         <img

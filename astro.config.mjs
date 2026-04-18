@@ -13,7 +13,7 @@ export default defineConfig({
     tailwind({ applyBaseStyles: false }),
     mdx(),
     compress({
-      CSS: false,
+      CSS: true,
       HTML: true,
       Image: false,
       JavaScript: true,

@@ -1,6 +1,8 @@
 ---
 import Layout from '@/layouts/Layout.astro';
 import CTAButton from '@/components/CTAButton.astro';
+import { Image } from 'astro:assets';
+import chipsBowlImg from '@/assets/images/chips-bowl-2.webp';
 import { site, img, icons } from '@/data/site';
 
 const breadcrumbSchema = {
@@ -22,8 +24,10 @@ const productSchema = {
   manufacturer: {
     '@type': 'Organization',
     name: site.legalName,
+    email: site.email,
     address: {
       '@type': 'PostalAddress',
+      streetAddress: site.address.street,
       addressLocality: 'Brasília',
       addressRegion: 'DF',
       addressCountry: 'BR',
@@ -88,13 +92,12 @@ const productSchema = {
     <div class="absolute top-10 -left-20 w-64 h-64 bg-brand-purple/10 blob-organic pointer-events-none" aria-hidden="true"></div>
     <div class="relative max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
       <div class="relative order-2 md:order-1">
-        <img
-          src={img.chipsBowl}
+        <Image
+          src={chipsBowlImg}
           alt="Batatas chips artesanais Ahara - matéria-prima selecionada"
-          width="800"
-          height="600"
+          width={800}
+          height={600}
           loading="lazy"
-          decoding="async"
           class="border-[3px] border-black shadow-brutal-lg w-full aspect-[4/3] object-cover rounded-3xl"
         />
         <img
@@ -205,21 +208,23 @@ const productSchema = {
         <!-- Tabela nutricional -->
         <div class="card-brutal bg-white p-6">
           <h3 class="font-display font-bold text-xl mb-1">Tabela Nutricional</h3>
-          <p class="font-body text-sm text-black/50 mb-5">Porção de 25g (½ pacote de 50g)</p>
+          <p class="font-body text-sm text-black/50 mb-5">Porção de 25 g (½ embalagem) · 2 porções por embalagem</p>
 
           <div class="border-[2px] border-black overflow-hidden rounded-xl">
             <div class="bg-black text-linen px-3 py-2 font-display font-bold text-sm">
-              Informação Nutricional
+              Informação Nutricional — % VD(*)
             </div>
             {[
-              ['Valor Energético', '-', '-'],
-              ['Carboidratos', '-', '-'],
-              ['Proteínas', '-', '-'],
-              ['Gorduras Totais', '-', '-'],
-              ['Gorduras Saturadas', '-', '-'],
-              ['Gorduras Trans', '0g', '-'],
-              ['Fibra Alimentar', '-', '-'],
-              ['Sódio', '-', '-'],
+              ['Valor Energético',     '140 kcal', '7%'],
+              ['Carboidratos',         '13 g',     '4%'],
+              ['Açúcares Totais',      '0 g',      '—'],
+              ['Açúcares Adicionados', '0 g',      '0%'],
+              ['Proteínas',            '2 g',      '4%'],
+              ['Gorduras Totais',      '9 g',      '14%'],
+              ['Gorduras Saturadas',   '4 g',      '20%'],
+              ['Gorduras Trans',       '0 g',      '0%'],
+              ['Fibra Alimentar',      '1,5 g',    '6%'],
+              ['Sódio',                '210 mg',   '11%'],
             ].map(([name, value, dv], i) => (
               <div class={`flex items-center justify-between px-3 py-2 text-sm font-body border-b border-black/20 last:border-b-0 ${i % 2 === 0 ? '' : 'bg-brand-purple/5'}`}>
                 <span class="font-medium">{name}</span>
@@ -230,42 +235,57 @@ const productSchema = {
               </div>
             ))}
           </div>
-          <p class="mt-3 text-xs text-black/40 font-body italic">
-            * Tabela nutricional oficial a ser inserida conforme registro do produto.
+          <p class="mt-2 text-xs text-black/40 font-body">
+            * % Valores Diários de referência com base em uma dieta de 2.000 kcal ou 8.400 kJ.
           </p>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 border-2 border-black bg-black text-white px-3 py-1 text-xs font-bold rounded-full">
+              ⚠ ALTO EM SÓDIO
+            </span>
+            <span class="inline-flex items-center gap-1 border-2 border-black bg-black text-white px-3 py-1 text-xs font-bold rounded-full">
+              ⚠ GORDURA SATURADA
+            </span>
+          </div>
         </div>
 
         <!-- Demais informações -->
         <div class="flex flex-col gap-4">
           <div class="card-brutal bg-white p-6">
             <h3 class="font-display font-bold text-lg mb-3">Ingredientes</h3>
-            <p class="font-body text-black/70">Batata, óleo vegetal e sal.</p>
-            <p class="text-xs text-black/40 mt-1 italic">* Ajustar conforme lista real de ingredientes</p>
+            <p class="font-body text-black/70">Batata, gordura vegetal (soja e palma), sal e glutamato monossódico.</p>
           </div>
 
           <div class="card-brutal bg-white p-6">
             <h3 class="font-display font-bold text-lg mb-3">Informações para Alérgicos</h3>
             <div class="space-y-2">
-              {[
-                { icon: '✅', text: 'Não contém glúten' },
-                { icon: '✅', text: 'Não contém lactose' },
-              ].map(item => (
-                <div class="flex items-center gap-2 font-body text-sm">
-                  <span class="text-brand-green">{item.icon}</span>
-                  <span>{item.text}</span>
-                </div>
-              ))}
+              <div class="flex items-center gap-2 font-body text-sm">
+                <span>⚠️</span>
+                <span class="font-bold text-brand-red">CONTÉM DERIVADOS DE SOJA</span>
+              </div>
+              <div class="flex items-center gap-2 font-body text-sm">
+                <span class="text-brand-green">✅</span>
+                <span>Não contém glúten</span>
+              </div>
             </div>
-            <p class="text-xs text-black/40 mt-3 italic">* Inserir informações sobre possíveis traços de alérgenos</p>
           </div>
 
           <div class="card-brutal bg-white p-6">
             <h3 class="font-display font-bold text-lg mb-3">Conservação</h3>
             <p class="font-body text-sm text-black/70">
-              Conservar em local fresco e seco, ao abrigo da luz.
-              Após aberto, consumir em até [X] dias.
+              Conservar em local seco, arejado e ao abrigo de luz solar.
             </p>
-            <p class="text-xs text-black/40 mt-1 italic">* Inserir informações reais de conservação e validade</p>
+            <p class="font-body text-xs text-black/50 mt-2">
+              Produto dispensado de registro conforme legislação vigente da ANVISA.
+            </p>
+          </div>
+
+          <div class="card-brutal bg-brand-yellow p-5">
+            <h3 class="font-display font-bold text-sm mb-3">Selos do produto</h3>
+            <div class="flex flex-wrap gap-2">
+              <span class="bg-white border-2 border-black px-3 py-1 text-xs font-bold rounded-full">0% GORDURA TRANS</span>
+              <span class="bg-white border-2 border-black px-3 py-1 text-xs font-bold rounded-full">VEGANO</span>
+              <span class="bg-white border-2 border-black px-3 py-1 text-xs font-bold rounded-full">INGREDIENTES NATURAIS</span>
+            </div>
           </div>
         </div>
       </div>

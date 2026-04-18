@@ -1,11 +1,21 @@
 // Configurações centralizadas do site
-// Troque estes valores quando os definitivos estiverem disponíveis.
 
 export const site = {
   name: 'Ahara',
-  legalName: 'Ahara Batatas Chips',
+  legalName: 'AHARA INDÚSTRIA E COMÉRCIO DE BATATAS SNACKS LTDA',
+  cnpj: '63.900.901/0001-50',
+  email: 'sac.aharabr@gmail.com',
   url: 'https://aharabr.com.br',
   location: 'Brasília/DF',
+
+  address: {
+    street: 'ADE Águas Claras, Conjunto 16, Lote 12',
+    city: 'Brasília',
+    state: 'DF',
+    country: 'Brasil',
+    full: 'ADE Águas Claras, Conjunto 16, Lote 12 – Brasília/DF – Brasil',
+    mapsQuery: 'ADE+Aguas+Claras+Conjunto+16+Lote+12+Brasilia+DF+Brasil',
+  },
 
   whatsapp: {
     number: '553198985678',             // +55 31 99898-5678 (provisório)

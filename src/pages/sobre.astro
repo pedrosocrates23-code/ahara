@@ -1,6 +1,9 @@
 ---
 import Layout from '@/layouts/Layout.astro';
 import CTAButton from '@/components/CTAButton.astro';
+import { Image } from 'astro:assets';
+import heroChipsImg from '@/assets/images/hero-chips.webp';
+import chipsBowlImg from '@/assets/images/chips-bowl-2.webp';
 import { site, img, icons } from '@/data/site';
 
 const breadcrumbSchema = {
@@ -72,13 +75,12 @@ const aboutSchema = {
       </div>
 
       <div class="relative">
-        <img
-          src={img.chipsBowl}
+        <Image
+          src={chipsBowlImg}
           alt="Batatas chips artesanais Ahara"
-          width="800"
-          height="600"
+          width={800}
+          height={600}
           loading="lazy"
-          decoding="async"
           class="border-[3px] border-black shadow-brutal-lg w-full aspect-[4/3] object-cover rounded-3xl"
         />
         <img
@@ -134,13 +136,12 @@ const aboutSchema = {
         ))}
       </div>
 
-      <img
-        src={img.heroChips}
+      <Image
+        src={heroChipsImg}
         alt="Batatas chips artesanais Ahara"
-        width="1200"
-        height="400"
+        width={1200}
+        height={400}
         loading="lazy"
-        decoding="async"
         class="mt-10 border-[3px] border-linen/20 w-full h-48 md:h-56 object-cover rounded-3xl"
       />
     </div>

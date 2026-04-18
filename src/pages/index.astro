@@ -3,6 +3,8 @@ import Layout from '@/layouts/Layout.astro';
 import CTAButton from '@/components/CTAButton.astro';
 import FeatureCard from '@/components/FeatureCard.astro';
 import AudienceCard from '@/components/AudienceCard.astro';
+import { Picture } from 'astro:assets';
+import heroChipsImg from '@/assets/images/hero-chips.webp';
 import { site, img } from '@/data/site';
 
 const waHero = site.whatsapp.link('Olá, gostaria de fazer um pedido de batatas chips Ahara');
@@ -66,14 +68,14 @@ const organizationSchema = {
       <!-- Hero visual -->
       <div class="flex justify-center items-center">
         <div class="relative w-full max-w-sm md:max-w-md">
-          <img
-            src={img.heroChips}
+          <Picture
+            src={heroChipsImg}
             alt="Batatas chips artesanais em uma tigela sobre fundo rústico"
-            width="600"
-            height="600"
+            widths={[300, 400, 500, 600]}
+            formats={['avif', 'webp']}
+            sizes="(max-width: 640px) calc(100vw - 2rem), (max-width: 768px) 384px, 448px"
             loading="eager"
             fetchpriority="high"
-            decoding="async"
             class="w-full aspect-square object-cover border-[3px] border-black shadow-brutal-lg bg-white rounded-3xl"
           />
           <!-- Decorative stickers -->

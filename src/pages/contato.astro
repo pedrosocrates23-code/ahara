@@ -92,6 +92,14 @@ const contactSchema = {
         </div>
 
         <div class="card-brutal bg-white p-6">
+          <h3 class="font-display font-bold text-lg mb-3">E-mail SAC</h3>
+          <a href={`mailto:${site.email}`} class="font-body text-brand-purple font-bold hover:underline break-all">
+            {site.email}
+          </a>
+          <p class="font-body text-xs text-black/50 mt-2">Atendimento em até 24h úteis.</p>
+        </div>
+
+        <div class="card-brutal bg-white p-6">
           <h3 class="font-display font-bold text-lg mb-3">Horário de atendimento</h3>
           <div class="space-y-2 font-body text-sm text-black/70">
             <div class="flex justify-between border-b border-black/10 pb-2">
@@ -107,26 +115,34 @@ const contactSchema = {
 
         <div class="card-brutal bg-white p-6">
           <h3 class="font-display font-bold text-lg mb-3">Localização</h3>
-          <p class="font-body text-sm text-black/70">
-            Brasília/DF - endereço para retirada de pedidos:
-          </p>
-          <p class="font-body text-sm text-black/40 mt-1 italic">
-            [Endereço completo a inserir]
-          </p>
-          <div class="mt-4 border-[2px] border-black/20 bg-black/5 h-32 flex items-center justify-center rounded-2xl">
-            <span class="text-black/30 text-xs">📍 Mapa ou foto da fachada</span>
+          <p class="font-body text-sm text-black/70 mb-1">Endereço para retirada de pedidos:</p>
+          <address class="font-body text-sm font-semibold text-black not-italic">
+            {site.address.full}
+          </address>
+          <div class="mt-4 overflow-hidden rounded-2xl border-[2px] border-black shadow-brutal">
+            <iframe
+              title="Localização Ahara – ADE Águas Claras, Brasília/DF"
+              src={`https://maps.google.com/maps?q=${site.address.mapsQuery}&output=embed&hl=pt-BR`}
+              width="100%"
+              height="220"
+              style="border:0;"
+              loading="lazy"
+              allowfullscreen
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
           </div>
         </div>
       </div>
 
       <!-- Formulário -->
       <div class="card-brutal bg-white p-6 md:p-8">
-        <h2 class="font-display font-bold text-2xl mb-6">Envie uma mensagem</h2>
+        <h2 id="form-titulo" class="font-display font-bold text-2xl mb-6">Envie uma mensagem</h2>
         <form
           id="form-contato"
           name="contato-ahara"
           class="flex flex-col gap-4"
           data-endpoint={site.formEndpoint}
+          aria-labelledby="form-titulo"
         >
           <p class="hidden" aria-hidden="true">
             <label>Não preencha isso: <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
@@ -139,6 +155,8 @@ const contactSchema = {
               id="nome"
               name="nome"
               required
+              aria-required="true"
+              autocomplete="name"
               placeholder="Seu nome ou empresa"
               class="border-2 border-black px-4 py-2.5 font-body text-sm bg-linen focus:outline-none focus:border-brand-purple shadow-brutal rounded-xl"
             />
@@ -151,6 +169,8 @@ const contactSchema = {
               id="whatsapp"
               name="whatsapp"
               required
+              aria-required="true"
+              autocomplete="tel"
               placeholder="(61) 99999-9999"
               class="border-2 border-black px-4 py-2.5 font-body text-sm bg-linen focus:outline-none focus:border-brand-purple shadow-brutal rounded-xl"
             />

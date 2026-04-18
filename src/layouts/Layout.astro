@@ -2,6 +2,7 @@
 import Nav from '@/components/Nav.astro';
 import Footer from '@/components/Footer.astro';
 import WhatsAppFloat from '@/components/WhatsAppFloat.astro';
+import { ClientRouter } from 'astro:transitions';
 import { site } from '@/data/site';
 import '@/styles/global.css';
 
@@ -20,7 +21,7 @@ interface Props {
 const {
   title,
   description = 'Distribuidora B2B de batatas chips artesanais produzidas localmente em Brasília/DF. Atendemos revendedores, comércios, eventos e food service.',
-  ogImage = '/logo.png',
+  ogImage = '/images/hero-chips.webp',
   preloadImage,
   extraSchemas = [],
 } = Astro.props;
@@ -45,10 +46,12 @@ const localBusinessSchema = {
   servesCuisine: 'Snacks artesanais',
   address: {
     '@type': 'PostalAddress',
+    streetAddress: site.address.street,
     addressLocality: 'Brasília',
     addressRegion: 'DF',
     addressCountry: 'BR',
   },
+  email: site.email,
   areaServed: site.regions.map((region) => ({
     '@type': 'City',
     name: region,
@@ -113,6 +116,8 @@ const websiteSchema = {
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={absoluteOgImage} />
+    <meta property="og:image:width" content="600" />
+    <meta property="og:image:height" content="600" />
     <meta property="og:image:alt" content={`${site.name} - ${title}`} />
     <meta property="og:locale" content="pt_BR" />
     <meta property="og:site_name" content={site.legalName} />
@@ -150,6 +155,15 @@ const websiteSchema = {
         rel="stylesheet"
       />
     </noscript>
+    <!-- Google Analytics 4 -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-P7MVJ8Q12H"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-P7MVJ8Q12H', { send_page_view: false });
+    </script>
+    <ClientRouter />
   </head>
   <body>
     <Nav />
@@ -158,5 +172,16 @@ const websiteSchema = {
     </main>
     <Footer />
     <WhatsAppFloat />
+    <!-- Dispara page_view no carregamento inicial e em cada navegação via View Transitions -->
+    <script>
+      document.addEventListener('astro:page-load', () => {
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'page_view', {
+            page_title: document.title,
+            page_location: window.location.href,
+          });
+        }
+      });
+    </script>
   </body>
 </html>
