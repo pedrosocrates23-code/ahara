@@ -29,6 +29,9 @@ const STATIC_ROUTES = [
   '/para-revendedores/',
   '/para-comercios/',
   '/para-eventos/',
+  '/politica-de-privacidade/',
+  '/politica-de-qualidade/',
+  '/autor/joao-amaro/',
 ];
 
 async function loadBlogRoutes() {
