@@ -47,12 +47,12 @@
   }
 }
 
+:root, html {
+  color-scheme: only light;
+}
+
 @layer base {
   * { box-sizing: border-box; }
-
-  :root {
-    color-scheme: light;
-  }
 
   body {
     @apply font-body bg-linen text-black;
