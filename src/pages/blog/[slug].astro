@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Layout from '@/layouts/Layout.astro';
 import CTAButton from '@/components/CTAButton.astro';
+import CTANikoBanner from '@/components/CTANikoBanner.astro';
 import { site } from '@/data/site';
 
 export async function getStaticPaths() {
@@ -156,11 +157,22 @@ const localBusinessSchema = isLocalPost ? {
   <!-- ━━ CONTEÚDO ━━ -->
   <article class="bg-linen py-12 md:py-16 border-b-[3px] border-black">
     <div class="max-w-3xl mx-auto px-4">
-      <div class="prose-content font-body text-black leading-relaxed">
+      <div id="prose-body" class="prose-content font-body text-black leading-relaxed">
+        <div id="niko-cta" style="display:none"><CTANikoBanner /></div>
         <Content />
       </div>
     </div>
   </article>
+
+  <script>
+    const banner = document.getElementById('niko-cta');
+    const prose  = document.getElementById('prose-body');
+    const firstH2 = prose?.querySelector('h2');
+    if (banner && firstH2) {
+      banner.style.display = '';
+      firstH2.parentNode.insertBefore(banner, firstH2);
+    }
+  </script>
 
   <!-- ━━ MAPA LOCAL + NIKO CTA ━━ -->
   {isLocalPost && (

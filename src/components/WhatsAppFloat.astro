@@ -281,10 +281,22 @@ const waNumber = '553198985678';
     input.focus();
   }
 
+  const TTL = 10 * 60 * 1000; // 10 minutos em ms
+
+  function hasSeenPopup() {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored) return false;
+    return (Date.now() - parseInt(stored, 10)) < TTL;
+  }
+
+  function markSeen() {
+    localStorage.setItem(STORAGE_KEY, Date.now().toString());
+  }
+
   function closePopup() {
     popup.classList.remove('wa-chat--open');
     popup.setAttribute('aria-hidden', 'true');
-    localStorage.setItem(STORAGE_KEY, '1');
+    markSeen();
   }
 
   function sendMessage() {
@@ -300,8 +312,8 @@ const waNumber = '553198985678';
     closePopup();
   }
 
-  // Abre automaticamente apenas na primeira visita
-  if (!localStorage.getItem(STORAGE_KEY)) {
+  // Abre automaticamente se nunca viu ou se passaram mais de 10 minutos
+  if (!hasSeenPopup()) {
     setTimeout(openPopup, 5000);
   }
 

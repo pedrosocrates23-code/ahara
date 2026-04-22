@@ -1,0 +1,132 @@
+---
+import { site } from '@/data/site';
+
+const waUrl = site.whatsapp.link('Olá! Vi no blog da Ahara e quero conhecer o Niko Chips');
+---
+
+<aside class="niko-banner" aria-label="Conheça o Niko Chips">
+  <div class="niko-banner__inner">
+    <div class="niko-banner__text">
+      <span class="niko-banner__badge">PRODUTO NIKO</span>
+      <strong class="niko-banner__title">Niko Batata Chips — experimente!</strong>
+      <p class="niko-banner__desc">
+        Artesanal, produzido em Brasília/DF. Embalagens de 50g, 150g e 500g.
+        Pedido mínimo 5&nbsp;kg com desconto progressivo de até 12%.
+      </p>
+    </div>
+    <div class="niko-banner__actions">
+      <a href="/produtos/" class="niko-btn niko-btn--purple">
+        Ver Niko Chips <span aria-hidden="true">→</span>
+      </a>
+      <a href={waUrl} target="_blank" rel="noopener noreferrer" class="niko-btn niko-btn--green">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+          <path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.12 1.535 5.856L0 24l6.336-1.511A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.822 9.822 0 01-5.003-1.366l-.36-.213-3.757.984 1.003-3.655-.234-.376A9.825 9.825 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182c5.429 0 9.818 4.388 9.818 9.818 0 5.429-4.389 9.818-9.818 9.818z"/>
+        </svg>
+        Pedir agora
+      </a>
+    </div>
+  </div>
+</aside>
+
+<style>
+  .niko-banner {
+    margin: 2rem 0;
+    background: #ffd800;
+    border: 2px solid #000;
+    border-radius: 1rem;
+    box-shadow: 4px 4px 0 0 #000;
+    overflow: hidden;
+  }
+
+  .niko-banner__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .niko-banner__inner {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+  }
+
+  .niko-banner__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .niko-banner__badge {
+    display: inline-block;
+    background: #e53e3e;
+    color: #fff;
+    font-family: 'Best Curry', 'Fredoka', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.6rem;
+    border: 2px solid #000;
+    border-radius: 9999px;
+    width: fit-content;
+    box-shadow: 2px 2px 0 0 #000;
+  }
+
+  .niko-banner__title {
+    font-family: 'Best Curry', 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    line-height: 1.25;
+    color: #000;
+  }
+
+  .niko-banner__desc {
+    font-size: 0.8rem;
+    color: rgba(0, 0, 0, 0.75);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .niko-banner__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+    flex-shrink: 0;
+  }
+
+  .niko-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-family: 'Best Curry', 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    border: 2px solid #000;
+    border-radius: 0.625rem;
+    box-shadow: 3px 3px 0 0 #000;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+    line-height: 1;
+  }
+
+  .niko-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 0 #000;
+  }
+
+  .niko-btn--purple {
+    background: #6654ca;
+    color: #fff;
+  }
+
+  .niko-btn--green {
+    background: #0a6e3c;
+    color: #fff;
+  }
+</style>
