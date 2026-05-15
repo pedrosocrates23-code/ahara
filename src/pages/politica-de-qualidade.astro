@@ -2,14 +2,6 @@
 import Layout from '@/layouts/Layout.astro';
 import { site } from '@/data/site';
 
-const breadcrumbSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Início', item: `${site.url}/` },
-    { '@type': 'ListItem', position: 2, name: 'Política de Qualidade', item: `${site.url}/politica-de-qualidade/` },
-  ],
-};
 
 const orgaos = [
   {
@@ -87,7 +79,10 @@ const normas = [
 <Layout
   title="Política de Qualidade"
   description="Conheça os padrões sanitários e de qualidade que a Ahara segue na produção das Niko Batata Chips em Brasília/DF. Conformidade com ANVISA, VISA/DF e INMETRO."
-  extraSchemas={[breadcrumbSchema]}
+  breadcrumbs={[
+    { name: 'Início', url: '/' },
+    { name: 'Política de Qualidade', url: '/politica-de-qualidade/' },
+  ]}
 >
   <section class="bg-brand-green border-b-[3px] border-black py-16 md:py-20">
     <div class="max-w-3xl mx-auto px-4">

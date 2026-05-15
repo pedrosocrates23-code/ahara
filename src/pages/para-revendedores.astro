@@ -4,23 +4,31 @@ import CTAButton from '@/components/CTAButton.astro';
 import PriceTable from '@/components/PriceTable.astro';
 import FeatureCard from '@/components/FeatureCard.astro';
 import { site } from '@/data/site';
+import { serviceNode, discountOfferCatalog, deliverySpec } from '@/lib/schema';
 
 const waRev = site.whatsapp.link('Olá, quero me tornar revendedor das batatas Ahara');
 
-const breadcrumbSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Início', item: `${site.url}/` },
-    { '@type': 'ListItem', position: 2, name: 'Para Revendedores', item: `${site.url}/para-revendedores/` },
-  ],
-};
+// Service B2B para revendedores autônomos + catálogo + entrega (todos via @graph)
+const serviceSchema = serviceNode({
+  id: `${site.url}/para-revendedores/#service`,
+  name: 'Distribuição B2B para Revendedores Autônomos',
+  description:
+    'Programa de revenda de batatas chips artesanais Ahara para revendedores autônomos no Distrito Federal. Pedido mínimo de 5kg, desconto progressivo de 5% a 12% por volume, produção local em Brasília com reposição rápida.',
+  serviceType: 'Distribuição B2B de snacks artesanais',
+  audienceName: 'Revendedores autônomos no Distrito Federal',
+});
+
+const extras = [serviceSchema, discountOfferCatalog(), deliverySpec()];
 ---
 
 <Layout
   title="Revenda Batata Chips Artesanal no DF"
   description="Revenda batata chips artesanal no DF com boa margem. Pedido mínimo 5kg, desconto progressivo até 12%, produto local em Brasília."
-  extraSchemas={[breadcrumbSchema]}
+  breadcrumbs={[
+    { name: 'Início', url: '/' },
+    { name: 'Para Revendedores', url: '/para-revendedores/' },
+  ]}
+  extraSchemas={extras}
 >
 
   <!-- ━━ HERO ━━ -->

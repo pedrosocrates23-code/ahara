@@ -5,29 +5,16 @@ import { Image } from 'astro:assets';
 import heroChipsImg from '@/assets/images/hero-chips.webp';
 import chipsBowlImg from '@/assets/images/chips-bowl-2.webp';
 import { site, img, icons } from '@/data/site';
-
-const breadcrumbSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Início', item: `${site.url}/` },
-    { '@type': 'ListItem', position: 2, name: 'Sobre', item: `${site.url}/sobre/` },
-  ],
-};
-
-const aboutSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'AboutPage',
-  name: 'Sobre a Ahara',
-  url: `${site.url}/sobre/`,
-  about: { '@id': `${site.url}/#organization` },
-};
 ---
 
 <Layout
   title="Sobre a Ahara - Produção Artesanal no DF"
   description="Conheça a Ahara, produtora local de batatas chips artesanais em Brasília/DF. Processo artesanal, matéria-prima selecionada, qualidade consistente."
-  extraSchemas={[breadcrumbSchema, aboutSchema]}
+  pageType="AboutPage"
+  breadcrumbs={[
+    { name: 'Início', url: '/' },
+    { name: 'Sobre', url: '/sobre/' },
+  ]}
 >
 
   <!-- ━━ HERO ━━ -->

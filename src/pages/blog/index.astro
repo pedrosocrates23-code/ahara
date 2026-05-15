@@ -7,29 +7,38 @@ import { site } from '@/data/site';
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pub_date.getTime() - a.data.pub_date.getTime());
 
-const breadcrumbSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Início', item: `${site.url}/` },
-    { '@type': 'ListItem', position: 2, name: 'Blog', item: `${site.url}/blog/` },
-  ],
-};
-
 const blogSchema = {
-  '@context': 'https://schema.org',
   '@type': 'Blog',
+  '@id': `${site.url}/blog/#blog`,
   name: 'Blog Ahara',
+  description: 'Guias B2B para revenda e atacado de batata chips no DF',
   url: `${site.url}/blog/`,
   publisher: { '@id': `${site.url}/#organization` },
   inLanguage: 'pt-BR',
   blogPost: posts.map((p) => ({
     '@type': 'BlogPosting',
+    '@id': `${site.url}/blog/${p.id}/#article`,
     headline: p.data.h1,
     url: `${site.url}/blog/${p.id}/`,
     description: p.data.meta_description,
     wordCount: p.data.palavras_totais,
     datePublished: p.data.pub_date.toISOString(),
+    author: { '@id': `${site.url}/autor/joao-amaro/#person` },
+    publisher: { '@id': `${site.url}/#organization` },
+  })),
+};
+
+// ItemList facilita a indexação como "lista de artigos"
+const itemListSchema = {
+  '@type': 'ItemList',
+  '@id': `${site.url}/blog/#itemlist`,
+  name: 'Artigos do Blog Ahara',
+  numberOfItems: posts.length,
+  itemListElement: posts.map((p, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    url: `${site.url}/blog/${p.id}/`,
+    name: p.data.h1,
   })),
 };
 
@@ -39,7 +48,12 @@ const colors = ['bg-brand-red', 'bg-brand-purple', 'bg-brand-green', 'bg-brand-y
 <Layout
   title="Blog Ahara - Atacado e Revenda de Batata Chips"
   description="Guias práticos para revendedores, comércios e eventos. Onde comprar batata chips no DF, tabelas de margem, logística e muito mais. Blog da Ahara."
-  extraSchemas={[breadcrumbSchema, blogSchema]}
+  pageType="CollectionPage"
+  breadcrumbs={[
+    { name: 'Início', url: '/' },
+    { name: 'Blog', url: '/blog/' },
+  ]}
+  extraSchemas={[blogSchema, itemListSchema]}
 >
 
   <!-- ━━ HERO ━━ -->

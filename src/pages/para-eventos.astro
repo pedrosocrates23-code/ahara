@@ -5,23 +5,30 @@ import PriceTable from '@/components/PriceTable.astro';
 import { Image } from 'astro:assets';
 import heroChipsImg from '@/assets/images/hero-chips.webp';
 import { site, img, icons } from '@/data/site';
+import { serviceNode, discountOfferCatalog, deliverySpec } from '@/lib/schema';
 
 const waEventos = site.whatsapp.link('Olá, preciso de um orçamento de batatas chips para evento/food service');
 
-const breadcrumbSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Início', item: `${site.url}/` },
-    { '@type': 'ListItem', position: 2, name: 'Para Eventos', item: `${site.url}/para-eventos/` },
-  ],
-};
+const serviceSchema = serviceNode({
+  id: `${site.url}/para-eventos/#service`,
+  name: 'Fornecimento para Eventos e Food Service',
+  description:
+    'Fornecimento de batatas chips artesanais Ahara para buffets, casas de festa, bares e restaurantes no Distrito Federal. Crocância prolongada para exposição em buffet, agilidade de produtor local, desconto progressivo por volume.',
+  serviceType: 'Fornecimento para eventos e food service B2B',
+  audienceName: 'Buffets, casas de festa, bares e restaurantes no Distrito Federal',
+});
+
+const extras = [serviceSchema, discountOfferCatalog(), deliverySpec()];
 ---
 
 <Layout
   title="Batata Chips para Eventos e Food Service DF"
   description="Batata chips artesanal para buffets, casas de festa, bares e restaurantes no DF. Crocância garantida e agilidade de produtor local."
-  extraSchemas={[breadcrumbSchema]}
+  breadcrumbs={[
+    { name: 'Início', url: '/' },
+    { name: 'Para Eventos', url: '/para-eventos/' },
+  ]}
+  extraSchemas={extras}
 >
 
   <!-- ━━ HERO ━━ -->

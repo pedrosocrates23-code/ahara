@@ -6,29 +6,18 @@ import AudienceCard from '@/components/AudienceCard.astro';
 import { Picture } from 'astro:assets';
 import heroChipsImg from '@/assets/images/hero-chips.webp';
 import { site } from '@/data/site';
+import { discountOfferCatalog, deliverySpec } from '@/lib/schema';
 
 const waHero = site.whatsapp.link('Olá, gostaria de fazer um pedido de batatas chips Ahara');
 
-const organizationSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  '@id': `${site.url}/#brand`,
-  name: site.legalName,
-  alternateName: site.name,
-  url: site.url,
-  logo: `${site.url}/logo.png`,
-  foundingLocation: {
-    '@type': 'Place',
-    name: 'Brasília, DF, Brasil',
-  },
-  knowsAbout: ['Batatas chips artesanais', 'Food service', 'Distribuição B2B'],
-};
+// Home: anuncia o catálogo B2B e a política de entrega via @graph (referenciados pelas audience pages)
+const homeExtras = [discountOfferCatalog(), deliverySpec()];
 ---
 
 <Layout
   title="Batatas Chips Artesanais em Brasília/DF"
   description="Distribuidora B2B de batatas chips artesanais em Brasília/DF. Revendedores, comércios, eventos e food service. Pedido mínimo 5kg."
-  extraSchemas={[organizationSchema]}
+  extraSchemas={homeExtras}
 >
 
   <!-- ━━ HERO ━━ -->

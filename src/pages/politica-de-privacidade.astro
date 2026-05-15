@@ -1,21 +1,15 @@
 ---
 import Layout from '@/layouts/Layout.astro';
 import { site } from '@/data/site';
-
-const breadcrumbSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Início', item: `${site.url}/` },
-    { '@type': 'ListItem', position: 2, name: 'Política de Privacidade', item: `${site.url}/politica-de-privacidade/` },
-  ],
-};
 ---
 
 <Layout
   title="Política de Privacidade"
   description="Política de Privacidade da Ahara Batatas Chips. Saiba como tratamos seus dados pessoais em conformidade com a LGPD (Lei 13.709/2018)."
-  extraSchemas={[breadcrumbSchema]}
+  breadcrumbs={[
+    { name: 'Início', url: '/' },
+    { name: 'Política de Privacidade', url: '/politica-de-privacidade/' },
+  ]}
 >
   <section class="bg-brand-purple border-b-[3px] border-black py-16 md:py-20">
     <div class="max-w-3xl mx-auto px-4">

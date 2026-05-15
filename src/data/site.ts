@@ -4,9 +4,13 @@ export const site = {
   name: 'Ahara',
   legalName: 'AHARA INDÚSTRIA E COMÉRCIO DE BATATAS SNACKS LTDA',
   cnpj: '63.900.901/0001-50',
+  founder: 'João Amaro',
+  foundingDate: '2024',
   email: 'sac.aharabr@gmail.com',
   url: 'https://aharabr.com.br',
   location: 'Brasília/DF',
+  currency: 'BRL',
+  geo: { latitude: -15.837, longitude: -48.024 },
 
   address: {
     street: 'ADE Águas Claras, Conjunto 16, Lote 12',
@@ -32,10 +36,26 @@ export const site = {
 
   regions: ['Riacho Fundo 1', 'Núcleo Bandeirante', 'Taguatinga', 'Asa Sul', 'Sudoeste'],
 
+  // sameAs — preencher URLs reais quando publicadas (Instagram, Facebook, LinkedIn, Wikidata, Google Maps CID)
+  sameAs: [] as string[],
+
   pricing: {
     minOrder: 5,
     baseKg: 55,
     deliveryMin: 15,
+    // Tabela B2B pública e progressiva (diferencial declarado no posicionamento da marca)
+    discountTiers: [
+      { kg: 25, discountPercent: 5 },
+      { kg: 50, discountPercent: 8 },
+      { kg: 75, discountPercent: 10 },
+      { kg: 100, discountPercent: 12 },
+    ],
+    // Gramaturas comercializadas (SKU único — sabor tradicional)
+    packagings: [
+      { weightGrams: 50, label: '50g', sku: 'NIKO-50G' },
+      { weightGrams: 150, label: '150g', sku: 'NIKO-150G' },
+      { weightGrams: 500, label: '500g', sku: 'NIKO-500G' },
+    ],
   },
 
   // URL do Apps Script Web App que recebe o formulario de contato

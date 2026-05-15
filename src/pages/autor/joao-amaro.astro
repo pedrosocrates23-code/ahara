@@ -6,18 +6,7 @@ import { site } from '@/data/site';
 
 const posts = await getCollection('blog', ({ data }) => !data.draft);
 
-const breadcrumbSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Início', item: `${site.url}/` },
-    { '@type': 'ListItem', position: 2, name: 'Blog', item: `${site.url}/blog/` },
-    { '@type': 'ListItem', position: 3, name: 'João Amaro', item: `${site.url}/autor/joao-amaro/` },
-  ],
-};
-
 const personSchema = {
-  '@context': 'https://schema.org',
   '@type': 'Person',
   '@id': `${site.url}/autor/joao-amaro/#person`,
   name: 'João Amaro',
@@ -26,11 +15,7 @@ const personSchema = {
   jobTitle: 'Fundador',
   description: 'Fundador da Ahara e idealizador das Niko Batata Chips. Especialista em produção artesanal de snacks no Distrito Federal.',
   url: `${site.url}/autor/joao-amaro/`,
-  worksFor: {
-    '@type': 'Organization',
-    '@id': `${site.url}/#organization`,
-    name: site.legalName,
-  },
+  worksFor: { '@id': `${site.url}/#organization` },
   knowsAbout: [
     'Batatas chips artesanais',
     'Boas Práticas de Fabricação',
@@ -38,13 +23,19 @@ const personSchema = {
     'Distribuição B2B no DF',
     'Food service',
   ],
+  sameAs: [],
 };
 ---
 
 <Layout
   title="João Amaro — Fundador da Ahara"
   description="João Amaro é o fundador da Ahara e idealizador das Niko Batata Chips. Especialista em produção artesanal de snacks no Distrito Federal."
-  extraSchemas={[breadcrumbSchema, personSchema]}
+  breadcrumbs={[
+    { name: 'Início', url: '/' },
+    { name: 'Blog', url: '/blog/' },
+    { name: 'João Amaro', url: '/autor/joao-amaro/' },
+  ]}
+  extraSchemas={[personSchema]}
 >
   <!-- HERO -->
   <section class="bg-brand-purple border-b-[3px] border-black py-16 md:py-20">
