@@ -321,6 +321,30 @@ export function serviceNode(opts: ServiceOptions) {
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
+// CONTENT NODES — Article, FAQPage
+// ──────────────────────────────────────────────────────────────────────────────
+
+export interface FaqItem {
+  q: string;
+  a: string;
+}
+
+export function faqPageNode(pageUrl: string, items: FaqItem[]) {
+  return {
+    '@type': 'FAQPage',
+    '@id': `${pageUrl}#faq`,
+    mainEntity: items.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.a,
+      },
+    })),
+  };
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
 // GRAPH ASSEMBLER
 // ──────────────────────────────────────────────────────────────────────────────
 

@@ -14,6 +14,10 @@ const blog = defineCollection({
     ctas_internos: z.number().int().nonnegative().default(0),
     pub_date: z.string().transform((s) => new Date(s)),
     draft: z.boolean().optional().default(false),
+    faq: z
+      .array(z.object({ q: z.string(), a: z.string() }))
+      .optional()
+      .default([]),
   }),
 });
 

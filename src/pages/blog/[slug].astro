@@ -4,6 +4,7 @@ import Layout from '@/layouts/Layout.astro';
 import CTAButton from '@/components/CTAButton.astro';
 import CTANikoBanner from '@/components/CTANikoBanner.astro';
 import { site } from '@/data/site';
+import { faqPageNode } from '@/lib/schema';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -44,6 +45,13 @@ const articleSchema = {
   },
 };
 
+const faqSchema =
+  post.data.faq && post.data.faq.length > 0
+    ? faqPageNode(url, post.data.faq)
+    : null;
+
+const extraSchemas = faqSchema ? [articleSchema, faqSchema] : [articleSchema];
+
 const related = allPosts.filter((p) => p.id !== post.id).slice(0, 3);
 
 // Posts locais (DF/Brasília/Taguatinga) ativam seção de mapa no template
@@ -64,7 +72,7 @@ const isLocalPost =
     { name: 'Blog', url: '/blog/' },
     { name: post.data.h1, url: `/blog/${post.id}/` },
   ]}
-  extraSchemas={[articleSchema]}
+  extraSchemas={extraSchemas}
 >
 
   <!-- ━━ HERO ━━ -->
