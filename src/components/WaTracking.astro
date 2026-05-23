@@ -1,0 +1,65 @@
+<script is:inline>
+(function () {
+  var WA_EVENTS = [
+    {
+      selector: '#wa-send',
+      location: 'floating',
+      intent: 'send_message'
+    },
+    {
+      selector: 'a[href*="wa.me"][href*="saber+mais"], a[href*="wa.me"][href*="saber%20mais"]',
+      location: 'header',
+      intent: 'info'
+    },
+    {
+      selector: 'a[href*="wa.me"][href*="fazer+um+pedido"], a[href*="wa.me"][href*="fazer%20um%20pedido"]',
+      location: 'final_page',
+      intent: 'order'
+    },
+    {
+      selector: 'a[href*="wa.me"][href*="Niko+Chips"], a[href*="wa.me"][href*="Niko%20Chips"]',
+      location: 'blog_banner',
+      intent: 'blog'
+    },
+    {
+      selector: 'a[href="https://wa.me/553198985678"]',
+      location: 'footer',
+      intent: 'generic'
+    }
+  ];
+
+  function pushWaEvent(location, intent) {
+    if (typeof window.gtag !== 'function') return;
+
+    window.gtag('event', 'whatsapp_click', {
+      event_category: 'engagement',
+      wa_location: location,
+      wa_intent: intent,
+      wa_phone: '553198985678',
+      page_path: window.location.pathname
+    });
+  }
+
+  function bindEvents() {
+    WA_EVENTS.forEach(function (item) {
+      var elements = document.querySelectorAll(item.selector);
+      elements.forEach(function (el) {
+        if (el.dataset.waTracked) return;
+        el.dataset.waTracked = '1';
+        el.addEventListener('click', function () {
+          pushWaEvent(item.location, item.intent);
+        });
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindEvents);
+  } else {
+    bindEvents();
+  }
+
+  // Suporte a View Transitions do Astro
+  document.addEventListener('astro:page-load', bindEvents);
+})();
+</script>

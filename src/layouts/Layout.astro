@@ -2,6 +2,7 @@
 import Nav from '@/components/Nav.astro';
 import Footer from '@/components/Footer.astro';
 import WhatsAppFloat from '@/components/WhatsAppFloat.astro';
+import WaTracking from '@/components/WaTracking.astro';
 import { site } from '@/data/site';
 import {
   buildGraph,
@@ -148,5 +149,6 @@ const graph = buildGraph(routeNodes);
     </main>
     <Footer />
     <WhatsAppFloat />
+    <WaTracking />
   </body>
 </html>
