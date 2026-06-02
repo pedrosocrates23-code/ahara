@@ -22,11 +22,10 @@ export function organizationNode() {
   return {
     '@type': ['Organization', 'FoodEstablishment', 'LocalBusiness'],
     '@id': ORG_ID,
-    name: site.legalName,
-    alternateName: site.name,
+    name: site.name,
     legalName: site.legalName,
     description:
-      'Distribuidora B2B de batatas chips artesanais em Brasília/DF. Produção local, atendimento para revendedores, comércios, eventos e food service.',
+      'Indústria de batatas chips artesanais com sede em Brasília/DF e envio para todo o Brasil. Atendimento B2B para revendedores, comércios, eventos e food service — entrega com frota própria no DF e envio nacional via transportadora.',
     url: BASE,
     logo: { '@id': LOGO_ID },
     image: { '@id': LOGO_ID },
@@ -46,6 +45,7 @@ export function organizationNode() {
       'Batatas chips artesanais',
       'Food service',
       'Distribuição B2B',
+      'Envio nacional de snacks',
       'Variedade Marquise',
       'Variedade Atlantic',
       'Boas Práticas de Fabricação',
@@ -72,6 +72,7 @@ export function organizationNode() {
     areaServed: [
       ...site.regions.map((region) => ({ '@type': 'City', name: region })),
       { '@type': 'AdministrativeArea', name: 'Distrito Federal' },
+      { '@type': 'Country', name: 'Brasil' },
     ],
     openingHoursSpecification: [
       {
@@ -92,7 +93,7 @@ export function organizationNode() {
         '@type': 'ContactPoint',
         telephone: `+${site.whatsapp.number}`,
         contactType: 'sales',
-        areaServed: 'BR-DF',
+        areaServed: 'BR',
         availableLanguage: ['Portuguese', 'pt-BR'],
       },
     ],
@@ -118,7 +119,7 @@ export function websiteNode() {
     '@id': WEBSITE_ID,
     url: BASE,
     name: site.name,
-    description: 'Batatas chips artesanais em Brasília/DF',
+    description: 'Batatas chips artesanais — sede em Brasília/DF, envio para todo o Brasil',
     inLanguage: 'pt-BR',
     publisher: { '@id': ORG_ID },
     // SearchAction habilita Sitelinks Search Box quando GSC permitir
