@@ -52,7 +52,7 @@ export function organizationNode() {
     ],
     telephone: `+${site.whatsapp.number}`,
     email: site.email,
-    priceRange: 'R$ 48 a R$ 55 por kg',
+    priceRange: 'R$ 57 a R$ 65 por kg',
     currenciesAccepted: site.currency,
     paymentAccepted: 'Cash, PIX, Bank Transfer',
     servesCuisine: 'Snacks artesanais',

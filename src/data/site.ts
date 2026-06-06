@@ -41,7 +41,7 @@ export const site = {
 
   pricing: {
     minOrder: 5,
-    baseKg: 55,
+    baseKg: 65,
     deliveryMin: 15,
     // Tabela B2B pública e progressiva (diferencial declarado no posicionamento da marca)
     discountTiers: [
