@@ -17,6 +17,8 @@ export const site = {
     city: 'Brasília',
     state: 'DF',
     country: 'Brasil',
+    // TODO: preencher com o CEP exato do endereço
+    postalCode: '',
     full: 'ADE Águas Claras, Conjunto 16, Lote 12 – Brasília/DF – Brasil',
     mapsQuery: 'ADE+Aguas+Claras+Conjunto+16+Lote+12+Brasilia+DF+Brasil',
   },
@@ -36,8 +38,15 @@ export const site = {
 
   regions: ['Riacho Fundo 1', 'Núcleo Bandeirante', 'Taguatinga', 'Asa Sul', 'Sudoeste'],
 
-  // sameAs — preencher URLs reais quando publicadas (Instagram, Facebook, LinkedIn, Wikidata, Google Maps CID)
-  sameAs: [] as string[],
+  // sameAs — adicionar URLs reais dos perfis públicos da Ahara para consolidação no Knowledge Graph do Google.
+  // Exemplos: perfil do Instagram, página do Facebook, Google Maps (URL do lugar), LinkedIn, Wikidata.
+  // Cada URL adicionada aqui fortalece a identidade da entidade Ahara nos resultados de busca.
+  sameAs: [
+    // 'https://www.instagram.com/aharabr',        // TODO: confirmar handle real
+    // 'https://www.facebook.com/aharabr',         // TODO: confirmar handle real
+    // 'https://maps.app.goo.gl/XXXXXXXX',         // TODO: URL do Google Maps Place
+    // 'https://www.linkedin.com/company/aharabr', // TODO: confirmar handle real
+  ] as string[],
 
   pricing: {
     minOrder: 5,

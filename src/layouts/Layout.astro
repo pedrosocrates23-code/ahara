@@ -29,6 +29,16 @@ interface Props {
    */
   breadcrumbs?: BreadcrumbItem[];
   /**
+   * Data de publicação original da página (ISO 8601). Importante para E-E-A-T e freshness.
+   * Exemplo: '2024-06-01'
+   */
+  datePublished?: string;
+  /**
+   * Data da última modificação relevante (ISO 8601).
+   * Exemplo: '2025-03-15'
+   */
+  dateModified?: string;
+  /**
    * Nodes extras de @graph (Service, Product, BlogPosting, FAQPage, HowTo, etc.).
    * Cada node DEVE ter @id próprio e fazer referência a Organization/WebSite via @id.
    */
@@ -42,6 +52,8 @@ const {
   preloadImage,
   pageType = 'WebPage',
   breadcrumbs,
+  datePublished,
+  dateModified,
   extraSchemas = [],
 } = Astro.props;
 
@@ -64,6 +76,8 @@ const pageNode = webPageNode({
   type: pageType,
   image: ogImage,
   breadcrumbs: crumbs,
+  datePublished,
+  dateModified,
 });
 
 // Nodes da rota: WebPage + (BreadcrumbList se houver) + extras passados pela página

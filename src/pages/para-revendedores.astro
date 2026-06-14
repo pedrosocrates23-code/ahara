@@ -5,8 +5,15 @@ import PriceTable from '@/components/PriceTable.astro';
 import FeatureCard from '@/components/FeatureCard.astro';
 import { site } from '@/data/site';
 import { serviceNode, discountOfferCatalog, deliverySpec } from '@/lib/schema';
+import { getCollection } from 'astro:content';
 
 const waRev = site.whatsapp.link('Olá, quero me tornar revendedor das batatas Ahara');
+
+const blogRevenda = (await getCollection('blog', ({ data, id }) =>
+  !data.draft && /(revenda|revender|para-revenda|caseira|para-revender)/.test(id)
+))
+  .sort((a, b) => b.data.pub_date.getTime() - a.data.pub_date.getTime())
+  .slice(0, 4);
 
 // Service B2B para revendedores autônomos + catálogo + entrega (todos via @graph)
 const serviceSchema = serviceNode({
@@ -39,7 +46,7 @@ const extras = [serviceSchema, discountOfferCatalog(), deliverySpec()];
         PARA REVENDEDORES
       </span>
       <h1 class="font-display font-bold text-5xl md:text-6xl text-black mb-5 leading-[1.05]">
-        Revenda Batatas Chips<br/>Artesanais com<br/><span class="text-brand-red">Boa Margem</span>
+        Revenda <span class="text-brand-red">Ahara</span><br/>Batatas Chips Artesanais<br/>com Boa Margem
       </h1>
       <p class="font-body text-xl text-black/70 max-w-2xl leading-relaxed">
         Produto de qualidade, fornecedor local e preço que permite margem real.
@@ -179,5 +186,28 @@ const extras = [serviceSchema, discountOfferCatalog(), deliverySpec()];
       />
     </div>
   </section>
+
+  <!-- ━━ ARTIGOS RELACIONADOS ━━ -->
+  {blogRevenda.length > 0 && (
+    <section class="bg-linen border-t-[3px] border-black py-14 md:py-16">
+      <div class="max-w-6xl mx-auto px-4">
+        <div class="flex items-end justify-between gap-4 mb-8">
+          <h2 class="font-display font-bold text-2xl md:text-3xl text-black">
+            Leia também: <span class="text-brand-purple">revenda de chips</span>
+          </h2>
+          <CTAButton href="/blog/" label="Ver blog" variant="purple" />
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {blogRevenda.map((p) => (
+            <a href={`/blog/${p.id}/`} class="card-brutal bg-white p-4 flex flex-col gap-2 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brutal-lg transition-all">
+              <span class="text-xs font-impact bg-brand-yellow border border-black px-2 py-0.5 rounded-full w-fit">ARTIGO</span>
+              <h3 class="font-display font-bold text-sm leading-snug">{p.data.h1}</h3>
+              <span class="text-xs font-body text-brand-purple font-bold mt-auto">Ler →</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
 
 </Layout>

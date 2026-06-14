@@ -6,12 +6,23 @@ import AudienceCard from '@/components/AudienceCard.astro';
 import { Picture } from 'astro:assets';
 import heroChipsImg from '@/assets/images/hero-chips.webp';
 import { site } from '@/data/site';
-import { discountOfferCatalog, deliverySpec } from '@/lib/schema';
+import { discountOfferCatalog, deliverySpec, howToBuyNode, homeFaqNode, brandNikoNode } from '@/lib/schema';
+import { getCollection } from 'astro:content';
 
 const waHero = site.whatsapp.link('Olá, gostaria de fazer um pedido de batatas chips Ahara');
 
-// Home: anuncia o catálogo B2B e a política de entrega via @graph (referenciados pelas audience pages)
-const homeExtras = [discountOfferCatalog(), deliverySpec()];
+const recentPosts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pub_date.getTime() - a.data.pub_date.getTime())
+  .slice(0, 3);
+
+// Home: catálogo B2B, entrega, HowTo e FAQ para rich results
+const homeExtras = [
+  discountOfferCatalog(),
+  deliverySpec(),
+  howToBuyNode(),
+  homeFaqNode(),
+  brandNikoNode(),
+];
 ---
 
 <Layout
@@ -37,7 +48,7 @@ const homeExtras = [discountOfferCatalog(), deliverySpec()];
         </div>
 
         <h1 class="font-display font-bold text-5xl md:text-6xl lg:text-7xl leading-[1.05] text-black">
-          Batatas Chips<br/>
+          Batatas Chips <span class="text-brand-purple">Ahara</span><br/>
           <span class="text-brand-purple">Artesanais</span><br/>
           para seu Negócio
         </h1>
@@ -179,7 +190,7 @@ const homeExtras = [discountOfferCatalog(), deliverySpec()];
   </section>
 
   <!-- ━━ COMO FUNCIONA ━━ -->
-  <section class="bg-linen py-20 md:py-24">
+  <section id="como-funciona" class="bg-linen py-20 md:py-24">
     <div class="max-w-6xl mx-auto px-4">
       <div class="mb-12">
         <h2 class="font-display font-bold text-4xl md:text-5xl text-black mb-3">
@@ -240,6 +251,31 @@ const homeExtras = [discountOfferCatalog(), deliverySpec()];
       <div class="flex flex-wrap gap-3">
         <CTAButton href="/produtos/" label="Ver todos os produtos" variant="yellow" icon="arrow" />
         <CTAButton href="/contato/" label="Fazer pedido" variant="black" icon="arrow" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ BLOG ━━ -->
+  <section class="bg-linen border-y-[3px] border-black py-16 md:py-20">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="flex items-end justify-between gap-4 mb-10">
+        <div>
+          <h2 class="font-display font-bold text-3xl md:text-4xl text-black">
+            Aprenda sobre <span class="text-brand-purple">revenda e atacado</span>
+          </h2>
+          <p class="font-body text-black/60 mt-2">Guias B2B para maximizar margem e giro no seu negócio.</p>
+        </div>
+        <CTAButton href="/blog/" label="Ver todos" variant="purple" icon="arrow" />
+      </div>
+      <div class="grid md:grid-cols-3 gap-5">
+        {recentPosts.map((p) => (
+          <a href={`/blog/${p.id}/`} class="card-brutal bg-white p-5 flex flex-col gap-3 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brutal-lg transition-all">
+            <span class="inline-block bg-brand-yellow border-2 border-black px-2 py-0.5 text-xs font-impact w-fit rounded-full">ARTIGO</span>
+            <h3 class="font-display font-bold text-base leading-snug">{p.data.h1}</h3>
+            <p class="font-body text-sm text-black/60 leading-snug line-clamp-2">{p.data.meta_description}</p>
+            <span class="text-xs font-body text-brand-purple font-bold mt-auto">Ler artigo →</span>
+          </a>
+        ))}
       </div>
     </div>
   </section>

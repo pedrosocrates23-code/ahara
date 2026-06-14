@@ -52,7 +52,26 @@ const faqSchema =
 
 const extraSchemas = faqSchema ? [articleSchema, faqSchema] : [articleSchema];
 
-const related = allPosts.filter((p) => p.id !== post.id).slice(0, 3);
+// Clustering geográfico + temático para related posts
+const stateRe = /-(df|sp|rj|mg|ba|pe|ce|go|sc|pr|rs|am|pa|mt|ms|pi|ma|to|al|se|rn|pb|es|ro|ac|ap|rr)$/;
+const topicRe = /(atacado|revenda|revender|para-revenda|caseira|10kg|copa)/;
+const postState = post.id.match(stateRe)?.[1] ?? null;
+const postTopic = post.id.match(topicRe)?.[1] ?? null;
+
+const related = allPosts
+  .filter((p) => p.id !== post.id)
+  .map((p) => {
+    let score = 0;
+    const pState = p.id.match(stateRe)?.[1] ?? null;
+    const pTopic = p.id.match(topicRe)?.[1] ?? null;
+    if (postState && pState === postState) score += 4;
+    if (postTopic && pTopic === postTopic) score += 2;
+    if (postState && pState !== postState && pTopic === postTopic) score += 1;
+    return { p, score };
+  })
+  .sort((a, b) => b.score - a.score || b.p.data.pub_date.getTime() - a.p.data.pub_date.getTime())
+  .slice(0, 3)
+  .map((x) => x.p);
 
 // Posts locais (DF/Brasília/Taguatinga) ativam seção de mapa no template
 const localPattern = /brasília|brasilia|\bdf\b|taguatinga|distrito federal/i;

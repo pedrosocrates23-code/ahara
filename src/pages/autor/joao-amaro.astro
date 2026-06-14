@@ -12,18 +12,24 @@ const personSchema = {
   name: 'João Amaro',
   givenName: 'João',
   familyName: 'Amaro',
-  jobTitle: 'Fundador',
-  description: 'Fundador da Ahara e idealizador das Niko Batata Chips. Especialista em produção artesanal de snacks no Distrito Federal.',
+  jobTitle: 'Fundador e Produtor',
+  description: 'Fundador da Ahara — indústria de batatas chips artesanais em Brasília/DF. Responsável pelo desenvolvimento da linha Niko Chips e pelo controle de qualidade da produção.',
   url: `${site.url}/autor/joao-amaro/`,
   worksFor: { '@id': `${site.url}/#organization` },
   knowsAbout: [
     'Batatas chips artesanais',
-    'Boas Práticas de Fabricação',
-    'Variedades Marquise e Atlantic',
-    'Distribuição B2B no DF',
-    'Food service',
+    'Boas Práticas de Fabricação (BPF)',
+    'Variedades Marquise e Atlantic para fritura',
+    'Distribuição B2B no Distrito Federal',
+    'Food service e eventos',
+    'Rotulagem e legislação ANVISA para snacks',
   ],
-  sameAs: [],
+  // TODO: adicionar URLs de perfis públicos para fortalecer E-E-A-T do autor
+  // Exemplos: LinkedIn, Instagram profissional, perfil do Google
+  sameAs: [
+    // 'https://www.linkedin.com/in/joaoamaro',
+    // 'https://www.instagram.com/joaoamaro',
+  ],
 };
 ---
 

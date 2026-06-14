@@ -5,8 +5,15 @@ import PriceTable from '@/components/PriceTable.astro';
 import FeatureCard from '@/components/FeatureCard.astro';
 import { site } from '@/data/site';
 import { serviceNode, discountOfferCatalog, deliverySpec } from '@/lib/schema';
+import { getCollection } from 'astro:content';
 
 const waCom = site.whatsapp.link('Olá, quero oferecer batatas Ahara no meu comércio');
+
+const blogAtacado = (await getCollection('blog', ({ data, id }) =>
+  !data.draft && /atacado/.test(id)
+))
+  .sort((a, b) => b.data.pub_date.getTime() - a.data.pub_date.getTime())
+  .slice(0, 4);
 
 const serviceSchema = serviceNode({
   id: `${site.url}/para-comercios/#service`,
@@ -38,7 +45,7 @@ const extras = [serviceSchema, discountOfferCatalog(), deliverySpec()];
         PARA COMÉRCIOS
       </span>
       <h1 class="font-display font-bold text-5xl md:text-6xl text-white mb-5 leading-[1.05]">
-        Batatas Artesanais<br/>para seu <span class="text-brand-yellow">Comércio</span>
+        <span class="text-brand-yellow">Ahara</span> para seu<br/>Comércio no DF
       </h1>
       <p class="font-body text-xl text-white/95 max-w-2xl leading-relaxed">
         Mercados de bairro, empórios, conveniências e quiosques.
@@ -165,5 +172,28 @@ const extras = [serviceSchema, discountOfferCatalog(), deliverySpec()];
       </div>
     </div>
   </section>
+
+  <!-- ━━ ARTIGOS RELACIONADOS ━━ -->
+  {blogAtacado.length > 0 && (
+    <section class="bg-linen border-t-[3px] border-black py-14 md:py-16">
+      <div class="max-w-6xl mx-auto px-4">
+        <div class="flex items-end justify-between gap-4 mb-8">
+          <h2 class="font-display font-bold text-2xl md:text-3xl text-black">
+            Leia também: <span class="text-brand-purple">chips para comércio</span>
+          </h2>
+          <CTAButton href="/blog/" label="Ver blog" variant="purple" />
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {blogAtacado.map((p) => (
+            <a href={`/blog/${p.id}/`} class="card-brutal bg-white p-4 flex flex-col gap-2 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brutal-lg transition-all">
+              <span class="text-xs font-impact bg-brand-yellow border border-black px-2 py-0.5 rounded-full w-fit">ARTIGO</span>
+              <h3 class="font-display font-bold text-sm leading-snug">{p.data.h1}</h3>
+              <span class="text-xs font-body text-brand-purple font-bold mt-auto">Ler →</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
 
 </Layout>

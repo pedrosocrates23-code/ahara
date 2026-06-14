@@ -5,6 +5,46 @@ import { Image } from 'astro:assets';
 import heroChipsImg from '@/assets/images/hero-chips.webp';
 import chipsBowlImg from '@/assets/images/chips-bowl-2.webp';
 import { site, img, icons } from '@/data/site';
+
+const BASE = site.url;
+const ORG_ID = `${BASE}/#organization`;
+
+// Declaração explícita da missão como schema.org — fortalece a entidade AboutPage
+const missionSchema = {
+  '@type': 'Statement',
+  '@id': `${BASE}/sobre/#mission`,
+  name: 'Missão da Ahara',
+  text: 'Ser o fornecedor de referência em batatas chips artesanais para o mercado B2B do Distrito Federal, com produto de qualidade, preço justo e atendimento que entende a realidade do seu negócio.',
+  about: { '@id': ORG_ID },
+};
+
+// DefinedTerm para processo artesanal — descreve o processo de produção
+const processSchema = {
+  '@type': 'ItemList',
+  '@id': `${BASE}/sobre/#processo-producao`,
+  name: 'Processo de produção artesanal Ahara',
+  description: 'Etapas do processo artesanal de produção das batatas chips Ahara em Brasília/DF',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Batatas Selecionadas',
+      description: 'Variedades Marquise e Atlantic — baixo teor de açúcar, crocância superior e textura firme.',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Processo Artesanal',
+      description: 'Corte, fritura e temperagem controlados artesanalmente para consistência em cada lote.',
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'Controle de Qualidade',
+      description: 'Verificação de crocância, sabor, aparência e peso antes de embalar. Seguimos as BPF da ANVISA.',
+    },
+  ],
+};
 ---
 
 <Layout
@@ -15,6 +55,7 @@ import { site, img, icons } from '@/data/site';
     { name: 'Início', url: '/' },
     { name: 'Sobre', url: '/sobre/' },
   ]}
+  extraSchemas={[missionSchema, processSchema]}
 >
 
   <!-- ━━ HERO ━━ -->
@@ -29,7 +70,7 @@ import { site, img, icons } from '@/data/site';
           QUEM SOMOS
         </span>
         <h1 class="font-display font-bold text-5xl md:text-6xl text-white mb-6 leading-[1.05]">
-          Produção Artesanal<br/>Local em <span class="text-brand-yellow">Brasília</span>
+          Sobre a <span class="text-brand-yellow">Ahara</span><br/>Produção Artesanal no DF
         </h1>
         <p class="font-body text-xl text-white/95 leading-relaxed">
           A Ahara é uma produtora local de batatas chips artesanais no Distrito Federal.
@@ -49,7 +90,7 @@ import { site, img, icons } from '@/data/site';
         </h2>
         <div class="space-y-4 font-body text-lg text-black/70 leading-relaxed">
           <p>
-            A Ahara surgiu da experiência prática no mercado de alimentos e da percepção de
+            A Ahara surgiu da experiência prática de <a href="/autor/joao-amaro/" class="font-semibold text-brand-purple hover:underline">João Amaro</a> no mercado de alimentos e da percepção de
             uma oportunidade: oferecer batatas artesanais de qualidade para o mercado B2B
             de Brasília, com produção local que garante frescor e agilidade.
           </p>

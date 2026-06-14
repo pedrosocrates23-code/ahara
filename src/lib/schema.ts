@@ -13,14 +13,18 @@ const BASE = site.url;
 const ORG_ID = `${BASE}/#organization`;
 const WEBSITE_ID = `${BASE}/#website`;
 const LOGO_ID = `${BASE}/#logo`;
+const BRAND_ID = `${BASE}/#brand-niko`;
 
 // ──────────────────────────────────────────────────────────────────────────────
 // CORE NODES — Organization + WebSite + Logo (presentes em TODAS as páginas)
 // ──────────────────────────────────────────────────────────────────────────────
 
 export function organizationNode() {
+  const maxDiscount = Math.max(...site.pricing.discountTiers.map((t) => t.discountPercent));
+  const lowPrice = +(site.pricing.baseKg * (1 - maxDiscount / 100)).toFixed(2);
+
   return {
-    '@type': ['Organization', 'FoodEstablishment', 'LocalBusiness'],
+    '@type': ['Organization', 'LocalBusiness'],
     '@id': ORG_ID,
     name: site.name,
     legalName: site.legalName,
@@ -28,7 +32,6 @@ export function organizationNode() {
       'Indústria de batatas chips artesanais com sede em Brasília/DF e envio para todo o Brasil. Atendimento B2B para revendedores, comércios, eventos e food service — entrega com frota própria no DF e envio nacional via transportadora.',
     url: BASE,
     logo: { '@id': LOGO_ID },
-    image: { '@id': LOGO_ID },
     taxID: site.cnpj,
     vatID: site.cnpj,
     founder: {
@@ -52,15 +55,15 @@ export function organizationNode() {
     ],
     telephone: `+${site.whatsapp.number}`,
     email: site.email,
-    priceRange: 'R$ 57 a R$ 65 por kg',
+    priceRange: `R$ ${lowPrice.toFixed(2).replace('.', ',')} a R$ ${site.pricing.baseKg.toFixed(2).replace('.', ',')} por kg`,
     currenciesAccepted: site.currency,
     paymentAccepted: 'Cash, PIX, Bank Transfer',
-    servesCuisine: 'Snacks artesanais',
     address: {
       '@type': 'PostalAddress',
       streetAddress: site.address.street,
       addressLocality: 'Brasília',
       addressRegion: 'DF',
+      postalCode: site.address.postalCode,
       addressCountry: 'BR',
     },
     geo: {
@@ -122,15 +125,8 @@ export function websiteNode() {
     description: 'Batatas chips artesanais — sede em Brasília/DF, envio para todo o Brasil',
     inLanguage: 'pt-BR',
     publisher: { '@id': ORG_ID },
-    // SearchAction habilita Sitelinks Search Box quando GSC permitir
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: `${BASE}/blog/?q={search_term_string}`,
-      },
-      'query-input': 'required name=search_term_string',
-    },
+    copyrightHolder: { '@id': ORG_ID },
+    copyrightYear: Number(site.foundingDate),
   };
 }
 
@@ -342,6 +338,135 @@ export function faqPageNode(pageUrl: string, items: FaqItem[]) {
         text: item.a,
       },
     })),
+  };
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// BRAND NODE — sub-brand Niko vinculado à Organization
+// ──────────────────────────────────────────────────────────────────────────────
+
+export function brandNikoNode() {
+  return {
+    '@type': 'Brand',
+    '@id': BRAND_ID,
+    name: 'Niko',
+    description: 'Linha de batatas chips artesanais produzida pela Ahara em Brasília/DF',
+    url: BASE,
+    logo: { '@id': LOGO_ID },
+  };
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// NUTRITION NODE — tabela nutricional por embalagem de referência (25 g)
+// ──────────────────────────────────────────────────────────────────────────────
+
+export function nutritionNode() {
+  return {
+    '@type': 'NutritionInformation',
+    servingSize: '25 g',
+    calories: '140 kcal',
+    carbohydrateContent: '13 g',
+    sugarContent: '0 g',
+    proteinContent: '2 g',
+    fatContent: '9 g',
+    saturatedFatContent: '4 g',
+    transFatContent: '0 g',
+    fiberContent: '1.5 g',
+    sodiumContent: '210 mg',
+  };
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// HOWTO NODE — processo de compra B2B (home "Como funciona")
+// ──────────────────────────────────────────────────────────────────────────────
+
+export function howToBuyNode() {
+  return {
+    '@type': 'HowTo',
+    '@id': `${BASE}/#howto-compra`,
+    name: 'Como comprar batatas chips artesanais Ahara',
+    description:
+      'Processo de compra B2B das batatas chips artesanais Ahara para revendedores, comércios, restaurantes e eventos no Distrito Federal.',
+    totalTime: 'PT5M',
+    supply: [
+      { '@type': 'HowToSupply', name: 'Pedido mínimo de 5 kg' },
+    ],
+    step: [
+      {
+        '@type': 'HowToStep',
+        position: 1,
+        name: 'Pedido mínimo de 5 kg',
+        text: `Começamos a atender a partir de ${site.pricing.minOrder}kg (~R$${site.pricing.baseKg * site.pricing.minOrder}). Acessível para testar o produto ou para negócios menores.`,
+        url: `${BASE}/#como-funciona`,
+      },
+      {
+        '@type': 'HowToStep',
+        position: 2,
+        name: 'Desconto progressivo por volume',
+        text: `Quanto mais você compra, menos paga. Descontos de ${site.pricing.discountTiers[0].discountPercent}% a ${Math.max(...site.pricing.discountTiers.map((t) => t.discountPercent))}% conforme o volume do pedido, pagamento à vista.`,
+        url: `${BASE}/#como-funciona`,
+      },
+      {
+        '@type': 'HowToStep',
+        position: 3,
+        name: 'Retirada ou entrega',
+        text: `Pedidos até ${site.pricing.deliveryMin - 1}kg: retirada em nosso endereço em Brasília/DF. A partir de ${site.pricing.deliveryMin}kg: entrega gratuita nas regiões atendidas do DF. Envio nacional via transportadora.`,
+        url: `${BASE}/#como-funciona`,
+      },
+    ],
+  };
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// FAQ NODE — perguntas frequentes para home e páginas de audiência
+// ──────────────────────────────────────────────────────────────────────────────
+
+export function homeFaqNode() {
+  return {
+    '@type': 'FAQPage',
+    '@id': `${BASE}/#faq`,
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'Qual é o pedido mínimo da Ahara?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `O pedido mínimo é de ${site.pricing.minOrder}kg (~R$${site.pricing.baseKg * site.pricing.minOrder}). Atendemos revendedores, comércios, eventos e food service.`,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Quais regiões do DF recebem entrega?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `Entregamos em ${site.regions.join(', ')}. Para pedidos de ${site.pricing.deliveryMin}kg ou mais a entrega é gratuita. Também enviamos para todo o Brasil via transportadora.`,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Quais tamanhos de embalagem estão disponíveis?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'As batatas chips artesanais Ahara estão disponíveis em 50g (porção individual — 20 unidades por kg), 150g (porção média — cerca de 6,6 unidades por kg) e 500g (food service — 2 unidades por kg).',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'A Ahara oferece desconto por volume?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `Sim. Tabela de desconto progressivo: ${site.pricing.discountTiers.map((t) => `${t.discountPercent}% a partir de ${t.kg}kg`).join(', ')}.`,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'As batatas chips Ahara contêm glúten?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Não. As batatas chips artesanais Ahara são isentas de glúten. O produto contém derivados de soja (gordura vegetal).',
+        },
+      },
+    ],
   };
 }
 
