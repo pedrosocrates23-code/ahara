@@ -118,24 +118,20 @@ const productSchema = {
 
   <!-- ━━ PRODUTO + PREÇOS ━━ -->
   <section class="bg-linen border-b-[3px] border-black py-16 md:py-20">
-    <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-start">
+    <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-stretch">
 
       <!-- Imagem do produto -->
-      <div class="flex flex-col items-center">
-        <div class="relative w-full max-w-md mx-auto">
-          <Image
-            src={nikoImg}
-            alt="Embalagem Niko Batata Chips sabor tradicional 50g — produto artesanal Ahara"
-            width={600}
-            height={600}
-            loading="eager"
-            class="border-[3px] border-black shadow-brutal-lg w-full object-contain rounded-3xl bg-white p-4"
-          />
-          <span class="absolute -top-3 -right-3 bg-brand-yellow border-2 border-black px-3 py-1 text-xs font-impact shadow-brutal rounded-full rotate-3">
-            VEGANO · 0% TRANS
-          </span>
-        </div>
-        <p class="mt-4 text-xs font-body text-black/50 text-center max-w-xs leading-relaxed italic">
+      <div class="flex flex-col h-full">
+        <Image
+          src={nikoImg}
+          alt="Embalagem Niko Batata Chips sabor tradicional 50g — produto artesanal Ahara"
+          width={900}
+          height={900}
+          loading="eager"
+          class="border-[3px] border-black shadow-brutal-lg w-full flex-1 object-cover rounded-3xl"
+          style="min-height: 480px;"
+        />
+        <p class="mt-3 text-xs font-body text-black/50 text-center leading-relaxed italic">
           Imagem meramente ilustrativa. A foto apresentada corresponde à embalagem do produto na versão de 50 g.
         </p>
       </div>
