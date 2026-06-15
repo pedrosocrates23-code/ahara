@@ -2,8 +2,8 @@
 import Layout from '@/layouts/Layout.astro';
 import CTAButton from '@/components/CTAButton.astro';
 import { Image } from 'astro:assets';
-import chipsBowlImg from '@/assets/images/chips-bowl-2.webp';
-import { site, img, icons } from '@/data/site';
+import nikoImg from '@/assets/images/niko-tradicional-50g.png';
+import { site, icons } from '@/data/site';
 import { nutritionNode, brandNikoNode } from '@/lib/schema';
 
 const BASE = site.url;
@@ -13,7 +13,6 @@ const BRAND_ID = `${BASE}/#brand-niko`;
 const maxDiscount = Math.max(...site.pricing.discountTiers.map((t) => t.discountPercent));
 const lowPrice = +(site.pricing.baseKg * (1 - maxDiscount / 100)).toFixed(2);
 
-// Produto principal — sem @context (está dentro do @graph do Layout)
 const productSchema = {
   '@type': 'Product',
   '@id': `${BASE}/#product-batata-chips`,
@@ -55,7 +54,6 @@ const productSchema = {
     ],
     seller: { '@id': ORG_ID },
   },
-  // SKUs individuais por gramatura
   hasVariant: site.pricing.packagings.map((pkg) => ({
     '@type': 'Product',
     '@id': `${BASE}/#product-${pkg.sku.toLowerCase()}`,
@@ -96,56 +94,115 @@ const productSchema = {
       <h1 class="font-display font-bold text-5xl md:text-6xl text-white mb-5 leading-[1.05]">
         Batatas Chips <span class="text-brand-yellow">Ahara</span><br/>Sabor Tradicional
       </h1>
-      <p class="font-body text-xl text-white/95 max-w-2xl leading-relaxed">
-        Trabalhamos com um único sabor - o tradicional - feito da forma certa.
+      <p class="font-body text-xl text-white/95 max-w-2xl leading-relaxed mb-8">
+        Trabalhamos com um único sabor — o tradicional — feito da forma certa.
         Batata de qualidade, sal na medida e crocância que dura.
         Sem complicação, sem excesso de temperos. O clássico que funciona.
       </p>
+      <div class="flex flex-wrap gap-3">
+        <div class="bg-white border-2 border-black px-5 py-3 shadow-brutal rounded-2xl">
+          <p class="text-xs font-body text-black/50 uppercase tracking-wide mb-0.5">Preço base</p>
+          <p class="font-display font-bold text-2xl text-black">R$ {site.pricing.baseKg},00<span class="text-sm font-body font-normal text-black/60">/kg</span></p>
+        </div>
+        <div class="bg-brand-yellow border-2 border-black px-5 py-3 shadow-brutal rounded-2xl">
+          <p class="text-xs font-body text-black/60 uppercase tracking-wide mb-0.5">Pedido mínimo</p>
+          <p class="font-display font-bold text-2xl text-black">{site.pricing.minOrder} kg</p>
+        </div>
+        <div class="bg-brand-green border-2 border-black px-5 py-3 shadow-brutal rounded-2xl">
+          <p class="text-xs font-body text-black/60 uppercase tracking-wide mb-0.5">Desconto máximo</p>
+          <p class="font-display font-bold text-2xl text-black">{maxDiscount}%</p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- ━━ MATÉRIA-PRIMA ━━ -->
-  <section class="bg-linen border-b-[3px] border-black py-16 md:py-20 relative overflow-hidden">
-    <div class="absolute top-10 -left-20 w-64 h-64 bg-brand-purple/10 blob-organic pointer-events-none" aria-hidden="true"></div>
-    <div class="relative max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
-      <div class="relative order-2 md:order-1">
-        <Image
-          src={chipsBowlImg}
-          alt="Batatas chips artesanais Ahara - matéria-prima selecionada"
-          width={800}
-          height={600}
-          loading="lazy"
-          class="border-[3px] border-black shadow-brutal-lg w-full aspect-[4/3] object-cover rounded-3xl"
-        />
-        <img
-          src={icons.chip4}
-          alt="Ilustração decorativa de batata chips artesanal"
-          class="absolute -bottom-6 -right-6 w-24 h-24 md:w-32 md:h-32 object-contain -rotate-12 pointer-events-none"
-        />
+  <!-- ━━ PRODUTO + PREÇOS ━━ -->
+  <section class="bg-linen border-b-[3px] border-black py-16 md:py-20">
+    <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-start">
+
+      <!-- Imagem do produto -->
+      <div class="flex flex-col items-center">
+        <div class="relative w-full max-w-md mx-auto">
+          <Image
+            src={nikoImg}
+            alt="Embalagem Niko Batata Chips sabor tradicional 50g — produto artesanal Ahara"
+            width={600}
+            height={600}
+            loading="eager"
+            class="border-[3px] border-black shadow-brutal-lg w-full object-contain rounded-3xl bg-white p-4"
+          />
+          <span class="absolute -top-3 -right-3 bg-brand-yellow border-2 border-black px-3 py-1 text-xs font-impact shadow-brutal rounded-full rotate-3">
+            VEGANO · 0% TRANS
+          </span>
+        </div>
+        <p class="mt-4 text-xs font-body text-black/50 text-center max-w-xs leading-relaxed italic">
+          Imagem meramente ilustrativa. A foto apresentada corresponde à embalagem do produto na versão de 50 g.
+        </p>
       </div>
-      <div class="order-1 md:order-2">
-        <h2 class="font-display font-bold text-3xl md:text-4xl mb-5">
-          Matéria-prima: Batatas <span class="text-brand-purple">Marquise e Atlantic</span>
+
+      <!-- Tabela de preços progressivos -->
+      <div>
+        <h2 class="font-display font-bold text-3xl md:text-4xl mb-2">
+          Tabela de <span class="text-brand-purple">preços</span>
         </h2>
-        <div class="space-y-4 font-body text-black/70 leading-relaxed">
-          <p>
-            Utilizamos exclusivamente batatas das variedades Marquise e Atlantic,
-            conforme disponibilidade de safra. São reconhecidas como as melhores
-            para fritura:
-          </p>
-          <ul class="space-y-2">
-            {[
-              'Textura firme: resistente ao processo de fritura',
-              'Baixo teor de açúcar: evita escurecimento indesejado',
-              'Sabor neutro: realça o tempero e o sal',
-              'Crocância superior: mantém a textura por mais tempo',
-            ].map(item => (
-              <li class="flex items-start gap-2">
-                <span class="text-brand-green font-bold mt-0.5 flex-shrink-0">✓</span>
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
+        <p class="font-body text-black/60 mb-6 leading-relaxed">
+          Preço por quilo com desconto progressivo conforme o volume. Quanto mais você compra, menor o custo por kg.
+        </p>
+
+        <div class="border-[3px] border-black rounded-2xl overflow-hidden shadow-brutal">
+          <!-- Cabeçalho -->
+          <div class="bg-black text-white grid grid-cols-3 px-4 py-3">
+            <span class="font-display font-bold text-sm">Volume</span>
+            <span class="font-display font-bold text-sm text-center">Desconto</span>
+            <span class="font-display font-bold text-sm text-right">Preço/kg</span>
+          </div>
+          <!-- Linha base -->
+          <div class="grid grid-cols-3 px-4 py-3 border-b-2 border-black bg-white items-center">
+            <div>
+              <span class="font-body text-sm font-medium">5 kg a 24 kg</span>
+              <span class="block text-xs text-black/40 font-body">Pedido mínimo</span>
+            </div>
+            <span class="font-body text-sm text-center text-black/40">—</span>
+            <span class="font-display font-bold text-lg text-right text-black">
+              R$ {site.pricing.baseKg},00
+            </span>
+          </div>
+          <!-- Faixas de desconto -->
+          {site.pricing.discountTiers.map((tier, i) => {
+            const precoFinal = (site.pricing.baseKg * (1 - tier.discountPercent / 100));
+            const nextKg = site.pricing.discountTiers[i + 1]?.kg;
+            const rangeLabel = nextKg ? `${tier.kg} kg a ${nextKg - 1} kg` : `${tier.kg} kg ou mais`;
+            const colors = ['bg-brand-red/5', 'bg-brand-purple/5', 'bg-brand-green/5', 'bg-brand-yellow/20'];
+            return (
+              <div class={`grid grid-cols-3 px-4 py-3 border-b border-black/10 last:border-b-0 items-center ${colors[i]}`}>
+                <div>
+                  <span class="font-body text-sm font-medium">{rangeLabel}</span>
+                </div>
+                <div class="text-center">
+                  <span class="bg-brand-green text-white border border-black px-2 py-0.5 text-xs font-bold rounded-full">
+                    -{tier.discountPercent}%
+                  </span>
+                </div>
+                <span class="font-display font-bold text-lg text-right text-brand-purple">
+                  R$ {precoFinal.toFixed(2).replace('.', ',')}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        <p class="mt-3 text-xs font-body text-black/40 leading-relaxed">
+          Descontos aplicados automaticamente sobre o preço base de R$ {site.pricing.baseKg},00/kg conforme o volume total do pedido.
+        </p>
+
+        <div class="mt-6">
+          <CTAButton
+            href={site.whatsapp.link('Olá! Gostaria de fazer um pedido de batata chips.')}
+            label="Solicitar orçamento pelo WhatsApp"
+            variant="green"
+            size="md"
+            icon="arrow"
+          />
         </div>
       </div>
     </div>
@@ -210,6 +267,149 @@ const productSchema = {
             <p class="text-xs font-body text-white/50">{pkg.units}</p>
           </article>
         ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ ENTREGA E RETIRADA ━━ -->
+  <section class="bg-white border-b-[3px] border-black py-16 md:py-20">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="mb-10">
+        <span class="inline-block bg-brand-yellow border-2 border-black px-3 py-1 text-xs font-impact shadow-brutal mb-4 rounded-full">
+          LOGÍSTICA
+        </span>
+        <h2 class="font-display font-bold text-3xl md:text-4xl mb-3">
+          Entrega e <span class="text-brand-purple">retirada</span>
+        </h2>
+        <p class="font-body text-black/60 max-w-2xl leading-relaxed">
+          Atendemos clientes no Distrito Federal com entrega direta e enviamos para todo o Brasil via transportadora. Veja abaixo como funciona para a sua situação.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-5 mb-8">
+
+        <!-- Entrega DF -->
+        <div class="border-[3px] border-black rounded-2xl shadow-brutal bg-brand-green/10 p-6">
+          <div class="w-10 h-10 bg-brand-green border-2 border-black rounded-xl flex items-center justify-center mb-4 shadow-brutal">
+            <span class="text-white font-bold text-lg">✓</span>
+          </div>
+          <h3 class="font-display font-bold text-xl mb-3">Entrega no DF</h3>
+          <p class="font-body text-sm text-black/65 mb-4 leading-relaxed">
+            Pedidos a partir de <strong>{site.pricing.deliveryMin} kg</strong> têm entrega gratuita nas seguintes regiões:
+          </p>
+          <ul class="space-y-1.5">
+            {site.regions.map(region => (
+              <li class="flex items-center gap-2 font-body text-sm text-black/70">
+                <span class="w-1.5 h-1.5 bg-brand-green rounded-full flex-shrink-0"></span>
+                {region}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Retirada -->
+        <div class="border-[3px] border-black rounded-2xl shadow-brutal bg-brand-yellow/20 p-6">
+          <div class="w-10 h-10 bg-brand-yellow border-2 border-black rounded-xl flex items-center justify-center mb-4 shadow-brutal">
+            <span class="font-bold text-lg">📍</span>
+          </div>
+          <h3 class="font-display font-bold text-xl mb-3">Retirada presencial</h3>
+          <p class="font-body text-sm text-black/65 mb-4 leading-relaxed">
+            Pedidos abaixo de <strong>{site.pricing.deliveryMin} kg</strong> ou fora das regiões com entrega podem ser retirados diretamente no nosso endereço em Brasília/DF:
+          </p>
+          <div class="bg-white border-2 border-black rounded-xl p-3">
+            <p class="font-body text-sm font-medium text-black leading-snug">
+              {site.address.full}
+            </p>
+            <p class="font-body text-xs text-black/50 mt-2">
+              {site.hours.weekdays}<br/>{site.hours.saturday}
+            </p>
+          </div>
+        </div>
+
+        <!-- Outros estados -->
+        <div class="border-[3px] border-black rounded-2xl shadow-brutal bg-brand-purple/10 p-6">
+          <div class="w-10 h-10 bg-brand-purple border-2 border-black rounded-xl flex items-center justify-center mb-4 shadow-brutal">
+            <span class="text-white font-bold text-lg">🚚</span>
+          </div>
+          <h3 class="font-display font-bold text-xl mb-3">Outros estados</h3>
+          <p class="font-body text-sm text-black/65 mb-4 leading-relaxed">
+            Enviamos para todo o Brasil via transportadora. O frete é calculado individualmente com base no volume, peso e destino do pedido.
+          </p>
+          <div class="bg-brand-purple/10 border border-brand-purple/30 rounded-xl p-3">
+            <p class="font-body text-xs text-black/70 leading-relaxed">
+              Entre em contato antes de fechar o pedido para que possamos avaliar disponibilidade de envio, calcular o frete e informar as condições logísticas para a sua região.
+            </p>
+          </div>
+          <a
+            href={site.whatsapp.link('Olá! Gostaria de informações sobre envio para o meu estado.')}
+            class="mt-4 inline-flex items-center gap-2 font-body text-sm font-bold text-brand-purple hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Consultar frete pelo WhatsApp →
+          </a>
+        </div>
+      </div>
+
+      <!-- Aviso geral -->
+      <div class="bg-linen border-2 border-black/20 rounded-2xl p-5 flex items-start gap-4">
+        <span class="text-2xl flex-shrink-0">ℹ️</span>
+        <p class="font-body text-sm text-black/65 leading-relaxed">
+          Para compras realizadas fora das regiões com entrega direta no DF, o cliente deve entrar em contato com a Ahara previamente para que seja avaliada a disponibilidade de envio, o cálculo do frete e as demais condições logísticas antes da confirmação do pedido.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ MATÉRIA-PRIMA ━━ -->
+  <section class="bg-linen border-b-[3px] border-black py-16 md:py-20 relative overflow-hidden">
+    <div class="absolute top-10 -left-20 w-64 h-64 bg-brand-purple/10 blob-organic pointer-events-none" aria-hidden="true"></div>
+    <div class="relative max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
+      <div class="relative order-2 md:order-1">
+        <img
+          src={icons.chip4}
+          alt="Ilustração decorativa de batata chips artesanal"
+          class="absolute -bottom-6 -right-6 w-24 h-24 md:w-32 md:h-32 object-contain -rotate-12 pointer-events-none"
+        />
+        <div class="bg-white border-[3px] border-black shadow-brutal-lg rounded-3xl p-8 flex flex-col gap-4">
+          {[
+            { icon: '🥔', title: 'Variedade Marquise', desc: 'Baixo teor de açúcar, textura firme e crocância superior.' },
+            { icon: '🥔', title: 'Variedade Atlantic', desc: 'Sabor neutro que realça o tempero, resistente ao processo de fritura.' },
+          ].map(item => (
+            <div class="flex items-start gap-4">
+              <span class="text-3xl flex-shrink-0">{item.icon}</span>
+              <div>
+                <p class="font-display font-bold text-base">{item.title}</p>
+                <p class="font-body text-sm text-black/60 leading-relaxed">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div class="order-1 md:order-2">
+        <h2 class="font-display font-bold text-3xl md:text-4xl mb-5">
+          Matéria-prima: Batatas <span class="text-brand-purple">Marquise e Atlantic</span>
+        </h2>
+        <div class="space-y-4 font-body text-black/70 leading-relaxed">
+          <p>
+            Utilizamos exclusivamente batatas das variedades Marquise e Atlantic,
+            conforme disponibilidade de safra. São reconhecidas como as melhores
+            para fritura:
+          </p>
+          <ul class="space-y-2">
+            {[
+              'Textura firme: resistente ao processo de fritura',
+              'Baixo teor de açúcar: evita escurecimento indesejado',
+              'Sabor neutro: realça o tempero e o sal',
+              'Crocância superior: mantém a textura por mais tempo',
+            ].map(item => (
+              <li class="flex items-start gap-2">
+                <span class="text-brand-green font-bold mt-0.5 flex-shrink-0">✓</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   </section>
