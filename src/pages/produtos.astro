@@ -310,16 +310,21 @@ const productSchema = {
           </div>
           <h3 class="font-display font-bold text-xl mb-3">Retirada presencial</h3>
           <p class="font-body text-sm text-black/65 mb-4 leading-relaxed">
-            Pedidos abaixo de <strong>{site.pricing.deliveryMin} kg</strong> ou fora das regiões com entrega podem ser retirados diretamente no nosso endereço em Brasília/DF:
+            Pedidos abaixo de <strong>{site.pricing.deliveryMin} kg</strong> ou fora das regiões com entrega podem ser retirados presencialmente em Brasília/DF.
           </p>
           <div class="bg-white border-2 border-black rounded-xl p-3">
-            <p class="font-body text-sm font-medium text-black leading-snug">
-              {site.address.full}
-            </p>
-            <p class="font-body text-xs text-black/50 mt-2">
-              {site.hours.weekdays}<br/>{site.hours.saturday}
+            <p class="font-body text-sm text-black/70 leading-relaxed">
+              Entre em contato pelo WhatsApp para combinar o local e o horário de retirada.
             </p>
           </div>
+          <a
+            href={site.whatsapp.link('Olá! Gostaria de combinar a retirada do meu pedido.')}
+            class="mt-4 inline-flex items-center gap-2 font-body text-sm font-bold text-black hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Combinar retirada pelo WhatsApp →
+          </a>
         </div>
 
         <!-- Outros estados -->
