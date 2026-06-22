@@ -471,6 +471,139 @@ export function homeFaqNode() {
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
+// INTENT ENTITIES — desambiguação semântica do cluster atacado/revenda/revender
+// Cada intenção é uma entidade própria (DefinedTerm) num glossário do site.
+// Resolve canibalização: os spokes deixam de apontar todos `about → Organization`
+// e passam a declarar `about` da SUA intenção específica + o Produto.
+// ──────────────────────────────────────────────────────────────────────────────
+
+const GLOSSARY_ID = `${BASE}/#glossario-atacado-revenda`;
+const PRODUCT_ID = `${BASE}/#product-batata-chips`;
+
+export type IntentTopic = 'atacado' | 'revenda' | 'revender';
+
+const INTENT_DEFS: Record<IntentTopic, { name: string; description: string }> = {
+  atacado: {
+    name: 'Atacado de batata chips',
+    description:
+      'Compra de batata chips artesanal no atacado, por quilo (a granel), com pedido mínimo de 5kg e desconto progressivo por volume — destinada a lojistas, comércios, eventos e food service que querem preço de atacado direto da fábrica.',
+  },
+  revenda: {
+    name: 'Revenda de batata chips',
+    description:
+      'Modelo de revenda de batata chips artesanal com foco em margem e lucro do revendedor — quem compra para revender em cantinas, bares, portarias, eventos e comércio de bairro, ganhando na quantidade vendida.',
+  },
+  revender: {
+    name: 'Como revender batata chips',
+    description:
+      'Processo e primeiros passos para começar a revender batata chips artesanal — do pedido mínimo à precificação e à logística, para o revendedor iniciante que quer entrar no ramo.',
+  },
+};
+
+/** Normaliza o tópico bruto do slug para uma das 3 intenções canônicas (ou null). */
+export function normalizeIntent(rawTopic: string | null): IntentTopic | null {
+  if (!rawTopic) return null;
+  if (rawTopic === 'atacado') return 'atacado';
+  if (rawTopic === 'revender') return 'revender';
+  if (rawTopic === 'revenda' || rawTopic === 'para-revenda') return 'revenda';
+  return null;
+}
+
+/** Nó DefinedTerm da intenção — incluído no @graph do post para o @id resolver. */
+export function intentEntityNode(topic: IntentTopic) {
+  const def = INTENT_DEFS[topic];
+  return {
+    '@type': 'DefinedTerm',
+    '@id': `${BASE}/#intent-${topic}`,
+    name: def.name,
+    description: def.description,
+    inDefinedTermSet: {
+      '@type': 'DefinedTermSet',
+      '@id': GLOSSARY_ID,
+      name: 'Glossário de atacado e revenda de batata chips — Ahara',
+    },
+  };
+}
+
+/**
+ * Monta `about` + `mentions` de um BlogPosting conforme a intenção do slug.
+ * - COM intenção: about = [entidade da intenção, Produto]; mentions = Organization.
+ * - SEM intenção: about = Produto; mentions = Organization (fallback seguro).
+ * Retorna também o nó da intenção para incluir no @graph (ou null).
+ */
+export function articleSemanticLinks(topic: IntentTopic | null) {
+  if (topic) {
+    return {
+      about: [{ '@id': `${BASE}/#intent-${topic}` }, { '@id': PRODUCT_ID }],
+      mentions: [{ '@id': ORG_ID }],
+      extraNode: intentEntityNode(topic),
+    };
+  }
+  return {
+    about: [{ '@id': PRODUCT_ID }],
+    mentions: [{ '@id': ORG_ID }],
+    extraNode: null as Record<string, unknown> | null,
+  };
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// SILOS — arquitetura de cluster temático (hub/pillar ↔ spokes) para fluxo de
+// autoridade vertical. Cada silo tem um pillar (página-hub) que lista seus spokes
+// e recebe a autoridade deles via breadcrumb + isPartOf.
+// ──────────────────────────────────────────────────────────────────────────────
+
+export interface SiloDef {
+  key: string;
+  name: string;
+  pillarSlug: string | null; // slug do post-pillar do silo (null = sem pillar ainda)
+  match: RegExp; // casa o slug do spoke ao silo
+}
+
+export const SILOS: SiloDef[] = [
+  {
+    key: 'atacado-revenda',
+    name: 'Atacado e Revenda',
+    pillarSlug: 'comprar-batata-chips-atacado',
+    match: /(atacado|revenda|revender|saco|granel|10kg|caseira|onde-comprar|frita|distribuidora)/,
+  },
+  {
+    key: 'eventos',
+    name: 'Eventos e Festas',
+    pillarSlug: null,
+    match: /(copa|festa|evento|formatura|junina|aniversario)/,
+  },
+];
+
+/** Resolve o silo de um slug (fallback: primeiro silo). */
+export function siloOf(slug: string): SiloDef {
+  return SILOS.find((s) => s.match.test(slug)) ?? SILOS[0];
+}
+
+/** True se o slug é o pillar (hub) do seu silo. */
+export function isPillar(slug: string): boolean {
+  return SILOS.some((s) => s.pillarSlug === slug);
+}
+
+/** ItemList do silo — incluído no @graph do pillar para listar seus spokes. */
+export function siloItemListNode(
+  pillarUrl: string,
+  items: { url: string; name: string }[],
+) {
+  return {
+    '@type': 'ItemList',
+    '@id': `${pillarUrl}#silo-itemlist`,
+    name: 'Páginas deste tópico',
+    numberOfItems: items.length,
+    itemListElement: items.map((it, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: it.url,
+      name: it.name,
+    })),
+  };
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
 // GRAPH ASSEMBLER
 // ──────────────────────────────────────────────────────────────────────────────
 

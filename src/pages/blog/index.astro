@@ -4,7 +4,8 @@ import Layout from '@/layouts/Layout.astro';
 import CTAButton from '@/components/CTAButton.astro';
 import { site } from '@/data/site';
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
+// Publicação programada: só lista posts com pub_date já vencido (<= agora, no build).
+const posts = (await getCollection('blog', ({ data }) => !data.draft && (process.env.AHARA_PUBLISH_ALL === '1' || data.pub_date.getTime() <= Date.now())))
   .sort((a, b) => b.data.pub_date.getTime() - a.data.pub_date.getTime());
 
 const blogSchema = {

@@ -39,7 +39,8 @@ const staticRoutes: Route[] = [
 ];
 
 export const GET: APIRoute = async () => {
-  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  // Publicação programada: sitemap só inclui posts já publicados (pub_date <= agora).
+  const posts = await getCollection('blog', ({ data }) => !data.draft && (process.env.AHARA_PUBLISH_ALL === '1' || data.pub_date.getTime() <= Date.now()));
   const blogRoutes: Route[] = posts.map((p) => ({
     path: `/blog/${p.id}/`,
     priority: 0.7,

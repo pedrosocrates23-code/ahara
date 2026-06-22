@@ -4,10 +4,11 @@ import Layout from '@/layouts/Layout.astro';
 import CTAButton from '@/components/CTAButton.astro';
 import CTANikoBanner from '@/components/CTANikoBanner.astro';
 import { site } from '@/data/site';
-import { faqPageNode } from '@/lib/schema';
+import { faqPageNode, articleSemanticLinks, normalizeIntent, siloOf, isPillar, siloItemListNode } from '@/lib/schema';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  // Publicação programada: a página só é gerada quando pub_date <= agora (no build).
+  const posts = await getCollection('blog', ({ data }) => !data.draft && (process.env.AHARA_PUBLISH_ALL === '1' || data.pub_date.getTime() <= Date.now()));
   return posts.map((post) => ({
     params: { slug: post.id },
     props: { post, allPosts: posts },
@@ -19,6 +20,50 @@ const { Content } = await render(post);
 
 const url = `${site.url}/blog/${post.id}/`;
 const waPost = site.whatsapp.link(`Olá, vim do artigo "${post.data.h1}" e gostaria de saber mais`);
+
+// Desambiguação semântica: cada intenção (atacado/revenda/revender) tem sua própria
+// entidade `about`. Resolve canibalização — os spokes deixam de declarar todos a
+// mesma entidade (Organization) e passam a apontar para a intenção + o Produto.
+const rawTopic = post.id.match(/(atacado|revenda|revender|para-revenda)/)?.[1] ?? null;
+const links = articleSemanticLinks(normalizeIntent(rawTopic));
+
+// Arquitetura de silo: pillar (hub) ↔ spokes — fluxo de autoridade vertical.
+const silo = siloOf(post.id);
+const amIPillar = isPillar(post.id);
+const pillarUrl = silo.pillarSlug ? `${site.url}/blog/${silo.pillarSlug}/` : null;
+
+// Pillar lista seus spokes (gera os links internos hub → spoke).
+const siloSpokes = amIPillar
+  ? allPosts
+      .filter((p) => siloOf(p.id).key === silo.key && p.id !== post.id)
+      .sort((a, b) => b.data.pub_date.getTime() - a.data.pub_date.getTime())
+  : [];
+const siloItemList =
+  amIPillar && siloSpokes.length > 0
+    ? siloItemListNode(
+        url,
+        siloSpokes.map((p) => ({ url: `${site.url}/blog/${p.id}/`, name: p.data.h1 })),
+      )
+    : null;
+
+// Spoke aponta isPartOf ao Blog + ao pillar do silo (envia autoridade ao hub).
+const isPartOfRefs =
+  !amIPillar && pillarUrl
+    ? [{ '@id': `${site.url}/blog/#blog` }, { '@id': `${pillarUrl}#webpage` }]
+    : { '@id': `${site.url}/blog/#blog` };
+
+// Breadcrumb: Início › {Silo (→ pillar)} › Post. O pillar usa Blog como nível.
+const crumbs = amIPillar
+  ? [
+      { name: 'Início', url: '/' },
+      { name: 'Blog', url: '/blog/' },
+      { name: post.data.h1, url: `/blog/${post.id}/` },
+    ]
+  : [
+      { name: 'Início', url: '/' },
+      { name: silo.name, url: pillarUrl ? `/blog/${silo.pillarSlug}/` : '/blog/' },
+      { name: post.data.h1, url: `/blog/${post.id}/` },
+    ];
 
 const articleSchema = {
   '@type': 'BlogPosting',
@@ -35,8 +80,9 @@ const articleSchema = {
   author: { '@id': `${site.url}/autor/joao-amaro/#person` },
   publisher: { '@id': `${site.url}/#organization` },
   mainEntityOfPage: { '@id': `${url}#webpage` },
-  isPartOf: { '@id': `${site.url}/blog/#blog` },
-  about: { '@id': `${site.url}/#organization` },
+  isPartOf: isPartOfRefs,
+  about: links.about,
+  mentions: links.mentions,
   image: {
     '@type': 'ImageObject',
     url: `${site.url}/images/hero-chips.webp`,
@@ -50,7 +96,12 @@ const faqSchema =
     ? faqPageNode(url, post.data.faq)
     : null;
 
-const extraSchemas = faqSchema ? [articleSchema, faqSchema] : [articleSchema];
+const extraSchemas = [
+  articleSchema,
+  ...(links.extraNode ? [links.extraNode] : []),
+  ...(siloItemList ? [siloItemList] : []),
+  ...(faqSchema ? [faqSchema] : []),
+];
 
 // Clustering geográfico + temático para related posts
 const stateRe = /-(df|sp|rj|mg|ba|pe|ce|go|sc|pr|rs|am|pa|mt|ms|pi|ma|to|al|se|rn|pb|es|ro|ac|ap|rr)$/;
@@ -86,11 +137,8 @@ const isLocalPost =
   title={post.data.seo_title || post.data.h1}
   description={post.data.meta_description}
   ogImage="/images/hero-chips.webp"
-  breadcrumbs={[
-    { name: 'Início', url: '/' },
-    { name: 'Blog', url: '/blog/' },
-    { name: post.data.h1, url: `/blog/${post.id}/` },
-  ]}
+  pageType={amIPillar ? 'CollectionPage' : 'WebPage'}
+  breadcrumbs={crumbs}
   extraSchemas={extraSchemas}
 >
 
@@ -200,6 +248,28 @@ const isLocalPost =
           </div>
         </div>
 
+      </div>
+    </section>
+  )}
+
+  <!-- ━━ PILLAR: PÁGINAS DESTE TÓPICO (hub → spokes) ━━ -->
+  {amIPillar && siloSpokes.length > 0 && (
+    <section class="bg-brand-green border-b-[3px] border-black py-12 md:py-16">
+      <div class="max-w-5xl mx-auto px-4">
+        <span class="inline-block bg-brand-yellow border-2 border-black px-3 py-1 text-xs font-impact shadow-brutal mb-4 rounded-full">
+          {silo.name.toUpperCase()}
+        </span>
+        <h2 class="font-display font-bold text-2xl md:text-3xl text-white mb-6">
+          Todas as páginas deste tópico ({siloSpokes.length})
+        </h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {siloSpokes.map((p) => (
+            <a href={`/blog/${p.id}/`} class="card-brutal bg-white p-5 flex flex-col gap-2 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brutal-lg transition-all">
+              <h3 class="font-display font-bold text-base leading-tight">{p.data.h1}</h3>
+              <span class="text-xs font-body text-brand-purple font-bold mt-auto">Ver página →</span>
+            </a>
+          ))}
+        </div>
       </div>
     </section>
   )}
