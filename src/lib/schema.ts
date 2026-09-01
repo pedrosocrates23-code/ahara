@@ -14,6 +14,13 @@ const ORG_ID = `${BASE}/#organization`;
 const WEBSITE_ID = `${BASE}/#website`;
 const LOGO_ID = `${BASE}/#logo`;
 const BRAND_ID = `${BASE}/#brand-niko`;
+const PRODUCT_ID = `${BASE}/#product-batata-chips`;
+
+// site.regions são Regiões Administrativas do Distrito Federal — subdivisões do
+// município, não cidades. schema.org/City é "A city or town"; schema.org/
+// AdministrativeArea é "A geographical region, typically under the jurisdiction
+// of a particular government" — que é exatamente o que uma RA é. Por isso todo
+// areaServed/eligibleRegion derivado de site.regions usa AdministrativeArea.
 
 // ──────────────────────────────────────────────────────────────────────────────
 // CORE NODES — Organization + WebSite + Logo (presentes em TODAS as páginas)
@@ -32,8 +39,11 @@ export function organizationNode() {
       'Indústria de batatas chips artesanais com sede em Brasília/DF e envio para todo o Brasil. Atendimento B2B para revendedores, comércios, eventos e food service — entrega com frota própria no DF e envio nacional via transportadora.',
     url: BASE,
     logo: { '@id': LOGO_ID },
+    // taxID recebe o CNPJ, que é o identificador fiscal da empresa. `vatID` NÃO é
+    // sinônimo: designa o número de imposto sobre valor agregado, cujo análogo no
+    // Brasil seria a Inscrição Estadual. Declarar o CNPJ nos dois campos afirmava um
+    // dado falso, então vatID fica de fora até a Inscrição Estadual real ser informada.
     taxID: site.cnpj,
-    vatID: site.cnpj,
     founder: {
       '@type': 'Person',
       '@id': `${BASE}/autor/joao-amaro/#person`,
@@ -44,6 +54,11 @@ export function organizationNode() {
       '@type': 'Place',
       name: 'Brasília, DF, Brasil',
     },
+    // A empresa é a Ahara e a linha de produto é a Niko (confirmado pelo cliente em
+    // 01/09/2026). Sem esta aresta o nó Brand ficava solto no grafo: a marca era
+    // declarada em cada página e nada dizia a quem ela pertence. `brand` tem domínio
+    // Organization e range Brand, então é a propriedade exata para afirmar o vínculo.
+    brand: { '@id': BRAND_ID },
     knowsAbout: [
       'Batatas chips artesanais',
       'Food service',
@@ -73,7 +88,7 @@ export function organizationNode() {
     },
     hasMap: `https://maps.google.com/maps?q=${site.address.mapsQuery}`,
     areaServed: [
-      ...site.regions.map((region) => ({ '@type': 'City', name: region })),
+      ...site.regions.map((region) => ({ '@type': 'AdministrativeArea', name: region })),
       { '@type': 'AdministrativeArea', name: 'Distrito Federal' },
       { '@type': 'Country', name: 'Brasil' },
     ],
@@ -117,7 +132,14 @@ export function logoNode() {
 }
 
 export function websiteNode() {
-  return {
+  // copyrightYear é propriedade da OBRA (o site), não da empresa: schema.org define
+  // como "the year during which the claimed copyright for the CreativeWork was first
+  // asserted". Derivá-lo de site.foundingDate misturava as duas coisas e, depois que
+  // foundingDate virou a data ISO do registro do CNPJ ('2025-12-02'), publicava 2025
+  // num site cujo conteúdo é inteiramente de 2026. Fica desacoplado, com valor próprio.
+  const year = /^(\d{4})/.exec(site.copyrightYear)?.[1];
+
+  const node: Record<string, unknown> = {
     '@type': 'WebSite',
     '@id': WEBSITE_ID,
     url: BASE,
@@ -126,8 +148,9 @@ export function websiteNode() {
     inLanguage: 'pt-BR',
     publisher: { '@id': ORG_ID },
     copyrightHolder: { '@id': ORG_ID },
-    copyrightYear: Number(site.foundingDate),
   };
+  if (year) node.copyrightYear = Number(year);
+  return node;
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -221,10 +244,12 @@ export function discountOfferCatalog(catalogId: string = `${BASE}/#offer-catalog
     name: 'Tabela de Preços B2B — Batata Chips Artesanal Ahara',
     description:
       'Política comercial pública e progressiva. Pedido mínimo 5kg. Desconto progressivo por volume de 5% (25kg) até 12% (100kg+).',
-    itemListElement: site.pricing.discountTiers.map((tier, i) => ({
+    // `position` tem domainIncludes CreativeWork e ListItem — Offer não é nem herda de
+    // nenhum dos dois, então a propriedade estava fora de domínio nos 4 tiers. A ordem
+    // do catálogo já é a ordem do array, e nenhum rich result do Google lê esse campo.
+    itemListElement: site.pricing.discountTiers.map((tier) => ({
       '@type': 'Offer',
       '@id': `${catalogId}/tier-${tier.kg}`,
-      position: i + 1,
       name: `${tier.kg}kg ou mais — ${tier.discountPercent}% de desconto`,
       description: `Desconto progressivo de ${tier.discountPercent}% para pedidos a partir de ${tier.kg}kg`,
       eligibleQuantity: {
@@ -244,7 +269,7 @@ export function discountOfferCatalog(catalogId: string = `${BASE}/#offer-catalog
         },
       },
       seller: { '@id': ORG_ID },
-      areaServed: site.regions.map((r) => ({ '@type': 'City', name: r })),
+      areaServed: site.regions.map((r) => ({ '@type': 'AdministrativeArea', name: r })),
       availableAtOrFrom: { '@id': ORG_ID },
       businessFunction: 'http://purl.org/goodrelations/v1#Sell',
     })),
@@ -266,7 +291,7 @@ export function deliverySpec() {
       unitText: 'kg',
     },
     eligibleRegion: site.regions.map((r) => ({
-      '@type': 'City',
+      '@type': 'AdministrativeArea',
       name: r,
       containedInPlace: { '@type': 'AdministrativeArea', name: 'Distrito Federal' },
     })),
@@ -296,7 +321,7 @@ export function serviceNode(opts: ServiceOptions) {
     description: opts.description,
     serviceType: opts.serviceType,
     provider: { '@id': ORG_ID },
-    areaServed: site.regions.map((r) => ({ '@type': 'City', name: r })),
+    areaServed: site.regions.map((r) => ({ '@type': 'AdministrativeArea', name: r })),
     audience: {
       '@type': opts.audienceType ?? 'BusinessAudience',
       name: opts.audienceName,
@@ -305,7 +330,13 @@ export function serviceNode(opts: ServiceOptions) {
     availableChannel: {
       '@type': 'ServiceChannel',
       serviceUrl: site.whatsapp.url,
-      servicePhone: `+${site.whatsapp.number}`,
+      // servicePhone tem rangeIncludes ContactPoint, não Text: passar a string do
+      // telefone deixava o valor fora do range declarado pelo vocabulário.
+      servicePhone: {
+        '@type': 'ContactPoint',
+        telephone: `+${site.whatsapp.number}`,
+        contactType: 'sales',
+      },
       availableLanguage: 'pt-BR',
     },
     termsOfService: `${BASE}/politica-de-privacidade/`,
@@ -478,7 +509,6 @@ export function homeFaqNode() {
 // ──────────────────────────────────────────────────────────────────────────────
 
 const GLOSSARY_ID = `${BASE}/#glossario-atacado-revenda`;
-const PRODUCT_ID = `${BASE}/#product-batata-chips`;
 
 export type IntentTopic = 'atacado' | 'revenda' | 'revender';
 
@@ -547,6 +577,45 @@ export function articleSemanticLinks(topic: IntentTopic | null) {
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
+// ENTITY STUBS — nós mínimos de Produto e Marca para o @graph dos POSTS
+//
+// `articleSemanticLinks()` referencia PRODUCT_ID em `about` de todo BlogPosting e
+// o stub do Produto referencia BRAND_ID. Ambos os nós completos só são construídos
+// em /produtos/ (e a Marca também na home), então nas 89 páginas de post os dois
+// @id não resolviam. Estes stubs existem unicamente para o @id resolver.
+// ──────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Produto MÍNIMO — só identidade, sem oferta.
+ *
+ * Deliberadamente SEM offers / price / AggregateOffer / nutrition / hasVariant:
+ * a documentação do Google restringe o rich result de produto a páginas focadas
+ * em um único produto. Replicar a oferta em 89 artigos seria pleitear
+ * elegibilidade indevida. O Product completo continua só em /produtos/.
+ * https://developers.google.com/search/docs/appearance/structured-data/product
+ */
+export function productStubNode() {
+  return {
+    '@type': 'Product',
+    '@id': PRODUCT_ID,
+    name: 'Niko Batata Chips Artesanal — Sabor Tradicional',
+    description: 'Batata chips artesanal sabor tradicional produzida pela Ahara em Brasília/DF.',
+    url: `${BASE}/produtos/`,
+    brand: { '@id': BRAND_ID },
+  };
+}
+
+/**
+ * Par de stubs (Produto mínimo + Marca mínima) para inclusão no @graph dos posts.
+ * A Marca reaproveita `brandNikoNode()` — que já é mínimo (name/description/url/
+ * logo, sem oferta) — para não criar uma segunda definição concorrente do mesmo
+ * @id. O `logo` dele aponta para LOGO_ID, que `buildGraph` emite em toda página.
+ */
+export function articleEntityStubs(): Record<string, unknown>[] {
+  return [productStubNode(), brandNikoNode()];
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
 // SILOS — arquitetura de cluster temático (hub/pillar ↔ spokes) para fluxo de
 // autoridade vertical. Cada silo tem um pillar (página-hub) que lista seus spokes
 // e recebe a autoridade deles via breadcrumb + isPartOf.
@@ -559,24 +628,134 @@ export interface SiloDef {
   match: RegExp; // casa o slug do spoke ao silo
 }
 
+/**
+ * Silo de último recurso. `match` é um negative lookahead vazio — nunca casa nada,
+ * então `SILOS.find()` jamais o devolve: ele só chega ao slug pelo fallback
+ * explícito de `siloOf()`.
+ */
+const GERAL_SILO: SiloDef = {
+  key: 'geral',
+  name: 'Geral',
+  pillarSlug: null,
+  match: /(?!)/,
+};
+
+/**
+ * A ORDEM É SIGNIFICATIVA: `siloOf()` devolve o PRIMEIRO match.
+ *
+ * Os silos de vocabulário específico vêm todos ANTES de 'atacado-revenda', porque
+ * os tokens dele (atacado | revenda | revender) aparecem também em slugs de food
+ * service, festa, marca própria e atributo de produto — se viesse primeiro, ele
+ * engoliria todos eles. Exemplos reais do repositório:
+ *   batata-chips-para-festa-atacado        → eventos-festas, não atacado
+ *   batata-chips-sem-gluten-atacado        → produto-qualidade, não atacado
+ *   batata-chips-atlantic-revenda          → produto-qualidade, não atacado
+ *   fabrica-de-snack-para-marca-propria    → marca-propria, não fabrica-fabricante
+ *   fabricar-batata-chips-com-minha-marca  → marca-propria, não fabrica-fabricante
+ *   mini-batata-chips-personalizada-festa  → personalizado-brindes, não eventos
+ *   brinde-personalizado-comestivel-evento → personalizado-brindes, não eventos
+ *
+ * Os tokens 'frita' e 'granel' foram REMOVIDOS de atacado-revenda: capturavam por
+ * engano os comparativos de cardápio (batata-chips-x-batata-frita-margem-
+ * hamburgueria, batata-chips-acompanhamento-alternativo-batata-frita-cardapio) e o
+ * post de granel para restaurante (comprar-batata-chips-a-granel-para-restaurante),
+ * que são food service. Nenhum slug de atacado depende deles — batata-frita-chips-
+ * atacado e saco-de-batata-chips-atacado casam por 'atacado'.
+ * 'distribuidora' também saiu: passou a ser vocabulário do silo 'distribuicao'.
+ */
 export const SILOS: SiloDef[] = [
   {
-    key: 'atacado-revenda',
-    name: 'Atacado e Revenda',
-    pillarSlug: 'comprar-batata-chips-atacado',
-    match: /(atacado|revenda|revender|saco|granel|10kg|caseira|onde-comprar|frita|distribuidora)/,
+    key: 'food-service',
+    name: 'Food Service',
+    pillarSlug: 'fornecedor-batata-chips-artesanal-hamburgueria',
+    match: /(hamburgueria|hamburguer|restaurante|cardapio|food-service|delivery|cmv|acompanhamento|gourmet)/,
   },
   {
-    key: 'eventos',
-    name: 'Eventos e Festas',
-    pillarSlug: null,
-    match: /(copa|festa|evento|formatura|junina|aniversario)/,
+    key: 'personalizado-brindes',
+    name: 'Personalizado e Brindes',
+    pillarSlug: 'batata-chips-com-rotulo-personalizado',
+    match: /(personalizad|rotulo|brinde|lembranc|casamento|padrinho)/,
   },
+  {
+    key: 'marca-propria',
+    name: 'Marca Própria',
+    pillarSlug: 'batata-chips-marca-propria-private-label',
+    match: /(marca-propria|private-label|minha-marca|terceirizacao)/,
+  },
+  {
+    key: 'distribuicao',
+    name: 'Distribuição',
+    pillarSlug: 'programa-de-distribuidores',
+    match: /(distribui|representante)/,
+  },
+  {
+    key: 'fabrica-fabricante',
+    name: 'Fábrica e Fabricante',
+    pillarSlug: 'fabrica-de-batata-chips-artesanal',
+    match: /(fabrica|industria)/,
+  },
+  {
+    key: 'eventos-festas',
+    name: 'Eventos e Festas',
+    pillarSlug: 'fornecedor-de-snacks-para-eventos',
+    match: /(festa|evento|formatura|junina|copa|buffet|aniversario)/,
+  },
+  {
+    key: 'produto-qualidade',
+    name: 'Produto e Qualidade',
+    pillarSlug: 'batata-chips-crocante-artesanal-kg',
+    match: /(marquise|atlantic|variedade|crocante|sem-gluten|sabor-sal|tradicional)/,
+  },
+  // As três intenções comerciais são silos próprios, e não um "Atacado e Revenda"
+  // único. O motivo é que o mesmo arquivo já as distingue em normalizeIntent(): um
+  // silo só colocava 42 das 89 páginas (47% do site) sob um pillar, misturando quem
+  // quer comprar volume, quem quer margem de revenda e quem quer começar a revender.
+  // Os três matches são disjuntos por construção: 'revender' não contém 'revenda'
+  // nem vice-versa, e nenhum slug atual carrega 'atacado' junto com os outros dois.
+  // Tokens de formato e atributo ('saco', '10kg', 'caseira') saíram do match: nenhum
+  // slug depende deles, e mantê-los faria um slug futuro cair aqui em silêncio, sem
+  // disparar o aviso do silo 'geral'. Mesmo motivo que tirou 'frita' e 'granel'.
+  {
+    key: 'atacado',
+    name: 'Atacado',
+    pillarSlug: 'comprar-batata-chips-atacado',
+    match: /atacado/,
+  },
+  {
+    key: 'revenda',
+    name: 'Revenda',
+    pillarSlug: 'batata-chips-para-revenda',
+    match: /(revenda|onde-comprar)/,
+  },
+  {
+    key: 'revender',
+    name: 'Como Revender',
+    pillarSlug: 'batata-chips-para-revender',
+    match: /revender/,
+  },
+  GERAL_SILO,
 ];
 
-/** Resolve o silo de um slug (fallback: primeiro silo). */
+// siloOf() é chamado O(n^2) durante o build (cada post filtra allPosts), então o
+// aviso é deduplicado por slug para não repetir a mesma linha centenas de vezes.
+const warnedSlugs = new Set<string>();
+
+/**
+ * Resolve o silo de um slug. Sem match, devolve o silo explícito 'geral' e AVISA
+ * no build — o fallback silencioso anterior (`?? SILOS[0]`) escondia slug novo
+ * dentro de 'atacado-revenda' sem que ninguém percebesse.
+ */
 export function siloOf(slug: string): SiloDef {
-  return SILOS.find((s) => s.match.test(slug)) ?? SILOS[0];
+  const hit = SILOS.find((s) => s.match.test(slug));
+  if (hit) return hit;
+  if (!warnedSlugs.has(slug)) {
+    warnedSlugs.add(slug);
+    console.warn(
+      `[schema/SILOS] slug sem silo: "${slug}" -> caiu em 'geral'. ` +
+        `Acrescente um token ao match do silo correto em src/lib/schema.ts.`,
+    );
+  }
+  return GERAL_SILO;
 }
 
 /** True se o slug é o pillar (hub) do seu silo. */
@@ -608,12 +787,57 @@ export function siloItemListNode(
 // ──────────────────────────────────────────────────────────────────────────────
 
 /**
+ * Percorre o @graph e separa os @id DEFINIDOS dos apenas REFERENCIADOS.
+ * Convenção usada em todo este arquivo: um objeto cuja ÚNICA chave é '@id' é uma
+ * referência; um objeto com '@id' + outras chaves é uma definição.
+ */
+function scanGraphIds(value: unknown, defined: Set<string>, referenced: Set<string>): void {
+  if (Array.isArray(value)) {
+    for (const item of value) scanGraphIds(item, defined, referenced);
+    return;
+  }
+  if (value === null || typeof value !== 'object') return;
+
+  const obj = value as Record<string, unknown>;
+  const id = obj['@id'];
+  if (typeof id === 'string') {
+    if (Object.keys(obj).length === 1) referenced.add(id);
+    else defined.add(id);
+  }
+  for (const child of Object.values(obj)) scanGraphIds(child, defined, referenced);
+}
+
+/**
  * Monta o @graph final. As páginas passam apenas os nodes específicos delas;
  * Organization + Logo + WebSite são sempre incluídos (sitewide).
+ *
+ * Antes de fechar, resolve referências penduradas: um @id citado nesta página mas
+ * nunca definido nela. É o caso do Produto e da Marca nos 89 posts — o `about` do
+ * BlogPosting aponta para eles, mas os nós só existiam em /produtos/. Em /produtos/
+ * e na home nada é acrescentado, porque lá os nós já estão definidos.
+ *
+ * A ordem importa: o stub do Produto referencia a Marca, então ele entra primeiro
+ * e o passe seguinte já enxerga a referência nova.
  */
 export function buildGraph(extraNodes: Record<string, unknown>[] = []) {
+  const nodes: Record<string, unknown>[] = [
+    organizationNode(),
+    logoNode(),
+    websiteNode(),
+    ...extraNodes,
+  ];
+
+  for (const stub of articleEntityStubs()) {
+    const defined = new Set<string>();
+    const referenced = new Set<string>();
+    scanGraphIds(nodes, defined, referenced);
+
+    const id = stub['@id'] as string;
+    if (referenced.has(id) && !defined.has(id)) nodes.push(stub);
+  }
+
   return {
     '@context': 'https://schema.org',
-    '@graph': [organizationNode(), logoNode(), websiteNode(), ...extraNodes],
+    '@graph': nodes,
   };
 }

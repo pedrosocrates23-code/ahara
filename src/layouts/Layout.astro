@@ -102,7 +102,10 @@ const graph = buildGraph(routeNodes);
     <meta name="color-scheme" content="light" />
     <style>:root,html{color-scheme:only light}</style>
     <meta name="theme-color" content="#6654ca" />
-    <meta name="author" content={site.legalName} />
+    <!-- meta author é assinatura de documento ("the name of one of the page's
+         authors"), não identificador fiscal. O autor legível por máquina dos
+         posts já é João Amaro, declarado em author no BlogPosting. -->
+    <meta name="author" content={site.name} />
     <meta name="geo.region" content="BR-DF" />
     <meta name="geo.placename" content="Brasília" />
 
@@ -116,7 +119,10 @@ const graph = buildGraph(routeNodes);
     <meta property="og:image:height" content="600" />
     <meta property="og:image:alt" content={`${site.name} - ${title}`} />
     <meta property="og:locale" content="pt_BR" />
-    <meta property="og:site_name" content={site.legalName} />
+    <!-- og:site_name é "the name which should be displayed for the overall site"
+         (ogp.me) — nome do site, não pessoa jurídica. A razão social fica onde
+         ela significa algo: rodapé, políticas e o legalName da Organization. -->
+    <meta property="og:site_name" content={site.name} />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />

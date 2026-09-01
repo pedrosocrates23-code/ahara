@@ -13,6 +13,11 @@ const blog = defineCollection({
     palavras_totais: z.number().int().positive(),
     ctas_internos: z.number().int().nonnegative().default(0),
     pub_date: z.string().transform((s) => new Date(s)),
+    // Data da última alteração real do conteúdo. Fica separada de pub_date porque
+    // um post editado não é um post republicado: o Google usa dateModified como
+    // sinal de frescor e lastmod para priorizar o rastreamento. Opcional: quando
+    // ausente, ambos caem em pub_date, que é o comportamento anterior.
+    updated_date: z.string().transform((s) => new Date(s)).optional(),
     draft: z.boolean().optional().default(false),
     faq: z
       .array(z.object({ q: z.string(), a: z.string() }))

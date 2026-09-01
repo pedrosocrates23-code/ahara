@@ -10,7 +10,8 @@
     "gsc:submit": "node scripts/google-search-console.mjs submit",
     "gsc:list": "node scripts/google-search-console.mjs list",
     "gsc:inspect": "node scripts/google-search-console.mjs inspect",
-    "google:index": "node scripts/google-indexing-api.mjs"
+    "google:index": "node scripts/google-indexing-api.mjs",
+    "check:links": "node scripts/check-internal-links.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.14",

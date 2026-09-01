@@ -5,7 +5,15 @@ export const site = {
   legalName: 'AHARA INDÚSTRIA E COMÉRCIO DE BATATAS SNACKS LTDA',
   cnpj: '63.900.901/0001-50',
   founder: 'João Amaro',
-  foundingDate: '2024',
+  // Registro publico do CNPJ 63.900.901/0001-50: data_inicio_atividade = 2025-12-02.
+  foundingDate: '2025-12-02',
+  // Ano de copyright do SITE, não da empresa. Os 89 artigos publicados são todos de
+  // 2026; amarrar este campo a foundingDate publicava 2025 num conteúdo de 2026.
+  copyrightYear: '2026',
+  // Confirmado com o cliente em 01/09/2026: não existe caixa no domínio próprio, e
+  // este é o endereço oficial. Fica registrado que um endereço em @aharabr.com.br
+  // reforçaria a legitimidade da entidade, que já declara CNPJ, endereço e CEP
+  // conferidos no registro público. Não é bloqueio, é oportunidade.
   email: 'sac.aharabr@gmail.com',
   url: 'https://aharabr.com.br',
   location: 'Brasília/DF',
@@ -17,14 +25,24 @@ export const site = {
     city: 'Brasília',
     state: 'DF',
     country: 'Brasil',
-    // TODO: preencher com o CEP exato do endereço
-    postalCode: '',
+    // CEP conforme o registro publico do CNPJ 63.900.901/0001-50.
+    postalCode: '71988-720',
     full: 'ADE Águas Claras, Conjunto 16, Lote 12 – Brasília/DF – Brasil',
     mapsQuery: 'ADE+Aguas+Claras+Conjunto+16+Lote+12+Brasilia+DF+Brasil',
   },
 
+  // ATENÇÃO ao trocar o telefone: o número abaixo tem DDD 31 (Minas Gerais) numa
+  // empresa sediada em Brasília, o que parece defeito mas não é invenção do site.
+  // A consulta ao CNPJ 63.900.901/0001-50 em 31/08/2026 devolveu exatamente
+  // ddd_telefone_1 = 3198985678, ou seja, é o número do registro público.
+  //
+  // O cliente confirmou em 01/09/2026 que ele é PROVISÓRIO. Quando o número do DF
+  // chegar, troque AQUI e só aqui: os 21 pontos de uso, o rodapé, o botão flutuante,
+  // o menu e os três blocos de JSON-LD derivam todos deste campo. Atualize também o
+  // cadastro na Receita, senão o site passa a divergir do registro público, que é a
+  // fonte que sustenta a identidade da entidade.
   whatsapp: {
-    number: '553198985678',             // +55 31 99898-5678 (provisório)
+    number: '553198985678',             // +55 31 99898-5678 (provisório, confirmado pelo cliente)
     display: '(31) 99898-5678',
     url: 'https://wa.me/553198985678',
     link: (message: string) =>
@@ -67,11 +85,21 @@ export const site = {
     ],
   },
 
-  // URL do Apps Script Web App que recebe o formulario de contato
-  // e anexa linhas em uma Google Sheet (ver scripts/apps-script-contato.gs).
-  // Troque este valor pelo URL "...script.google.com/macros/s/AKfycb.../exec"
-  // depois do deploy do Apps Script.
-  formEndpoint: 'REPLACE_ME_APPS_SCRIPT_URL',
+  // Canal do formulário de contato.
+  //
+  // VAZIO É O ESTADO CORRETO, não uma pendência. Confirmado com o cliente em
+  // 01/09/2026: o formulário deve ir direto para o WhatsApp. Com este campo vazio,
+  // src/pages/contato.astro monta a mensagem com nome, WhatsApp, tipo e texto do
+  // visitante e abre a conversa, sem intermediário e sem planilha.
+  //
+  // O valor anterior era o texto de substituição 'REPLACE_ME_APPS_SCRIPT_URL', que
+  // funcionava igual (o mesmo ramo de código trata os dois casos) mas se parecia com
+  // configuração esquecida, e por isso foi diagnosticado mais de uma vez como
+  // formulário quebrado.
+  //
+  // Só preencha se um dia o envio passar a gravar em planilha via Apps Script
+  // (ver scripts/apps-script-contato.gs); nesse caso o WhatsApp vira o plano B.
+  formEndpoint: '',
 } as const;
 
 // Fotos reais do produto (batata chips). Só mantemos as 2 fotos aprovadas.

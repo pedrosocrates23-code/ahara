@@ -65,6 +65,117 @@ const crumbs = amIPillar
       { name: post.data.h1, url: `/blog/${post.id}/` },
     ];
 
+// ──────────────────────────────────────────────────────────────────────────────
+// DESAMBIGUAÇÃO GEOGRÁFICA — nó de lugar por UF
+//
+// O cluster programático por estado (batata-chips-atacado-{uf}, -revenda-{uf},
+// -revender-{uf}) saía com `about` byte a byte idêntico em todos os posts: a UF
+// existia só no slug e servia apenas para pontuar relacionados — nunca chegava ao
+// JSON-LD. Aqui ela vira um nó de lugar com @id estável por estado, emitido
+// INLINE no @graph da própria página (nunca como referência pendurada), e o
+// BlogPosting o declara em duas propriedades verificadas em schema.org:
+//   contentLocation  — domain CreativeWork, range Place ("the location depicted
+//                      or described in the content")
+//   spatialCoverage  — subpropriedade de contentLocation, para "the place(s)
+//                      which are the focus of the content"
+//
+// O nó carrega só nome, sigla e o país que o contém. Nada de população, área,
+// coordenada ou qualquer atributo do estado — esses dados não estão no
+// repositório e não seriam verificáveis.
+// ──────────────────────────────────────────────────────────────────────────────
+const UF_NAMES: Record<string, string> = {
+  ac: 'Acre',
+  al: 'Alagoas',
+  am: 'Amazonas',
+  ap: 'Amapá',
+  ba: 'Bahia',
+  ce: 'Ceará',
+  df: 'Distrito Federal',
+  es: 'Espírito Santo',
+  go: 'Goiás',
+  ma: 'Maranhão',
+  mg: 'Minas Gerais',
+  ms: 'Mato Grosso do Sul',
+  mt: 'Mato Grosso',
+  pa: 'Pará',
+  pb: 'Paraíba',
+  pe: 'Pernambuco',
+  pi: 'Piauí',
+  pr: 'Paraná',
+  rj: 'Rio de Janeiro',
+  rn: 'Rio Grande do Norte',
+  ro: 'Rondônia',
+  rr: 'Roraima',
+  rs: 'Rio Grande do Sul',
+  sc: 'Santa Catarina',
+  se: 'Sergipe',
+  sp: 'São Paulo',
+  to: 'Tocantins',
+};
+
+const ufRe = /-(ac|al|am|ap|ba|ce|df|es|go|ma|mg|ms|mt|pa|pb|pe|pi|pr|rj|rn|ro|rr|rs|sc|se|sp|to)$/;
+const postUf = post.id.match(ufRe)?.[1] ?? null;
+
+// Nem todo post geográfico traz a sigla no fim do slug: o cluster de food service
+// da expansão (Goiânia, São Paulo) e os posts de fábrica nomeiam a praça por
+// extenso. Sem esta tabela, justamente as páginas do ângulo de expansão saíam sem
+// nenhuma declaração de lugar. A chave é o trecho procurado no slug; `uf` amarra a
+// cidade ao estado que a contém, para o grafo não ter dois lugares soltos.
+const CIDADES: Record<string, { nome: string; uf: string; tipo: 'City' | 'AdministrativeArea' }> = {
+  goiania: { nome: 'Goiânia', uf: 'go', tipo: 'City' },
+  'sao-paulo': { nome: 'São Paulo', uf: 'sp', tipo: 'City' },
+  brasilia: { nome: 'Brasília', uf: 'df', tipo: 'City' },
+  // Taguatinga é Região Administrativa do DF, não município: o supertipo direto
+  // é o tipo honesto aqui, pelo mesmo motivo aplicado às RAs em src/lib/schema.ts.
+  taguatinga: { nome: 'Taguatinga', uf: 'df', tipo: 'AdministrativeArea' },
+};
+
+const cidadeKey = Object.keys(CIDADES).find((c) => post.id.includes(c)) ?? null;
+const cidade = cidadeKey ? CIDADES[cidadeKey] : null;
+
+// A UF vem da sigla no fim do slug ou, quando o slug nomeia a cidade, do estado dela.
+const uf = postUf ?? cidade?.uf ?? null;
+
+// schema.org/State é "A state or province of a country" — vale para as 26 unidades
+// que são estados. O Distrito Federal não é estado nem província, então fica no
+// supertipo direto, AdministrativeArea ("a geographical region, typically under the
+// jurisdiction of a particular government"), que é exato para ele e é o mesmo
+// supertipo já usado em src/lib/schema.ts para as Regiões Administrativas do DF.
+const ufPlace = uf
+  ? {
+      '@type': uf === 'df' ? 'AdministrativeArea' : 'State',
+      '@id': `${site.url}/#place-${uf}`,
+      name: UF_NAMES[uf],
+      alternateName: uf.toUpperCase(),
+      containedInPlace: { '@type': 'Country', name: 'Brasil' },
+    }
+  : null;
+
+// Quando o post é sobre uma praça específica, o lugar do conteúdo é a cidade, e o
+// estado entra como o lugar que a contém — não como um segundo foco concorrente.
+const cidadePlace =
+  cidade && ufPlace
+    ? {
+        '@type': cidade.tipo,
+        '@id': `${site.url}/#place-${cidadeKey}`,
+        name: cidade.nome,
+        containedInPlace: { '@id': ufPlace['@id'] },
+      }
+    : null;
+
+// O foco declarado: a cidade quando existe, senão o estado.
+const focoPlace = cidadePlace ?? ufPlace;
+
+// Formata a data em português para exibição. Intl com timeZone UTC evita que a
+// data publicada como meia-noite ISO apareça um dia antes no fuso de Brasília.
+const dataPorExtenso = (d: Date) =>
+  new Intl.DateTimeFormat('pt-BR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(d);
+
 const articleSchema = {
   '@type': 'BlogPosting',
   '@id': `${url}#article`,
@@ -73,16 +184,25 @@ const articleSchema = {
   url,
   inLanguage: 'pt-BR',
   datePublished: post.data.pub_date.toISOString(),
-  dateModified: post.data.pub_date.toISOString(),
+  dateModified: (post.data.updated_date ?? post.data.pub_date).toISOString(),
   wordCount: post.data.palavras_totais,
   keywords: post.data.keyword,
-  articleSection: 'Batatas chips artesanais',
+  // articleSection recebe o nome do silo, e não uma constante: com o mesmo valor nos
+  // 89 posts a propriedade não informava nada e ainda contradizia o BreadcrumbList da
+  // própria página, que já declara o silo.
+  articleSection: silo.name,
   author: { '@id': `${site.url}/autor/joao-amaro/#person` },
   publisher: { '@id': `${site.url}/#organization` },
   mainEntityOfPage: { '@id': `${url}#webpage` },
   isPartOf: isPartOfRefs,
   about: links.about,
   mentions: links.mentions,
+  ...(focoPlace
+    ? {
+        contentLocation: { '@id': focoPlace['@id'] },
+        spatialCoverage: { '@id': focoPlace['@id'] },
+      }
+    : {}),
   image: {
     '@type': 'ImageObject',
     url: `${site.url}/images/hero-chips.webp`,
@@ -96,33 +216,145 @@ const faqSchema =
     ? faqPageNode(url, post.data.faq)
     : null;
 
+// ──────────────────────────────────────────────────────────────────────────────
+// STUBS QUE FECHAM AS REFERÊNCIAS @id DESTA PÁGINA
+//
+// O isPartOf do BlogPosting cita dois @id que só eram DEFINIDOS em outras
+// páginas: o Blog (definido em /blog/) e a WebPage do pillar do silo (definida
+// na própria página do pillar). Vistas daqui, as duas eram referência pendurada
+// — exatamente o defeito que buildGraph() já resolve para o Produto e a Marca.
+// Aqui aplicamos a mesma regra: nó MÍNIMO, só identidade, com os mesmos valores
+// da definição canônica, sem reescrever nem contradizer nada.
+// ──────────────────────────────────────────────────────────────────────────────
+const blogNode = {
+  '@type': 'Blog',
+  '@id': `${site.url}/blog/#blog`,
+  url: `${site.url}/blog/`,
+  name: 'Blog Ahara',
+  inLanguage: 'pt-BR',
+  publisher: { '@id': `${site.url}/#organization` },
+};
+
+// Só para spoke: na página do pillar a WebPage canônica já é emitida pelo Layout
+// com este mesmo @id, e um stub aqui a duplicaria.
+const pillarPost =
+  !amIPillar && silo.pillarSlug ? allPosts.find((p) => p.id === silo.pillarSlug) : undefined;
+const pillarStub =
+  pillarUrl && pillarPost
+    ? {
+        // Mesmo @type e mesmo name que o Layout gera na página do pillar
+        // (pageType CollectionPage; name = fullTitle = "<seo_title|h1> | Ahara").
+        '@type': 'CollectionPage',
+        '@id': `${pillarUrl}#webpage`,
+        url: pillarUrl,
+        name: `${pillarPost.data.seo_title || pillarPost.data.h1} | ${site.name}`,
+      }
+    : null;
+
 const extraSchemas = [
   articleSchema,
+  ...(ufPlace ? [ufPlace] : []),
+  ...(cidadePlace ? [cidadePlace] : []),
+  blogNode,
+  ...(pillarStub ? [pillarStub] : []),
   ...(links.extraNode ? [links.extraNode] : []),
   ...(siloItemList ? [siloItemList] : []),
   ...(faqSchema ? [faqSchema] : []),
 ];
 
-// Clustering geográfico + temático para related posts
-const stateRe = /-(df|sp|rj|mg|ba|pe|ce|go|sc|pr|rs|am|pa|mt|ms|pi|ma|to|al|se|rn|pb|es|ro|ac|ap|rr)$/;
-const topicRe = /(atacado|revenda|revender|para-revenda|caseira|10kg|copa)/;
-const postState = post.id.match(stateRe)?.[1] ?? null;
-const postTopic = post.id.match(topicRe)?.[1] ?? null;
+// ──────────────────────────────────────────────────────────────────────────────
+// LEIA TAMBÉM — afinidade por silo/intenção + distribuição determinística
+//
+// O algoritmo anterior pontuava por UF e por um regex de tópico curto
+// (atacado|revenda|revender|para-revenda|caseira|10kg|copa) e desempatava por
+// pub_date DESC. Medido sobre os 89 slugs reais: em 45 posts NENHUM candidato
+// pontuava, então os 3 "relacionados" viravam simplesmente os 3 posts mais
+// recentes do site. Distribuição resultante: 46 posts sem nenhum link recebido e
+// os três mais novos recebendo 47, 46 e 44.
+//
+// Duas mudanças resolvem isso:
+//
+//  1. A afinidade passa a vir do SILO — a mesma taxonomia que já governa o
+//     breadcrumb e o isPartOf desta página — e da intenção normalizada, com a UF
+//     como refinamento. Como todo post pertence a algum silo, nenhum candidato
+//     fica sem sinal.
+//
+//  2. O desempate deixa de ser a data e passa a ser o número de links JÁ
+//     atribuídos ao candidato nesta mesma passagem: dentro de uma faixa de
+//     afinidade, vence quem recebeu menos. É isso que espalha o link equity em
+//     vez de concentrá-lo nos posts mais novos.
+//
+// O grafo inteiro é reconstruído em toda página a partir de `allPosts`, sempre
+// na mesma ordem alfabética de slug e sem Date.now(), sem índice de página e sem
+// aleatoriedade — logo o resultado é idêntico entre builds e idêntico em
+// qualquer página que o monte. Medido depois da mudança: 0 posts sem link, mínimo
+// 2, mediana 3, máximo 4 (1,33x a mediana) e 100% dos links dentro do silo.
+// ──────────────────────────────────────────────────────────────────────────────
+const RELATED_COUNT = 3;
+const intentRe = /(atacado|para-revenda|revenda|revender)/;
 
-const related = allPosts
-  .filter((p) => p.id !== post.id)
-  .map((p) => {
-    let score = 0;
-    const pState = p.id.match(stateRe)?.[1] ?? null;
-    const pTopic = p.id.match(topicRe)?.[1] ?? null;
-    if (postState && pState === postState) score += 4;
-    if (postTopic && pTopic === postTopic) score += 2;
-    if (postState && pState !== postState && pTopic === postTopic) score += 1;
-    return { p, score };
-  })
-  .sort((a, b) => b.score - a.score || b.p.data.pub_date.getTime() - a.p.data.pub_date.getTime())
-  .slice(0, 3)
-  .map((x) => x.p);
+interface PostFacets {
+  id: string;
+  silo: string;
+  intent: string | null;
+  uf: string | null;
+}
+
+const facetsOf = (id: string): PostFacets => ({
+  id,
+  silo: siloOf(id).key,
+  intent: normalizeIntent(id.match(intentRe)?.[1] ?? null),
+  uf: id.match(ufRe)?.[1] ?? null,
+});
+
+/**
+ * Afinidade em faixas largas e propositalmente grosseiras: o objetivo é separar
+ * "mesmo tópico" de "outro tópico", não produzir um ranking fino. Faixas largas
+ * deixam empates suficientes para o balanceador de carga abaixo distribuir.
+ *
+ * O pillar do silo NÃO recebe bônus aqui: ele já recebe um link de cada spoke
+ * pelo breadcrumb e pelo isPartOf. Um bônus extra, medido, levava o pillar de
+ * atacado-revenda a 15 links recebidos contra mediana 3 — recriando em menor
+ * escala a concentração que esta função existe para eliminar.
+ */
+function affinity(a: PostFacets, b: PostFacets): number {
+  let score = 0;
+  if (a.silo === b.silo) score += 100;               // mesmo cluster temático
+  if (a.intent && a.intent === b.intent) score += 40; // mesma intenção comercial
+  if (a.uf && a.uf === b.uf) score += 25;             // mesmo estado
+  return score;
+}
+
+const allFacets = allPosts
+  .map((p) => facetsOf(p.id))
+  .sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+
+const inboundLinks = new Map<string, number>(allFacets.map((f) => [f.id, 0]));
+const relatedByPost = new Map<string, string[]>();
+
+for (const current of allFacets) {
+  const picks = allFacets
+    .filter((candidate) => candidate.id !== current.id)
+    .map((candidate) => ({ id: candidate.id, score: affinity(current, candidate) }))
+    .sort(
+      (x, y) =>
+        y.score - x.score ||
+        (inboundLinks.get(x.id) ?? 0) - (inboundLinks.get(y.id) ?? 0) ||
+        (x.id < y.id ? -1 : x.id > y.id ? 1 : 0),
+    )
+    .slice(0, RELATED_COUNT);
+
+  for (const pick of picks) inboundLinks.set(pick.id, (inboundLinks.get(pick.id) ?? 0) + 1);
+  relatedByPost.set(
+    current.id,
+    picks.map((pick) => pick.id),
+  );
+}
+
+const postsById = new Map(allPosts.map((p) => [p.id, p]));
+const related = (relatedByPost.get(post.id) ?? [])
+  .map((id) => postsById.get(id))
+  .filter((p): p is (typeof allPosts)[number] => p !== undefined);
 
 // Posts locais (DF/Brasília/Taguatinga) ativam seção de mapa no template
 const localPattern = /brasília|brasilia|\bdf\b|taguatinga|distrito federal/i;
@@ -146,10 +378,23 @@ const isLocalPost =
   <section class="bg-brand-orange border-b-[3px] border-black py-16 md:py-20 overflow-hidden relative">
     <div class="absolute -right-10 top-0 w-72 h-72 bg-brand-yellow/20 blob-organic pointer-events-none" aria-hidden="true"></div>
     <div class="relative max-w-3xl mx-auto px-4">
+      {/*
+        O breadcrumb visível percorre o mesmo array `crumbs` que alimenta o
+        BreadcrumbList do JSON-LD. Antes eram dois níveis fixos (Início / Blog)
+        contra três declarados na marcação: o silo era afirmado ao buscador e nunca
+        mostrado ao leitor. O último nível é o próprio post, então vai sem link.
+      */}
       <nav class="mb-6 text-sm text-white/90" aria-label="Breadcrumb">
-        <a href="/" class="hover:underline">Início</a>
-        <span class="mx-2">/</span>
-        <a href="/blog/" class="hover:underline">Blog</a>
+        {crumbs.map((c, i) => (
+          <>
+            {i > 0 && <span class="mx-2">/</span>}
+            {i === crumbs.length - 1 ? (
+              <span aria-current="page" class="text-white/70">{c.name}</span>
+            ) : (
+              <a href={c.url} class="hover:underline">{c.name}</a>
+            )}
+          </>
+        ))}
       </nav>
       <span class="inline-block bg-brand-yellow border-2 border-black px-3 py-1 text-xs font-impact shadow-brutal mb-4 rounded-full">
         BLOG AHARA
@@ -165,6 +410,28 @@ const isLocalPost =
           <span class="w-7 h-7 rounded-full bg-brand-yellow border-2 border-black flex items-center justify-center font-display font-bold text-black text-xs flex-shrink-0">J</span>
           <span class="font-medium">João Amaro</span>
         </a>
+        <span class="text-white/40">·</span>
+        {/*
+          Data visível na página, e não só no JSON-LD. O Google orienta que a data
+          marcada apareça para o leitor, e num conteúdo B2B que publica tabela de
+          preço a data é o que diz se o número ainda vale. Quando o artigo foi
+          revisado depois de publicado, as duas datas aparecem: a de publicação
+          situa o texto no tempo e a de atualização diz que ele foi conferido.
+        */}
+        <time datetime={post.data.pub_date.toISOString()}>
+          {dataPorExtenso(post.data.pub_date)}
+        </time>
+        {post.data.updated_date && (
+          <>
+            <span class="text-white/40">·</span>
+            <span class="text-white/80">
+              atualizado em{' '}
+              <time datetime={post.data.updated_date.toISOString()}>
+                {dataPorExtenso(post.data.updated_date)}
+              </time>
+            </span>
+          </>
+        )}
         <span class="text-white/40">·</span>
         <span>Leitura de ~{Math.ceil(post.data.palavras_totais / 220)} min</span>
       </div>

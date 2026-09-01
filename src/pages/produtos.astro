@@ -4,7 +4,7 @@ import CTAButton from '@/components/CTAButton.astro';
 import { Image } from 'astro:assets';
 import nikoImg from '@/assets/images/niko-tradicional-50g.webp';
 import { site, icons } from '@/data/site';
-import { nutritionNode, brandNikoNode } from '@/lib/schema';
+import { brandNikoNode } from '@/lib/schema';
 
 const BASE = site.url;
 const ORG_ID = `${BASE}/#organization`;
@@ -24,14 +24,41 @@ const productSchema = {
   manufacturer: { '@id': ORG_ID },
   image: new URL('/images/hero-chips.webp', BASE).toString(),
   keywords: 'batata chips artesanal, snack Brasília, batata Marquise, batata Atlantic, chips DF',
-  allergyInformation: 'CONTÉM DERIVADOS DE SOJA. NÃO CONTÉM GLÚTEN.',
-  nutritionInfo: nutritionNode(),
+  // Verificado ao vivo em schema.org: 'allergyInformation' e 'nutritionInfo' NÃO
+  // existem no vocabulário (HTTP 404 em ambas). A propriedade real de nutrição é
+  // 'nutrition', e o domain dela é MenuItem|Recipe — nunca Product. Como nenhuma
+  // propriedade de Product aceita NutritionInformation, a tabela nutricional sai
+  // do JSON-LD; ela continua íntegra e visível no HTML desta página, que é onde
+  // o leitor de fato a consome (nenhum rich result do Google lê nutrição em
+  // Product). O alergênico é um texto curto e cabe em 'additionalProperty'
+  // (domain Product, range PropertyValue — verificado), com a frase preservada.
+  additionalProperty: [
+    {
+      '@type': 'PropertyValue',
+      name: 'Informação de alergênicos',
+      value: 'CONTÉM DERIVADOS DE SOJA. NÃO CONTÉM GLÚTEN.',
+    },
+    ...site.pricing.packagings.map((pkg) => ({
+      '@type': 'PropertyValue',
+      name: 'Embalagem disponível',
+      // value numérico + unitCode: '50g' como texto com unitCode GRM seria
+      // contraditório. weightGrams é o dado real já no repositório.
+      value: pkg.weightGrams,
+      unitCode: 'GRM',
+      unitText: 'g',
+      identifier: pkg.sku,
+    })),
+  ],
   offers: {
     '@type': 'AggregateOffer',
     priceCurrency: 'BRL',
     lowPrice: lowPrice.toFixed(2),
     highPrice: site.pricing.baseKg.toFixed(2),
-    offerCount: site.pricing.packagings.length,
+    // offerCount conta as ofertas que lowPrice e highPrice resumem. Essa faixa vem
+    // dos tiers de desconto por quilo, não das gramaturas: contar embalagens aqui
+    // misturava duas dimensões no mesmo nó (3 embalagens contra uma faixa de preço
+    // formada por 4 faixas de volume).
+    offerCount: site.pricing.discountTiers.length,
     priceSpecification: {
       '@type': 'UnitPriceSpecification',
       priceCurrency: 'BRL',
@@ -49,26 +76,37 @@ const productSchema = {
       unitCode: 'KGM',
     },
     areaServed: [
-      ...site.regions.map((r) => ({ '@type': 'City', name: r })),
+      // site.regions são Regiões Administrativas do DF, não cidades.
+      // schema.org/City é "A city or town" e é SUBCLASSE de AdministrativeArea
+      // ("a geographical region, typically under the jurisdiction of a particular
+      // government") — que é exatamente o que uma RA é. Mesmo tipo já adotado em
+      // src/lib/schema.ts para areaServed/eligibleRegion.
+      ...site.regions.map((r) => ({ '@type': 'AdministrativeArea', name: r })),
       { '@type': 'Country', name: 'Brasil' },
     ],
     seller: { '@id': ORG_ID },
   },
-  hasVariant: site.pricing.packagings.map((pkg) => ({
-    '@type': 'Product',
-    '@id': `${BASE}/#product-${pkg.sku.toLowerCase()}`,
-    name: `Niko Batata Chips ${pkg.label} — Sabor Tradicional`,
-    sku: pkg.sku,
-    description: `Batata chips artesanal Niko em embalagem de ${pkg.label}`,
-    brand: { '@id': BRAND_ID },
-    manufacturer: { '@id': ORG_ID },
-    offers: {
-      '@type': 'Offer',
-      priceCurrency: 'BRL',
-      availability: 'https://schema.org/InStock',
-      seller: { '@id': ORG_ID },
-    },
-  })),
+  // 'hasVariant' foi REMOVIDO: verificado ao vivo, o domain dele é ProductGroup
+  // (range Product) — nunca Product. As duas saídas possíveis foram avaliadas:
+  //
+  //  1. Promover este nó a ProductGroup. DESCARTADO por dois motivos concretos.
+  //     (a) Os três "variants" não têm preço próprio e não podem ter: a Ahara
+  //         vende por quilo, e derivar um preço por pacote seria inventar dado
+  //         comercial. O rich result de produto do Google se apoia na oferta; a
+  //         AggregateOffer por kg acima é a única oferta real e verdadeira desta
+  //         página, e trocar Product por ProductGroup com variants sem preço
+  //         troca uma oferta válida por três incompletas.
+  //     (b) O mesmo @id (#product-batata-chips) é definido como Product por
+  //         productStubNode() em src/lib/schema.ts nas 89 páginas de post.
+  //         Promover só aqui criaria um conflito de tipo no mesmo @id no site.
+  //
+  //  2. Inverter para 'isVariantOf' nos filhos. IMPOSSÍVEL: o range de
+  //     isVariantOf é ProductGroup|ProductModel, então apontar para um Product
+  //     também estaria fora de domínio.
+  //
+  // As três gramaturas continuam declaradas — como PropertyValue em
+  // 'additionalProperty' acima, com rótulo e SKU reais e sem preço fabricado.
+  // Os @id #product-niko-* não eram referenciados em lugar nenhum do repositório.
 };
 ---
 
@@ -91,12 +129,20 @@ const productSchema = {
       <span class="inline-block bg-brand-yellow border-2 border-black px-3 py-1 text-xs font-impact shadow-brutal mb-6 rounded-full">
         NOSSO PRODUTO
       </span>
+      {/*
+        A marca do produto é Niko e a empresa é Ahara (confirmado pelo cliente em
+        01/09/2026). O dado estruturado desta página já declarava o produto como
+        "Niko Batata Chips Artesanal", mas a palavra Niko não aparecia uma única vez
+        no conteúdo visível: o site afirmava ao buscador uma marca que o leitor não
+        via. Aqui as duas camadas passam a dizer a mesma coisa.
+      */}
       <h1 class="font-display font-bold text-5xl md:text-6xl text-white mb-5 leading-[1.05]">
-        Batatas Chips <span class="text-brand-yellow">Ahara</span><br/>Sabor Tradicional
+        Batatas Chips <span class="text-brand-yellow">Niko</span><br/>Sabor Tradicional
       </h1>
       <p class="font-body text-xl text-white/95 max-w-2xl leading-relaxed mb-8">
-        Trabalhamos com um único sabor — o tradicional — feito da forma certa.
-        Batata de qualidade, sal na medida e crocância que dura.
+        <strong>Niko</strong> é a linha de batatas chips artesanais produzida pela
+        <strong>Ahara</strong> em Brasília. Trabalhamos com um único sabor, o tradicional,
+        feito da forma certa. Batata de qualidade, sal na medida e crocância que dura.
         Sem complicação, sem excesso de temperos. O clássico que funciona.
       </p>
       <div class="flex flex-wrap gap-3">

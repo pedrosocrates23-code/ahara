@@ -45,7 +45,9 @@ export const GET: APIRoute = async () => {
     path: `/blog/${p.id}/`,
     priority: 0.7,
     changefreq: 'monthly',
-    lastmod: p.data.pub_date.toISOString(),
+    // lastmod segue updated_date quando existir: anunciar pub_date num post
+    // editado contradiria o dateModified que o JSON-LD da mesma URL declara.
+    lastmod: (p.data.updated_date ?? p.data.pub_date).toISOString(),
     images: [{ loc: `${SITE}/images/hero-chips.webp`, title: p.data.h1 }],
   }));
 
