@@ -8,10 +8,11 @@ import heroChipsImg from '@/assets/images/hero-chips.webp';
 import { site } from '@/data/site';
 import { discountOfferCatalog, deliverySpec, howToBuyNode, homeFaqNode, brandNikoNode } from '@/lib/schema';
 import { getCollection } from 'astro:content';
+import { isPublished } from '@/lib/publicacao';
 
 const waHero = site.whatsapp.link('Olá, gostaria de fazer um pedido de batatas chips Ahara');
 
-const recentPosts = (await getCollection('blog', ({ data }) => !data.draft))
+const recentPosts = (await getCollection('blog', ({ data }) => isPublished(data)))
   .sort((a, b) => b.data.pub_date.getTime() - a.data.pub_date.getTime())
   .slice(0, 3);
 

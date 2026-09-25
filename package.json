@@ -11,7 +11,10 @@
     "gsc:list": "node scripts/google-search-console.mjs list",
     "gsc:inspect": "node scripts/google-search-console.mjs inspect",
     "google:index": "node scripts/google-indexing-api.mjs",
-    "check:links": "node scripts/check-internal-links.mjs"
+    "check:links": "node scripts/check-internal-links.mjs",
+    "fila:status": "node scripts/fila-publicacao.mjs --status",
+    "fila:verificar": "node scripts/fila-publicacao.mjs --verificar",
+    "fila:gerar": "node scripts/fila-publicacao.mjs --gerar-api"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.14",

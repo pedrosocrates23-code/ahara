@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
+import { isPublished } from '@/lib/publicacao';
 
 const SITE = 'https://aharabr.com.br';
 
@@ -40,7 +41,7 @@ const staticRoutes: Route[] = [
 
 export const GET: APIRoute = async () => {
   // Publicação programada: sitemap só inclui posts já publicados (pub_date <= agora).
-  const posts = await getCollection('blog', ({ data }) => !data.draft && (process.env.AHARA_PUBLISH_ALL === '1' || data.pub_date.getTime() <= Date.now()));
+  const posts = await getCollection('blog', ({ data }) => isPublished(data));
   const blogRoutes: Route[] = posts.map((p) => ({
     path: `/blog/${p.id}/`,
     priority: 0.7,

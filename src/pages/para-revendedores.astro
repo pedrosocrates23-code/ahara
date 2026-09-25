@@ -6,11 +6,12 @@ import FeatureCard from '@/components/FeatureCard.astro';
 import { site } from '@/data/site';
 import { serviceNode, discountOfferCatalog, deliverySpec } from '@/lib/schema';
 import { getCollection } from 'astro:content';
+import { isPublished } from '@/lib/publicacao';
 
 const waRev = site.whatsapp.link('Olá, quero me tornar revendedor das batatas Ahara');
 
 const blogRevenda = (await getCollection('blog', ({ data, id }) =>
-  !data.draft && /(revenda|revender|para-revenda|caseira|para-revender)/.test(id)
+  isPublished(data) && /(revenda|revender|para-revenda|caseira|para-revender)/.test(id)
 ))
   .sort((a, b) => b.data.pub_date.getTime() - a.data.pub_date.getTime())
   .slice(0, 4);

@@ -2,9 +2,10 @@
 import Layout from '@/layouts/Layout.astro';
 import CTAButton from '@/components/CTAButton.astro';
 import { getCollection } from 'astro:content';
+import { isPublished } from '@/lib/publicacao';
 import { site } from '@/data/site';
 
-const posts = await getCollection('blog', ({ data }) => !data.draft);
+const posts = await getCollection('blog', ({ data }) => isPublished(data));
 
 const personSchema = {
   '@type': 'Person',
