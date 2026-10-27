@@ -36,15 +36,16 @@ jobs:
       - name: Conferir regras da fila
         run: node scripts/fila-publicacao.mjs --verificar
 
-      - name: Posts que vencem hoje
+      # Últimos 14 dias, não só hoje: se um build falhou, a execução seguinte recupera o atraso.
+      - name: Posts vencidos
         id: hoje
         run: |
           node scripts/fila-publicacao.mjs --status
-          SLUGS=$(node scripts/fila-publicacao.mjs --hoje | tr '\n' ' ')
+          SLUGS=$(node scripts/fila-publicacao.mjs --vencidos | tr '\n' ' ')
           echo "slugs=$SLUGS" >> "$GITHUB_OUTPUT"
-          echo "Vencem hoje: ${SLUGS:-nenhum}"
+          echo "Vencidos nos últimos 14 dias: ${SLUGS:-nenhum}"
 
-      - name: Disparar build se o post do dia não estiver no ar
+      - name: Disparar build se algum post vencido não estiver no ar
         if: steps.hoje.outputs.slugs != ''
         env:
           HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
