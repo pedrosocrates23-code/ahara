@@ -18,6 +18,7 @@
  * Uso:
  *   node scripts/fila-publicacao.mjs --status       tabela da fila
  *   node scripts/fila-publicacao.mjs --hoje         slugs que vencem hoje (BRT), um por linha
+ *   node scripts/fila-publicacao.mjs --vencidos     slugs vencidos nos últimos 14 dias, um por linha
  *   node scripts/fila-publicacao.mjs --gerar-api    reescreve api/_fila.js
  *   node scripts/fila-publicacao.mjs --verificar    exit 1 se alguma regra falhar
  */
@@ -77,6 +78,16 @@ function hoje(posts) {
     .forEach((p) => console.log(p.slug));
 }
 
+// Vencidos nos últimos 14 dias (mesma janela de api/publicar-fila.js). Basta um deles estar fora do
+// ar para o build ser necessário, e o build publica todos os vencidos de uma vez.
+function vencidos(posts) {
+  const agora = Date.now();
+  const inicio = agora - 14 * 86400 * 1000;
+  posts
+    .filter((p) => !p.draft && p.pub_date.getTime() <= agora && p.pub_date.getTime() >= inicio)
+    .forEach((p) => console.log(p.slug));
+}
+
 function conteudoApi(posts) {
   const fila = agendados(posts).map((p) => ({ slug: p.slug, pub_date: p.pub_date.toISOString() }));
   return (
@@ -118,11 +129,12 @@ const posts = lerPosts();
 const arg = process.argv[2];
 if (arg === '--status') status(posts);
 else if (arg === '--hoje') hoje(posts);
+else if (arg === '--vencidos') vencidos(posts);
 else if (arg === '--gerar-api') {
   writeFileSync(API_FILA, conteudoApi(posts), 'utf-8');
   console.log(`api/_fila.js gerado com ${agendados(posts).length} post(s).`);
 } else if (arg === '--verificar') verificar(posts);
 else {
-  console.error('Uso: --status | --hoje | --gerar-api | --verificar');
+  console.error('Uso: --status | --hoje | --vencidos | --gerar-api | --verificar');
   process.exit(2);
 }

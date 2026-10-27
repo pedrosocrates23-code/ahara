@@ -1,8 +1,9 @@
 // Gatilho da fila de publicação chamado pelo Vercel Cron (vercel.json), seg/qua/sex.
 //
 // É o segundo gatilho: o primeiro é o GitHub Actions (.github/workflows/fila-publicacao.yml),
-// uma hora e meia antes. Esta função só dispara o Deploy Hook se algum post que vence hoje
-// ainda devolve 404, então ela não duplica build quando o GitHub já publicou.
+// uma hora e meia antes. Esta função só dispara o Deploy Hook se algum post vencido nos últimos
+// JANELA_DIAS ainda devolve 404, então ela não duplica build quando o GitHub já publicou e
+// recupera sozinha um dia em que o build falhou (qualquer build publica todos os vencidos).
 //
 // Variáveis de ambiente na Vercel (Settings > Environment Variables, ambiente Production):
 //   CRON_SECRET          a Vercel envia "Authorization: Bearer <CRON_SECRET>" nas chamadas do Cron
@@ -10,6 +11,7 @@
 import { fila } from './_fila.js';
 
 const SITE = 'https://aharabr.com.br';
+const JANELA_DIAS = 14;
 const diaBRT = (d) => new Date(d.getTime() - 3 * 3600 * 1000).toISOString().slice(0, 10);
 
 export async function GET(request) {
@@ -20,9 +22,13 @@ export async function GET(request) {
 
   const agora = new Date();
   const hoje = diaBRT(agora);
-  const vencidos = fila.filter((p) => diaBRT(new Date(p.pub_date)) === hoje && new Date(p.pub_date) <= agora);
+  const inicio = agora.getTime() - JANELA_DIAS * 86400 * 1000;
+  const vencidos = fila.filter((p) => {
+    const t = new Date(p.pub_date).getTime();
+    return t <= agora.getTime() && t >= inicio;
+  });
   if (vencidos.length === 0) {
-    return Response.json({ acao: 'nada-hoje', hoje });
+    return Response.json({ acao: 'nada-vencido', hoje });
   }
 
   const pendentes = [];
