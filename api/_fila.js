@@ -2,82 +2,6 @@
 // Posts agendados no momento do commit, lidos pela função api/publicar-fila.js.
 export const fila = [
   {
-    "slug": "coffee-break-corporativo-o-que-servir-evento",
-    "pub_date": "2026-09-28T09:00:00.000Z"
-  },
-  {
-    "slug": "como-vender-batata-chips-canais-para-revender",
-    "pub_date": "2026-09-30T09:00:00.000Z"
-  },
-  {
-    "slug": "brinde-fim-de-ano-clientes-batata-chips-personalizada",
-    "pub_date": "2026-10-02T09:00:00.000Z"
-  },
-  {
-    "slug": "o-que-vender-em-adega-petisco-acompanhamento",
-    "pub_date": "2026-10-05T09:00:00.000Z"
-  },
-  {
-    "slug": "ncm-batata-chips-atacado-nota-fiscal",
-    "pub_date": "2026-10-07T09:00:00.000Z"
-  },
-  {
-    "slug": "cesta-de-natal-empresarial-item-personalizado",
-    "pub_date": "2026-10-09T09:00:00.000Z"
-  },
-  {
-    "slug": "fornecedor-de-batata-chips-como-escolher-fabrica",
-    "pub_date": "2026-10-12T09:00:00.000Z"
-  },
-  {
-    "slug": "vale-a-pena-revender-batata-chips-conta-por-pacote",
-    "pub_date": "2026-10-14T09:00:00.000Z"
-  },
-  {
-    "slug": "batata-chips-para-bar-e-boteco-cardapio",
-    "pub_date": "2026-10-16T09:00:00.000Z"
-  },
-  {
-    "slug": "batata-chips-atacado-bh-belo-horizonte",
-    "pub_date": "2026-10-19T09:00:00.000Z"
-  },
-  {
-    "slug": "kit-boteco-personalizado-batata-chips",
-    "pub_date": "2026-10-21T09:00:00.000Z"
-  },
-  {
-    "slug": "o-que-vender-no-natal-e-ano-novo-revenda",
-    "pub_date": "2026-10-23T09:00:00.000Z"
-  },
-  {
-    "slug": "maquina-de-batata-chips-custo-ou-terceirizacao",
-    "pub_date": "2026-10-26T09:00:00.000Z"
-  },
-  {
-    "slug": "o-que-vender-em-bar-pequeno-petiscos-cardapio",
-    "pub_date": "2026-10-28T09:00:00.000Z"
-  },
-  {
-    "slug": "batata-chips-caseira-para-vender-ou-revender",
-    "pub_date": "2026-10-30T09:00:00.000Z"
-  },
-  {
-    "slug": "fornecedor-de-batata-chips-em-sao-paulo-food-service",
-    "pub_date": "2026-11-02T09:00:00.000Z"
-  },
-  {
-    "slug": "acompanhamento-para-lanche-lanchonete-batata-chips",
-    "pub_date": "2026-11-04T09:00:00.000Z"
-  },
-  {
-    "slug": "embalagem-para-batata-chips-tipos-e-rotulo",
-    "pub_date": "2026-11-06T09:00:00.000Z"
-  },
-  {
-    "slug": "rotulo-batata-chips-marca-propria-anvisa",
-    "pub_date": "2026-11-09T09:00:00.000Z"
-  },
-  {
     "slug": "distribuidora-de-salgadinhos-para-revenda-mix",
     "pub_date": "2026-11-11T09:00:00.000Z"
   },
@@ -120,5 +44,125 @@ export const fila = [
   {
     "slug": "produtos-para-revender-direto-da-fabrica-alimentos",
     "pub_date": "2026-12-04T09:00:00.000Z"
+  },
+  {
+    "slug": "como-abrir-um-negocio-de-batata-frita",
+    "pub_date": "2026-12-07T09:00:00.000Z"
+  },
+  {
+    "slug": "como-calcular-preco-de-revenda-de-um-produto",
+    "pub_date": "2026-12-09T09:00:00.000Z"
+  },
+  {
+    "slug": "como-montar-uma-conveniencia-com-pouco-dinheiro",
+    "pub_date": "2026-12-11T09:00:00.000Z"
+  },
+  {
+    "slug": "batata-chips-para-vender-na-rua",
+    "pub_date": "2026-12-14T09:00:00.000Z"
+  },
+  {
+    "slug": "como-montar-uma-banca-na-feira",
+    "pub_date": "2026-12-16T09:00:00.000Z"
+  },
+  {
+    "slug": "como-montar-um-ponto-de-venda-de-lanches",
+    "pub_date": "2026-12-18T09:00:00.000Z"
+  },
+  {
+    "slug": "sair-do-clt-para-empreender",
+    "pub_date": "2026-12-21T09:00:00.000Z"
+  },
+  {
+    "slug": "o-que-vender-em-porta-de-show",
+    "pub_date": "2026-12-23T09:00:00.000Z"
+  },
+  {
+    "slug": "kit-lanche-da-tarde-para-vender",
+    "pub_date": "2026-12-28T09:00:00.000Z"
+  },
+  {
+    "slug": "negocio-para-comecar-com-500-reais",
+    "pub_date": "2026-12-30T09:00:00.000Z"
+  },
+  {
+    "slug": "o-que-vender-na-rua-a-noite",
+    "pub_date": "2027-01-04T09:00:00.000Z"
+  },
+  {
+    "slug": "combo-de-lanche-para-vender",
+    "pub_date": "2027-01-06T09:00:00.000Z"
+  },
+  {
+    "slug": "negocio-de-comida-com-pouco-dinheiro",
+    "pub_date": "2027-01-08T09:00:00.000Z"
+  },
+  {
+    "slug": "vender-lanche-na-rua-da-dinheiro",
+    "pub_date": "2027-01-11T09:00:00.000Z"
+  },
+  {
+    "slug": "vender-lanche-em-casa",
+    "pub_date": "2027-01-13T09:00:00.000Z"
+  },
+  {
+    "slug": "o-que-vender-na-rua-para-ganhar-dinheiro",
+    "pub_date": "2027-01-15T09:00:00.000Z"
+  },
+  {
+    "slug": "o-que-vender-em-um-evento",
+    "pub_date": "2027-01-18T09:00:00.000Z"
+  },
+  {
+    "slug": "o-que-revender-que-da-dinheiro",
+    "pub_date": "2027-01-20T09:00:00.000Z"
+  },
+  {
+    "slug": "como-calcular-ticket-medio",
+    "pub_date": "2027-01-22T09:00:00.000Z"
+  },
+  {
+    "slug": "renda-extra-vendendo-comida",
+    "pub_date": "2027-01-25T09:00:00.000Z"
+  },
+  {
+    "slug": "negocio-proprio-com-pouco-investimento",
+    "pub_date": "2027-01-27T09:00:00.000Z"
+  },
+  {
+    "slug": "vender-lanche-na-rua-precisa-de-alvara",
+    "pub_date": "2027-01-29T09:00:00.000Z"
+  },
+  {
+    "slug": "como-fazer-expositor-de-salgadinho",
+    "pub_date": "2027-02-01T09:00:00.000Z"
+  },
+  {
+    "slug": "o-que-vender-para-ganhar-dinheiro-em-cidade-pequena",
+    "pub_date": "2027-02-03T09:00:00.000Z"
+  },
+  {
+    "slug": "o-que-vender-para-ganhar-dinheiro-de-porta-em-porta",
+    "pub_date": "2027-02-05T09:00:00.000Z"
+  },
+  {
+    "slug": "o-que-fazer-para-revender-e-ganhar-dinheiro",
+    "pub_date": "2027-02-08T09:00:00.000Z"
+  },
+  {
+    "slug": "como-aumentar-as-vendas-de-uma-conveniencia",
+    "pub_date": "2027-02-10T09:00:00.000Z"
+  },
+  {
+    "slug": "como-comecar-a-vender-kit-festa",
+    "pub_date": "2027-02-12T09:00:00.000Z"
+  },
+  {
+    "slug": "o-que-vender-de-petisco",
+    "pub_date": "2027-02-15T09:00:00.000Z"
+  },
+  {
+    "slug": "como-perder-o-medo-de-vender-na-rua",
+    "pub_date": "2027-02-17T09:00:00.000Z"
   }
 ];
